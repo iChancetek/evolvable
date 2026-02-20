@@ -1,0 +1,423 @@
+/* ===== Create Page — Chat Interface ===== */
+
+.page {
+    display: flex;
+    height: 100vh;
+    background: var(--color-bg-light);
+}
+
+/* Sidebar */
+.sidebar {
+    width: 280px;
+    background: white;
+    border-right: 1px solid rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-6);
+    flex-shrink: 0;
+}
+
+.backLink {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+    color: var(--color-text-primary);
+}
+
+.backArrow {
+    font-size: var(--font-size-lg);
+    opacity: 0.5;
+}
+
+.sidebarBrand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-weight: 700;
+}
+
+.logoMark {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--gradient-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    font-size: var(--font-size-sm);
+}
+
+.sidebarSection {
+    flex: 1;
+}
+
+.sidebarSection h3 {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-4);
+}
+
+.projectItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    background: rgba(66, 133, 244, 0.06);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+.projectDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.sidebarFooter {
+    padding-top: var(--space-6);
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.agentStatus {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.statusDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-accent-green);
+    animation: glow-pulse 2s infinite;
+}
+
+/* Chat Area */
+.chatArea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chatHeader {
+    padding: var(--space-6) var(--space-8);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.chatHeader h1 {
+    font-size: var(--font-size-2xl);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+.chatHeader p {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-top: var(--space-1);
+}
+
+/* Messages */
+.messagesContainer {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+.message {
+    display: flex;
+    gap: var(--space-4);
+    animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.userMessage {
+    justify-content: flex-end;
+}
+
+.userMessage .messageContent {
+    background: var(--color-text-primary);
+    color: white;
+    border-radius: var(--radius-xl) var(--radius-xl) var(--radius-sm) var(--radius-xl);
+    max-width: 500px;
+}
+
+.aiMessage .messageContent {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: var(--radius-xl) var(--radius-xl) var(--radius-xl) var(--radius-sm);
+    max-width: 600px;
+}
+
+.avatar {
+    flex-shrink: 0;
+}
+
+.avatarInner {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--gradient-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    font-size: var(--font-size-sm);
+}
+
+.messageContent {
+    padding: var(--space-4) var(--space-5);
+}
+
+.messageText {
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+}
+
+/* Options */
+.optionsGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+}
+
+.optionButton {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    background: white;
+    color: var(--color-text-primary);
+}
+
+.optionButton:hover {
+    background: var(--color-accent-blue);
+    color: white;
+    border-color: var(--color-accent-blue);
+    transform: translateY(-1px);
+}
+
+/* Typing Indicator */
+.typingIndicator {
+    display: flex;
+    gap: 4px;
+    padding: var(--space-2) 0;
+}
+
+.typingIndicator span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-text-secondary);
+    animation: typing-bounce 1.4s infinite;
+}
+
+.typingIndicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typingIndicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing-bounce {
+
+    0%,
+    60%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.3;
+    }
+
+    30% {
+        transform: translateY(-6px);
+        opacity: 1;
+    }
+}
+
+/* Plan Card */
+.planCard {
+    min-width: 400px;
+}
+
+.planHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.planHeader h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+}
+
+.planCheck {
+    font-size: var(--font-size-xl);
+}
+
+.planTitle {
+    font-size: var(--font-size-base);
+    color: var(--color-text-secondary);
+    padding: var(--space-3) var(--space-4);
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-5);
+    font-style: italic;
+}
+
+.planFeatures {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+}
+
+.planFeature {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--font-size-sm);
+}
+
+.planAgents {
+    margin-bottom: var(--space-5);
+}
+
+.planAgents>span {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    display: block;
+    margin-bottom: var(--space-2);
+}
+
+.agentBadges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.agentBadge {
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    background: rgba(66, 133, 244, 0.06);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+}
+
+.planButton {
+    display: block;
+    width: 100%;
+    padding: var(--space-4);
+    background: var(--color-text-primary);
+    color: white;
+    border-radius: var(--radius-lg);
+    text-align: center;
+    font-weight: 700;
+    font-size: var(--font-size-base);
+    transition: all var(--transition-base);
+}
+
+.planButton:hover {
+    background: var(--color-accent-blue);
+    transform: translateY(-1px);
+}
+
+/* Input Area */
+.inputArea {
+    padding: var(--space-4) var(--space-8) var(--space-6);
+    border-top: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.inputWrapper {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-3) var(--space-3) var(--space-5);
+    border-radius: var(--radius-xl);
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: border-color var(--transition-fast);
+}
+
+.inputWrapper:focus-within {
+    border-color: var(--color-accent-blue);
+    box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+.chatInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: var(--font-size-base);
+    font-family: inherit;
+    background: transparent;
+}
+
+.chatInput::placeholder {
+    color: var(--color-text-secondary);
+}
+
+.sendButton {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--color-text-primary);
+    color: white;
+    font-size: var(--font-size-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.sendButton:hover:not(:disabled) {
+    background: var(--color-accent-blue);
+    transform: scale(1.05);
+}
+
+.sendButton:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.inputHint {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    margin-top: var(--space-3);
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+
+    .messagesContainer {
+        padding: var(--space-4);
+    }
+
+    .inputArea {
+        padding: var(--space-4);
+    }
+
+    .planCard {
+        min-width: auto;
+    }
+}
