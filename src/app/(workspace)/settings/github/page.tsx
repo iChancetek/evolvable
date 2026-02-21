@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth/auth-context';
 import styles from './github.module.css';
 
@@ -60,11 +60,11 @@ function friendlyDate(iso: string) {
 
 export default function GitHubSettingsPage() {
     const { user } = useAuth();
-    const router = useRouter();
     const searchParams = useSearchParams();
 
     const [state, setState] = useState<GitHubState>({ connected: false, githubAccount: null, repo: null });
     const [loading, setLoading] = useState(true);
+    const [connecting, setConnecting] = useState(false);
     const [actionLoading, setActionLoading] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
@@ -74,8 +74,8 @@ export default function GitHubSettingsPage() {
     useEffect(() => {
         const connected = searchParams.get('connected');
         const err = searchParams.get('error');
-        if (connected) setSuccess('GitHub connected successfully!');
-        if (err) setError(`Could not connect GitHub: ${err.replace(/_/g, ' ')}`);
+        if (connected) setSuccess('You\'re all set! Your projects will now be saved automatically.');
+        if (err) setError(`We couldn\'t connect your account. Please try again. (${err.replace(/_/g, ' ')})`);
     }, [searchParams]);
 
     const fetchGitHubState = useCallback(async () => {
@@ -100,6 +100,7 @@ export default function GitHubSettingsPage() {
 
     const handleConnect = () => {
         if (!user) return;
+        setConnecting(true);
         window.location.href = `/api/github/connect?userId=${user.uid}`;
     };
 
@@ -199,32 +200,82 @@ export default function GitHubSettingsPage() {
                 {/* ── NOT CONNECTED ── */}
                 {!state.connected && (
                     <div className={styles.connectCard}>
-                        <div className={styles.connectGraphic}>
-                            <span className={styles.platformLogo}>E</span>
-                            <div className={styles.connectLine} />
-                            <svg className={styles.githubLogo} viewBox="0 0 16 16" fill="currentColor">
-                                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-                            </svg>
+
+                        {/* Hero graphic */}
+                        <div className={styles.connectHero}>
+                            <div className={styles.connectHeroBadge}>🐙</div>
+                            <div className={styles.connectHeroText}>
+                                <div className={styles.connectHeroTitle}>Back up your work automatically</div>
+                                <div className={styles.connectHeroSub}>Never lose what you build</div>
+                            </div>
                         </div>
-                        <h2 className={styles.connectTitle}>Save your projects automatically</h2>
-                        <p className={styles.connectDescription}>
-                            Connect GitHub and every app you build with Evolvable will be saved securely. You'll review changes before anything goes live.
-                        </p>
-                        <ul className={styles.connectBenefits}>
-                            <li>✓ Your code is always backed up</li>
-                            <li>✓ Review AI-generated changes before publishing</li>
-                            <li>✓ Restore any previous version instantly</li>
-                            <li>✓ Collaborate with your team</li>
-                        </ul>
-                        <button className={styles.btnConnect} onClick={handleConnect}>
-                            <svg viewBox="0 0 16 16" fill="currentColor" width="20" height="20">
-                                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-                            </svg>
-                            Connect GitHub
+
+                        {/* What happens — 3 steps */}
+                        <div className={styles.connectSteps}>
+                            <div className={styles.connectStep}>
+                                <div className={styles.stepNum}>1</div>
+                                <div className={styles.stepContent}>
+                                    <div className={styles.stepTitle}>Click the button below</div>
+                                    <div className={styles.stepDesc}>A GitHub window will open. If you're already signed in, it takes one click.</div>
+                                </div>
+                            </div>
+                            <div className={styles.stepConnector} />
+                            <div className={styles.connectStep}>
+                                <div className={styles.stepNum}>2</div>
+                                <div className={styles.stepContent}>
+                                    <div className={styles.stepTitle}>Say yes to save your projects</div>
+                                    <div className={styles.stepDesc}>GitHub will ask if Evolvable can save files on your behalf. Just click "Authorize".</div>
+                                </div>
+                            </div>
+                            <div className={styles.stepConnector} />
+                            <div className={styles.connectStep}>
+                                <div className={styles.stepNum}>3</div>
+                                <div className={styles.stepContent}>
+                                    <div className={styles.stepTitle}>You're done — we handle everything else</div>
+                                    <div className={styles.stepDesc}>Every app you build gets saved automatically. No technical knowledge needed.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Primary CTA */}
+                        <button
+                            className={styles.btnConnect}
+                            onClick={handleConnect}
+                            disabled={connecting}
+                        >
+                            {connecting ? (
+                                <><span className={styles.btnSpinner} /> Opening GitHub...</>
+                            ) : (
+                                <>
+                                    <svg viewBox="0 0 16 16" fill="currentColor" width="20" height="20">
+                                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+                                    </svg>
+                                    Connect with GitHub
+                                </>
+                            )}
                         </button>
-                        <p className={styles.connectNote}>
-                            We only request access to your repositories. We never read personal data or other organisations.
-                        </p>
+
+                        {/* Privacy mini-disclosure */}
+                        <div className={styles.connectPrivacy}>
+                            <div className={styles.privacyRow}>
+                                <span className={styles.privacyIcon}>🔒</span>
+                                <span>We only access your own projects — nothing else on your account.</span>
+                            </div>
+                            <div className={styles.privacyRow}>
+                                <span className={styles.privacyIcon}>🚫</span>
+                                <span>We never read your emails, contacts, or other repositories.</span>
+                            </div>
+                            <div className={styles.privacyRow}>
+                                <span className={styles.privacyIcon}>✂️</span>
+                                <span>You can disconnect anytime from this page.</span>
+                            </div>
+                        </div>
+
+                        {/* Social proof */}
+                        <div className={styles.connectFootnote}>
+                            This is the same way apps like Vercel, Netlify, and Figma connect to GitHub.
+                        </div>
+
                     </div>
                 )}
 

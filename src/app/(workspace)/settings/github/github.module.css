@@ -87,101 +87,159 @@
     opacity: 1;
 }
 
-/* ── Connect card ── */
+/* ── Connect card (not connected) ── */
 .connectCard {
     background: white;
     border-radius: var(--radius-2xl);
-    padding: var(--space-10);
-    text-align: center;
+    padding: var(--space-8);
     border: 1px solid rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: var(--space-5);
-}
-
-.connectGraphic {
-    display: flex;
-    align-items: center;
     gap: var(--space-6);
-    margin-bottom: var(--space-2);
 }
 
-.platformLogo {
-    width: 52px;
-    height: 52px;
-    border-radius: var(--radius-xl);
-    background: var(--gradient-accent);
+/* Hero row */
+.connectHero {
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    font-weight: 900;
-    color: white;
+    gap: var(--space-4);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.connectLine {
-    width: 48px;
-    height: 2px;
-    background: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.12) 0, rgba(0, 0, 0, 0.12) 6px, transparent 6px, transparent 12px);
+.connectHeroBadge {
+    font-size: 40px;
+    line-height: 1;
+    flex-shrink: 0;
 }
 
-.githubLogo {
-    width: 52px;
-    height: 52px;
-    color: var(--color-text-primary);
-    background: rgba(0, 0, 0, 0.04);
-    padding: 12px;
-    border-radius: var(--radius-xl);
-}
-
-.connectTitle {
+.connectHeroTitle {
     font-size: var(--font-size-xl);
     font-weight: 800;
     letter-spacing: -0.02em;
 }
 
-.connectDescription {
+.connectHeroSub {
     font-size: var(--font-size-sm);
     color: var(--color-text-secondary);
-    max-width: 400px;
-    line-height: 1.6;
+    margin-top: var(--space-1);
 }
 
-.connectBenefits {
-    list-style: none;
-    text-align: left;
+/* 3-step flow */
+.connectSteps {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
+    gap: 0;
 }
 
+.connectStep {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+}
+
+.stepConnector {
+    width: 2px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.08);
+    margin-left: 18px;
+}
+
+.stepNum {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(66, 133, 244, 0.08);
+    border: 2px solid rgba(66, 133, 244, 0.2);
+    color: var(--color-accent-blue);
+    font-size: var(--font-size-sm);
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stepTitle {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    margin-bottom: var(--space-1);
+}
+
+.stepDesc {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    line-height: 1.55;
+}
+
+/* Primary CTA */
 .btnConnect {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: var(--space-3);
     padding: var(--space-4) var(--space-8);
     border-radius: var(--radius-full);
-    background: var(--color-text-primary);
+    background: #24292f;
     color: white;
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
     font-weight: 700;
     transition: all var(--transition-base);
+    width: 100%;
+    letter-spacing: -0.01em;
 }
 
-.btnConnect:hover {
-    background: #24292f;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+.btnConnect:hover:not(:disabled) {
+    background: #1a1e23;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
-.connectNote {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-secondary);
+.btnConnect:disabled {
     opacity: 0.6;
 }
+
+.btnSpinner {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+/* Privacy disclosure */
+.connectPrivacy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-5);
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: var(--radius-lg);
+}
+
+.privacyRow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+}
+
+.privacyIcon {
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+/* Social proof footnote */
+.connectFootnote {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    opacity: 0.5;
+    text-align: center;
+}
+
 
 /* ── Connected layout ── */
 .connectedLayout {
