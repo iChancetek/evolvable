@@ -237,7 +237,7 @@ export default function Home() {
       <nav className={`${styles.navbar} glass`}>
         <div className={styles.navContent}>
           <div className={styles.navBrand}>
-            <div className={styles.logoMark}>E</div>
+            <img src="/icons/icon-192x192.png" alt="Evolvable" className={styles.logoMark} />
             <span className={styles.logoText}>Evolvable</span>
           </div>
           <div className={styles.navLinks}>
@@ -466,7 +466,7 @@ export default function Home() {
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
           <div className={styles.footerBrand}>
-            <div className={styles.logoMark}>E</div>
+            <img src="/icons/icon-192x192.png" alt="Evolvable" className={styles.logoMark} />
             <span className={styles.logoText}>Evolvable</span>
             <p className={styles.footerTagline}>AI-Native No-Code Platform</p>
           </div>

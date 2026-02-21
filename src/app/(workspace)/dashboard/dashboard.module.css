@@ -29,12 +29,9 @@
     width: 32px;
     height: 32px;
     border-radius: 10px;
-    background: var(--gradient-accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 800;
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;
 }
 
 .brandText {

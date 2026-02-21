@@ -115,7 +115,7 @@ export default function CreatePage() {
                     <a href="/" className={styles.backLink}>
                         <span className={styles.backArrow}>←</span>
                         <div className={styles.sidebarBrand}>
-                            <div className={styles.logoMark}>E</div>
+                            <img src="/icons/icon-192x192.png" alt="Evolvable" className={styles.logoMark} />
                             <span>Evolvable</span>
                         </div>
                     </a>

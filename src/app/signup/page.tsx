@@ -62,7 +62,7 @@ export default function SignupPage() {
 
             <div className={styles.card}>
                 <a href="/" className={styles.brand}>
-                    <div className={styles.logoMark}>E</div>
+                    <img src="/icons/icon-192x192.png" alt="Evolvable" className={styles.logoMark} />
                     <span>Evolvable</span>
                 </a>
 

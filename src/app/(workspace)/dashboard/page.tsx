@@ -52,7 +52,7 @@ export default function DashboardPage() {
                 {/* Sidebar */}
                 <aside className={styles.sidebar}>
                     <a href="/" className={styles.brand}>
-                        <div className={styles.logoMark}>E</div>
+                        <img src="/icons/icon-192x192.png" alt="Evolvable" className={styles.logoMark} />
                         <span className={styles.brandText}>Evolvable</span>
                     </a>
 

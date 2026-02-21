@@ -236,7 +236,7 @@ function BuilderContent() {
                 <div className={styles.toolbar}>
                     <div className={styles.toolbarLeft}>
                         <a href="/" className={styles.toolbarBrand}>
-                            <div className={styles.logoMark}>E</div>
+                            <img src="/icons/icon-192x192.png" alt="Evolvable" className={styles.logoMark} />
                             <span>Evolvable</span>
                         </a>
                         <div className={styles.divider} />

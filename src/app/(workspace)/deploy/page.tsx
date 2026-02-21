@@ -79,7 +79,7 @@ function DeployContent() {
                 {/* Back nav */}
                 <nav className={styles.nav}>
                     <a href="/" className={styles.navBrand}>
-                        <div className={styles.logoMark}>E</div>
+                        <img src="/icons/icon-192x192.png" alt="Evolvable" className={styles.logoMark} />
                         <span>Evolvable</span>
                     </a>
                 </nav>

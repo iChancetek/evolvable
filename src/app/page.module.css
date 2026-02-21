@@ -38,13 +38,9 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: var(--gradient-accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 800;
-  font-size: var(--font-size-lg);
+  object-fit: cover;
+  display: block;
+  flex-shrink: 0;
 }
 
 .logoText {
