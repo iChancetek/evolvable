@@ -82,4 +82,37 @@ export class AuditLogger {
     deployed(liveUrl: string) {
         return this.log('deployed', `Project deployed successfully to ${liveUrl}`);
     }
+
+    // ── GitHub wrappers ──────────────────────────────────────────────────
+    githubAccountLinked(userId: string, githubLogin: string) {
+        return this.log('github_account_linked', `GitHub account @${githubLogin} connected`, { userId });
+    }
+
+    githubAccountUnlinked(userId: string, githubLogin: string) {
+        return this.log('github_account_unlinked', `GitHub account @${githubLogin} disconnected`, { userId });
+    }
+
+    githubRepoCreated(repoFullName: string, planVersion: number) {
+        return this.log('github_repo_created', `Repository '${repoFullName}' created`, { planVersion, metadata: { repoFullName } });
+    }
+
+    githubBranchCreated(branchName: string, planVersion: number) {
+        return this.log('github_branch_created', `Branch '${branchName}' created`, { planVersion, metadata: { branchName } });
+    }
+
+    githubCommitted(commitSha: string, branchName: string, planVersion: number) {
+        return this.log('github_committed', `Code committed to '${branchName}' — ${commitSha}`, { planVersion, metadata: { commitSha, branchName } });
+    }
+
+    githubPrOpened(prNumber: number, prUrl: string, planVersion: number) {
+        return this.log('github_pr_opened', `Pull request #${prNumber} opened for review`, { planVersion, metadata: { prNumber, prUrl } });
+    }
+
+    prMerged(prNumber: number, commitSha: string) {
+        return this.log('pr_merged', `PR #${prNumber} merged — deployment unlocked`, { metadata: { prNumber, commitSha } });
+    }
+
+    rollbackInitiated(version: number, commitSha: string) {
+        return this.log('rollback_initiated', `Rollback to version ${version} initiated`, { planVersion: version, metadata: { commitSha } });
+    }
 }

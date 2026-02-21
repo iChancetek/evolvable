@@ -15,6 +15,7 @@ export default function SettingsSidebarLayout({ children }: { children: React.Re
         { name: 'Usage', href: '/settings/usage', icon: '📊' },
         { name: 'Databases', href: '/settings/databases', icon: '🗄️' },
         { name: 'Codebase', href: '/settings/code', icon: '💻' },
+        { name: 'Version Control', href: '/settings/github', icon: '🐙' },
         { name: 'Publish', href: '/settings/publish', icon: '🚀' },
     ];
 

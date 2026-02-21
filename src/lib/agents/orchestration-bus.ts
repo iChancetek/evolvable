@@ -8,6 +8,8 @@ import { ADRLogger } from './adr-logger';
 import { getAgent } from './agent-registry';
 import { adminDb, FieldValue } from '../firebase/admin';
 import { AuditLogger } from '../audit/audit-logger';
+import { GitHubTokenService } from '../github/github-token-service';
+import { GitHubIntegrationService } from '../github/github-service';
 
 export type PipelineEventCallback = (event: {
     agentId?: AgentId;
@@ -204,6 +206,9 @@ export class OrchestrationBus {
             // Optimization
             await this.runSequential(AgentId.DEBUG_OPTIMIZE, null, '⚡ Optimize Agent: Scanning for performance issues...');
 
+            // ── GitHub: Save to version control ───────────────────────────────────
+            await this.commitToGitHub(userId);
+
             // Deployment
             if (!this.blueprint.deploymentManifest) {
                 const deployOutput = await this.runSequential(AgentId.DEPLOYMENT, null, '🚀 Deployment Agent: Generating deployment manifest...');
@@ -222,6 +227,91 @@ export class OrchestrationBus {
             this.emit('System', 'completed', '🎉 All background tasks complete. Platform is ready.');
         } catch (error) {
             console.error('[Orchestrator Background] Failed:', error);
+        }
+    }
+
+    // ================================================================
+    // GitHub Version Control Integration
+    // ================================================================
+    private async commitToGitHub(userId: string): Promise<void> {
+        try {
+            // Check if user has GitHub connected
+            const tokenService = new GitHubTokenService(userId);
+            const token = await tokenService.getToken();
+            if (!token) {
+                console.log('[Orchestrator] No GitHub token — skipping version control step.');
+                this.emit('System', 'running', '💾 Saving your project...');
+                return;
+            }
+
+            this.emit('System', 'running', '🐙 Saving your project to GitHub...');
+
+            const prd = this.blueprint.prd;
+            const planVersion = this.blueprint.activePlanVersion;
+            const allFiles = {
+                ...(this.blueprint.codebase?.files || {}),
+                ...(Object.fromEntries(
+                    (this.blueprint.backendRoutes?.routes || []).map(r => [
+                        `src/app/api${r.path}/route.ts`, r.code
+                    ])
+                ))
+            };
+
+            const commitMessage = GitHubIntegrationService.buildCommitMessage({
+                platformMode: prd?.platformMode || 'single_app',
+                planVersion,
+                featureCount: prd?.features?.length || 0,
+                pageCount: this.blueprint.architecture?.apiContracts?.length || 0,
+                apiCount: this.blueprint.backendRoutes?.routes?.length || 0,
+                agentIds: Object.values(AgentId),
+                qaCoverage: this.blueprint.qualityReport?.coverage,
+                securityCriticals: this.blueprint.securityReport?.criticalVulnerabilities
+            });
+
+            const gis = new GitHubIntegrationService(token);
+            const repoName = `evolvable-${this.blueprint.originalPrompt
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, '-')
+                .substring(0, 30)}`;
+
+            const { repoFullName, repoUrl, branch, commitSha, prNumber, prUrl } =
+                await gis.commitCodeToRepository({
+                    repoFullName: this.blueprint.github?.repoFullName,
+                    repoName,
+                    userId,
+                    planVersion,
+                    platformMode: prd?.platformMode || 'single_app',
+                    files: allFiles,
+                    commitMessage
+                });
+
+            // Persist GitHub state to blueprint and Firestore
+            const githubState = {
+                repoFullName,
+                repoUrl,
+                currentBranch: branch,
+                mainBranch: 'main',
+                latestCommitSha: commitSha,
+                openPrNumber: prNumber,
+                openPrUrl: prUrl,
+                mergedAt: undefined
+            };
+            this.blueprint.github = githubState;
+            await adminDb.collection('projects').doc(this.blueprint.id).update({ github: githubState });
+
+            // Audit log all GitHub events
+            await this.auditLogger.githubRepoCreated(repoFullName, planVersion);
+            await this.auditLogger.githubBranchCreated(branch, planVersion);
+            await this.auditLogger.githubCommitted(commitSha, branch, planVersion);
+            await this.auditLogger.githubPrOpened(prNumber, prUrl, planVersion);
+
+            this.emit('System', 'completed',
+                `✅ Project saved! A review request has been created. Approve it to publish your app.`);
+
+        } catch (err: any) {
+            console.error('[Orchestrator] GitHub commit step failed (non-fatal):', err);
+            // Non-fatal — don't block the rest of the pipeline
+            this.emit('System', 'running', '⚠️ Could not save to GitHub — continuing without version control.');
         }
     }
 

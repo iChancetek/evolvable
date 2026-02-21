@@ -28,6 +28,15 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Project codebase has not been generated yet.' }, { status: 400 });
         }
 
+        // GitHub gate: if this project is linked to GitHub, require PR to be merged first
+        if (blueprint.github?.repoFullName && !blueprint.github?.mergedAt) {
+            return NextResponse.json({
+                error: 'Your app is saved to GitHub and waiting for your review. Approve the changes to publish.',
+                prUrl: blueprint.github.openPrUrl,
+                blocked: true
+            }, { status: 403 });
+        }
+
         // Define the output directory for this mock local deployment
         const buildDir = path.join(process.cwd(), '.evolvable-builds', projectId);
 

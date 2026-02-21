@@ -294,7 +294,16 @@ export type AuditEventType =
     | 'plan_drift'
     | 'security_veto'
     | 'qa_gate_failed'
-    | 'deployed';
+    | 'deployed'
+    // GitHub integration events
+    | 'github_account_linked'
+    | 'github_account_unlinked'
+    | 'github_repo_created'
+    | 'github_branch_created'
+    | 'github_committed'
+    | 'github_pr_opened'
+    | 'pr_merged'
+    | 'rollback_initiated';
 
 export interface AuditLogEntry {
     id: string;
@@ -339,6 +348,18 @@ export interface ProjectBlueprint {
     securityReport?: SecurityAuditReport;
     deploymentManifest?: DeploymentManifest;
     monitoringConfig?: MonitoringConfig;
+
+    // GitHub version control state (populated after code generation)
+    github?: {
+        repoFullName: string;       // "username/repo-name"
+        repoUrl: string;
+        currentBranch: string;      // "feature/plan-v2"
+        mainBranch: string;         // "main"
+        latestCommitSha?: string;
+        openPrNumber?: number;
+        openPrUrl?: string;
+        mergedAt?: number;          // set when PR merged — unlocks deployment
+    };
 
     adrLog: ADREntry[];
     pipelineLogs?: PipelineLog[];

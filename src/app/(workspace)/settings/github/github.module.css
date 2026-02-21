@@ -1,0 +1,597 @@
+/* ===== GitHub Settings Page ===== */
+
+.page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    width: 100%;
+}
+
+.loadingPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: var(--space-4);
+    color: var(--color-text-secondary);
+}
+
+/* ── Header ── */
+.header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-5);
+}
+
+.headerIcon {
+    font-size: 40px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.title {
+    font-size: var(--font-size-2xl);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: var(--space-2);
+}
+
+.subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+}
+
+/* ── Status banners ── */
+.successBanner,
+.errorBanner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+.successBanner {
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    color: var(--color-accent-green);
+}
+
+.errorBanner {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: var(--color-accent-red);
+}
+
+.bannerClose {
+    background: none;
+    opacity: 0.6;
+    font-size: var(--font-size-sm);
+}
+
+.bannerClose:hover {
+    opacity: 1;
+}
+
+/* ── Connect card ── */
+.connectCard {
+    background: white;
+    border-radius: var(--radius-2xl);
+    padding: var(--space-10);
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-5);
+}
+
+.connectGraphic {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    margin-bottom: var(--space-2);
+}
+
+.platformLogo {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-xl);
+    background: var(--gradient-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 900;
+    color: white;
+}
+
+.connectLine {
+    width: 48px;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.12) 0, rgba(0, 0, 0, 0.12) 6px, transparent 6px, transparent 12px);
+}
+
+.githubLogo {
+    width: 52px;
+    height: 52px;
+    color: var(--color-text-primary);
+    background: rgba(0, 0, 0, 0.04);
+    padding: 12px;
+    border-radius: var(--radius-xl);
+}
+
+.connectTitle {
+    font-size: var(--font-size-xl);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.connectDescription {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    max-width: 400px;
+    line-height: 1.6;
+}
+
+.connectBenefits {
+    list-style: none;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.btnConnect {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-full);
+    background: var(--color-text-primary);
+    color: white;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    transition: all var(--transition-base);
+}
+
+.btnConnect:hover {
+    background: #24292f;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.connectNote {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    opacity: 0.6;
+}
+
+/* ── Connected layout ── */
+.connectedLayout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+/* Account card */
+.accountCard {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    background: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.accountInfo {
+    flex: 1;
+}
+
+.accountLogin {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.accountMeta {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    margin-top: 2px;
+}
+
+.btnDisconnect {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+}
+
+.btnDisconnect:hover {
+    color: var(--color-accent-red);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Empty repo */
+.emptyRepo {
+    text-align: center;
+    padding: var(--space-12) var(--space-8);
+    color: var(--color-text-secondary);
+}
+
+.emptyIcon {
+    font-size: 40px;
+    margin-bottom: var(--space-4);
+}
+
+/* Review banner */
+.reviewBanner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-5) var(--space-6);
+    background: rgba(66, 133, 244, 0.06);
+    border: 1px solid rgba(66, 133, 244, 0.2);
+    border-radius: var(--radius-xl);
+}
+
+.reviewBannerLeft {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.reviewDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-accent-blue);
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 8px rgba(66, 133, 244, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(66, 133, 244, 0);
+    }
+}
+
+.reviewTitle {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.reviewSub {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    margin-top: 2px;
+}
+
+.reviewActions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-shrink: 0;
+}
+
+.btnViewChanges {
+    font-size: var(--font-size-xs);
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-full);
+    color: var(--color-text-secondary);
+    transition: all var(--transition-fast);
+}
+
+.btnViewChanges:hover {
+    color: var(--color-text-primary);
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+.btnPublish {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    padding: var(--space-2) var(--space-5);
+    border-radius: var(--radius-full);
+    background: var(--color-accent-blue);
+    color: white;
+    transition: all var(--transition-base);
+}
+
+.btnPublish:hover:not(:disabled) {
+    background: #3367d6;
+    transform: translateY(-1px);
+}
+
+.btnPublish:disabled {
+    opacity: 0.5;
+}
+
+/* Published banner */
+.publishedBanner {
+    padding: var(--space-4) var(--space-5);
+    background: rgba(34, 197, 94, 0.06);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: var(--radius-xl);
+    font-size: var(--font-size-sm);
+    color: var(--color-accent-green);
+    font-weight: 600;
+}
+
+/* Repo row */
+.repoInfo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+.repoInfoItem {
+    background: white;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    padding: var(--space-4) var(--space-5);
+}
+
+.repoLabel {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-2);
+}
+
+.repoLink {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-accent-blue);
+}
+
+.repoValue {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+}
+
+/* Sections */
+.section {
+    background: white;
+    border-radius: var(--radius-xl);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    padding: var(--space-5);
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-4);
+}
+
+.sectionTitle {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.btnRestore {
+    font-size: var(--font-size-xs);
+    color: var(--color-accent-blue);
+    font-weight: 600;
+    transition: opacity var(--transition-fast);
+}
+
+.btnRestore:hover {
+    opacity: 0.7;
+}
+
+/* Rollback picker */
+.rollbackPicker {
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.rollbackHint {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+}
+
+.rollbackItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.rollbackLabel {
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+}
+
+.rollbackMeta {
+    font-size: 10px;
+    color: var(--color-text-secondary);
+    margin-top: 2px;
+}
+
+.btnRollbackItem {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-accent-blue);
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid rgba(66, 133, 244, 0.3);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.btnRollbackItem:hover:not(:disabled) {
+    background: var(--color-accent-blue);
+    color: white;
+}
+
+/* Commit list */
+.commitList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.commitItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.commitDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-text-secondary);
+    opacity: 0.3;
+    flex-shrink: 0;
+}
+
+.commitContent {
+    flex: 1;
+    min-width: 0;
+}
+
+.commitMsg {
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.commitMeta {
+    font-size: 10px;
+    color: var(--color-text-secondary);
+    margin-top: 2px;
+}
+
+.commitSha {
+    font-family: monospace;
+    font-size: 10px;
+    color: var(--color-text-secondary);
+    opacity: 0.5;
+    flex-shrink: 0;
+}
+
+/* PRs */
+.prItem {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.prItem:last-child {
+    border-bottom: none;
+}
+
+.prDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-accent-yellow);
+    flex-shrink: 0;
+}
+
+.prContent {
+    flex: 1;
+}
+
+.prTitle {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.prMeta {
+    font-size: 10px;
+    color: var(--color-text-secondary);
+    margin-top: 2px;
+}
+
+.btnViewPr {
+    font-size: var(--font-size-xs);
+    color: var(--color-accent-blue);
+    font-weight: 600;
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid rgba(66, 133, 244, 0.3);
+    border-radius: var(--radius-full);
+}
+
+/* Spinner */
+.spinner {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 3px solid rgba(66, 133, 244, 0.15);
+    border-top-color: var(--color-accent-blue);
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 640px) {
+    .container {
+        padding: var(--space-4);
+    }
+
+    .repoInfo {
+        grid-template-columns: 1fr;
+    }
+
+    .reviewBanner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
