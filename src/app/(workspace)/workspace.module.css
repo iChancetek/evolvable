@@ -15,8 +15,18 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 1rem;
+    justify-content: space-between;
+    padding: 1rem 0;
     z-index: 10;
+}
+
+.topIcons,
+.bottomIcons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
 }
 
 .homeIcon {
@@ -32,6 +42,41 @@
     text-decoration: none;
     font-size: 1.2rem;
     cursor: pointer;
+    margin-bottom: 8px;
+}
+
+.activityIcons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.actIcon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #666;
+    text-decoration: none;
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    opacity: 0.6;
+    transition: opacity 0.2s, color 0.2s;
+}
+
+.actIcon:hover {
+    color: #fff;
+    opacity: 1;
+}
+
+.actIconActive {
+    color: #fff;
+    opacity: 1;
+    border-left: 2px solid var(--color-accent-blue);
 }
 
 .sidebar {

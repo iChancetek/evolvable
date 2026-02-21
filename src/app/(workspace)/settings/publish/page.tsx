@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import styles from '../../settings.module.css';
+import styles from '@/app/(workspace)/workspace.module.css';
 
 export default function PublishPage() {
     return (
