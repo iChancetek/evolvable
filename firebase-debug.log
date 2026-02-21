@@ -58,3 +58,30 @@
 [debug] [2026-02-21T02:47:19.339Z] <<< [apiv2][status] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets 200
 [debug] [2026-02-21T02:47:19.339Z] <<< [apiv2][body] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets {"name":"projects/241386462301/secrets/HF_TOKEN","replication":{"automatic":{}},"createTime":"2026-02-21T02:47:19.311030Z","labels":{"firebase-managed":"apphosting"},"etag":"\"164b4c8e700f49\""}
 [info] +  Created new secret projects/evolvable-ab705/secrets/HF_TOKEN 
+[debug] [2026-02-21T02:47:51.208Z] Checked if tokens are valid: true, expires at: 1771645636417
+[debug] [2026-02-21T02:47:51.208Z] Checked if tokens are valid: true, expires at: 1771645636417
+[debug] [2026-02-21T02:47:51.208Z] >>> [apiv2][query] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/HF_TOKEN:addVersion [none]
+[debug] [2026-02-21T02:47:51.208Z] >>> [apiv2][body] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/HF_TOKEN:addVersion {"payload":{"data":"SEZfVE9LRU49aGZfdVlEemt0R3pnd1laeU5mellFSFRXY29rSkNHZGJ4ZXRWdg=="}}
+[debug] [2026-02-21T02:47:51.771Z] <<< [apiv2][status] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/HF_TOKEN:addVersion 200
+[debug] [2026-02-21T02:47:51.771Z] <<< [apiv2][body] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/HF_TOKEN:addVersion {"name":"projects/241386462301/secrets/HF_TOKEN/versions/1","createTime":"2026-02-21T02:47:52.004672Z","state":"ENABLED","replicationStatus":{"automatic":{}},"etag":"\"164b4c905ef840\""}
+[info] +  Created new secret version projects/241386462301/secrets/HF_TOKEN/versions/1 
+[info] i  You can access the contents of the secret's latest value with firebase apphosting:secrets:access HF_TOKEN
+ 
+[debug] [2026-02-21T02:47:54.434Z] Checked if tokens are valid: true, expires at: 1771645636417
+[debug] [2026-02-21T02:47:54.434Z] Checked if tokens are valid: true, expires at: 1771645636417
+[debug] [2026-02-21T02:47:54.434Z] >>> [apiv2][query] GET https://firebaseapphosting.googleapis.com/v1beta/projects/evolvable-ab705/locations/-/backends 
+[debug] [2026-02-21T02:47:54.857Z] <<< [apiv2][status] GET https://firebaseapphosting.googleapis.com/v1beta/projects/evolvable-ab705/locations/-/backends 200
+[debug] [2026-02-21T02:47:54.857Z] <<< [apiv2][body] GET https://firebaseapphosting.googleapis.com/v1beta/projects/evolvable-ab705/locations/-/backends {"backends":[{"name":"projects/evolvable-ab705/locations/us-east4/backends/evolvable","createTime":"2026-02-20T23:38:13.335349989Z","updateTime":"2026-02-21T02:38:13.232416Z","uri":"evolvable--evolvable-ab705.us-east4.hosted.app","managedResources":[{"runService":{"service":"projects/241386462301/locations/us-east4/services/evolvable"}}],"codebase":{"repository":"projects/evolvable-ab705/locations/us-east4/connections/apphosting-github-conn-376qg5q/gitRepositoryLinks/iChancetek-evolvable","rootDirectory":"/"},"uid":"98d2f9b9-3345-4d32-bafc-0415fd57333f","etag":"G7DxyVGF6HZjQAgMVbw524uPIZMSPoA4aS4LN9HXa7I","reconciling":false,"servingLocality":"GLOBAL_ACCESS","serviceAccount":"firebase-app-hosting-compute@evolvable-ab705.iam.gserviceaccount.com","appId":"1:241386462301:web:94057c8ee104eb6e6e01b4"}]}
+[debug] [2026-02-21T02:48:02.493Z] Checked if tokens are valid: true, expires at: 1771645636417
+[debug] [2026-02-21T02:48:02.493Z] Checked if tokens are valid: true, expires at: 1771645636417
+[debug] [2026-02-21T02:48:02.493Z] >>> [apiv2][query] GET https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/HF_TOKEN:getIamPolicy [none]
+[debug] [2026-02-21T02:48:02.790Z] <<< [apiv2][status] GET https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/HF_TOKEN:getIamPolicy 200
+[debug] [2026-02-21T02:48:02.790Z] <<< [apiv2][body] GET https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/HF_TOKEN:getIamPolicy {"etag":"ACAB"}
+[debug] [2026-02-21T02:48:02.791Z] Checked if tokens are valid: true, expires at: 1771645636417
+[debug] [2026-02-21T02:48:02.791Z] Checked if tokens are valid: true, expires at: 1771645636417
+[debug] [2026-02-21T02:48:02.791Z] >>> [apiv2][query] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/HF_TOKEN:setIamPolicy [none]
+[debug] [2026-02-21T02:48:02.791Z] >>> [apiv2][body] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/HF_TOKEN:setIamPolicy {"policy":{"bindings":[{"role":"roles/secretmanager.secretAccessor","members":["serviceAccount:firebase-app-hosting-compute@evolvable-ab705.iam.gserviceaccount.com"]},{"role":"roles/secretmanager.viewer","members":["serviceAccount:firebase-app-hosting-compute@evolvable-ab705.iam.gserviceaccount.com"]},{"role":"roles/secretmanager.secretVersionManager","members":["serviceAccount:service-241386462301@gcp-sa-firebaseapphosting.iam.gserviceaccount.com"]}]},"updateMask":"bindings"}
+[debug] [2026-02-21T02:48:03.213Z] <<< [apiv2][status] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/HF_TOKEN:setIamPolicy 200
+[debug] [2026-02-21T02:48:03.213Z] <<< [apiv2][body] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/HF_TOKEN:setIamPolicy {"version":1,"etag":"BwZLTJENTsI=","bindings":[{"role":"roles/secretmanager.secretAccessor","members":["serviceAccount:firebase-app-hosting-compute@evolvable-ab705.iam.gserviceaccount.com"]},{"role":"roles/secretmanager.secretVersionManager","members":["serviceAccount:service-241386462301@gcp-sa-firebaseapphosting.iam.gserviceaccount.com"]},{"role":"roles/secretmanager.viewer","members":["serviceAccount:firebase-app-hosting-compute@evolvable-ab705.iam.gserviceaccount.com"]}]}
+[info] +  Successfully set IAM bindings on secret HF_TOKEN.
+ 
