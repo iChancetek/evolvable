@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth/auth-context";
+import { ThemeProvider } from "@/lib/theme/theme-context";
 import InstallPrompt from "@/components/InstallPrompt";
 import ServiceWorkerRegistrar from "@/components/ServiceWorkerRegistrar";
 
@@ -39,11 +40,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AuthProvider>
-          {children}
-          <InstallPrompt />
-          <ServiceWorkerRegistrar />
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            {children}
+            <InstallPrompt />
+            <ServiceWorkerRegistrar />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

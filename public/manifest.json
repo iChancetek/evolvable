@@ -2,13 +2,18 @@
   "name": "Evolvable",
   "short_name": "Evolvable",
   "description": "AI-Native No-Code Platform — Build apps with words, not code.",
+  "id": "https://evolvable.us/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#f8f9fa",
   "theme_color": "#0a0a0a",
   "orientation": "portrait-primary",
-  "categories": ["productivity", "developer tools", "business"],
+  "categories": [
+    "productivity",
+    "developer tools",
+    "business"
+  ],
   "icons": [
     {
       "src": "/icons/icon-192x192.png",

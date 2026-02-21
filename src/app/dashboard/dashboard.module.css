@@ -453,3 +453,49 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ===== Dark Mode ===== */
+:global([data-theme="dark"]) .sidebar {
+    background: #111122;
+    border-right-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .sidebarFooter {
+    border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .navItem:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .metricCard {
+    background: #1a1a2e;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .chartCard {
+    background: #1a1a2e;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .automationsCard {
+    background: #1a1a2e;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .autoItem {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.04);
+}
+
+:global([data-theme="dark"]) .autoItem:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .pageBar {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .addAutoBtn {
+    border-color: rgba(255, 255, 255, 0.1);
+}

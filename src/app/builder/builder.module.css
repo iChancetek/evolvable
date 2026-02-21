@@ -557,3 +557,100 @@
         max-width: 100%;
     }
 }
+
+/* ===== Dark Mode ===== */
+:global([data-theme="dark"]) .toolbar {
+    background: #111122;
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .divider {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .sidebar {
+    background: #111122;
+    border-right-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .sidebarTabs {
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .componentItem {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+:global([data-theme="dark"]) .pageItem:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .addPageBtn {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .canvasFrame {
+    background: #1a1a2e;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .previewNav {
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .previewHero {
+    background: linear-gradient(135deg, #1a1a2e, #222244);
+}
+
+:global([data-theme="dark"]) .fieldInput {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .previewFeatures {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+:global([data-theme="dark"]) .fCard {
+    background: #1a1a2e;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .propertiesPanel {
+    background: #111122;
+    border-left-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .propTitle {
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .propInput {
+    background: #1a1a2e;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #e8eaed;
+}
+
+:global([data-theme="dark"]) .colorSwatch {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .deviceBtn.active {
+    background: #1a1a2e;
+}
+
+:global([data-theme="dark"]) .toolButton:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .deviceToggle {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .previewBtn {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .previewBtn:hover {
+    background: rgba(255, 255, 255, 0.06);
+}

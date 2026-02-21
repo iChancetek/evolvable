@@ -146,7 +146,7 @@ export default function DeployPage() {
                                 <div className={styles.urlLabel}>Your app is live at:</div>
                                 <div className={styles.urlValue}>
                                     <span className={styles.urlLock}>🔒</span>
-                                    https://my-app.evolvable.app
+                                    https://my-app.evolvable.us
                                 </div>
                                 <button className={styles.copyBtn}>Copy Link</button>
                             </div>

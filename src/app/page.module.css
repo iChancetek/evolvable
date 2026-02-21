@@ -839,3 +839,66 @@
     font-size: clamp(1.75rem, 7vw, 2.5rem);
   }
 }
+
+/* ===== Dark Mode Overrides ===== */
+/* Light mode CSS above is UNTOUCHED */
+:global([data-theme="dark"]) .heroInput {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .stepCard {
+  background: #1a1a2e;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .inboxCard {
+  background: #1a1a2e;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .inboxHeader {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .bentoButton {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+:global([data-theme="dark"]) .footer {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .footerBottom {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .navCta {
+  background: white;
+  color: #0a0a0a;
+}
+
+:global([data-theme="dark"]) .featureCard {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+:global([data-theme="dark"]) .featureCard:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .ctaButton {
+  background: white;
+  color: #0a0a0a;
+}
+
+:global([data-theme="dark"]) .sectionTag {
+  background: rgba(66, 133, 244, 0.15);
+  border-color: rgba(66, 133, 244, 0.25);
+}
+
+/* Nav actions container for toggle placement */
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}

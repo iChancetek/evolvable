@@ -421,3 +421,44 @@
         min-width: auto;
     }
 }
+
+/* ===== Dark Mode ===== */
+:global([data-theme="dark"]) .sidebar {
+    background: #111122;
+    border-right-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .sidebarFooter {
+    border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .chatHeader {
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .aiMessage .messageContent {
+    background: #1a1a2e;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .optionButton {
+    background: #1a1a2e;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+:global([data-theme="dark"]) .inputWrapper {
+    background: #1a1a2e;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme="dark"]) .chatInput {
+    color: #e8eaed;
+}
+
+:global([data-theme="dark"]) .inputArea {
+    border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .planTitle {
+    background: rgba(255, 255, 255, 0.04);
+}

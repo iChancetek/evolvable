@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import styles from './page.module.css';
+import ThemeToggle from '@/components/ThemeToggle';
 
 /* ===== Particle System ===== */
 function ParticleField() {
@@ -244,10 +245,13 @@ export default function Home() {
             <a href="#how-it-works" className={styles.navLink}>How It Works</a>
             <a href="#agents" className={styles.navLink}>AI Agents</a>
           </div>
-          <a href="/create" className={styles.navCta}>
-            Start Building
-            <span className={styles.ctaArrow}>→</span>
-          </a>
+          <div className={styles.navActions}>
+            <ThemeToggle />
+            <a href="/create" className={styles.navCta}>
+              Start Building
+              <span className={styles.ctaArrow}>→</span>
+            </a>
+          </div>
         </div>
       </nav>
 
@@ -488,7 +492,7 @@ export default function Home() {
           </div>
         </div>
         <div className={styles.footerBottom}>
-          <span>© 2026 Evolvable. All rights reserved.</span>
+          <span>© 2026 Evolvable. evolvable.us — All rights reserved.</span>
         </div>
       </footer>
     </main>

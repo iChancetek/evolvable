@@ -366,3 +366,31 @@
         font-size: var(--font-size-3xl);
     }
 }
+
+/* ===== Dark Mode ===== */
+:global([data-theme="dark"]) .nav {
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .checklist {
+    background: #1a1a2e;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .urlCard {
+    background: #1a1a2e;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .doneStat {
+    background: #1a1a2e;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .progressBar {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="dark"]) .copyBtn {
+    border-color: rgba(255, 255, 255, 0.1);
+}
