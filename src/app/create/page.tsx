@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from 'react';
 import styles from './create.module.css';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { useOrchestration } from '@/lib/hooks/useOrchestration';
+import { useAuth } from '@/lib/auth/auth-context';
 
 type Message = {
     id: string;
@@ -32,6 +34,9 @@ const clarifyingQuestions: { question: string; options: string[] }[] = [
 ];
 
 export default function CreatePage() {
+    const { user } = useAuth();
+    const { startPipeline, blueprint, isLoading: isOrchestrating, projectId } = useOrchestration();
+
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '0',
@@ -44,6 +49,7 @@ export default function CreatePage() {
     const [isTyping, setIsTyping] = useState(false);
     const [showPlan, setShowPlan] = useState(false);
     const [userIdea, setUserIdea] = useState('');
+    const [collectedAnswers, setCollectedAnswers] = useState<string[]>([]);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -90,15 +96,22 @@ export default function CreatePage() {
     const handleOptionSelect = (option: string) => {
         addMessage({ id: Date.now().toString(), role: 'user', content: option });
 
+        const newAnswers = [...collectedAnswers, option];
+        setCollectedAnswers(newAnswers);
+
         const nextIndex = questionIndex + 1;
         if (nextIndex < clarifyingQuestions.length) {
             setQuestionIndex(nextIndex);
             const q = clarifyingQuestions[nextIndex];
             simulateAIResponse(q.question, q.options, 'options');
         } else {
-            // Show the app plan
+            // Trigger the actual backend pipeline
+            const fullPrompt = `Idea: ${userIdea}\nPreferences: ${newAnswers.join(', ')}`;
+
             setIsTyping(true);
-            setTimeout(() => {
+
+            // Start the pipeline in the background
+            startPipeline(fullPrompt, user?.uid || 'anonymous').then(() => {
                 setShowPlan(true);
                 addMessage({
                     id: Date.now().toString(),
@@ -107,7 +120,7 @@ export default function CreatePage() {
                     type: 'plan',
                 });
                 setIsTyping(false);
-            }, 2000);
+            });
         }
     };
 
@@ -154,7 +167,7 @@ export default function CreatePage() {
 
                     <div className={styles.messagesContainer}>
                         {messages.map((msg) => (
-                            <div key={msg.id} className={`${styles.message} ${msg.role === 'user' ? styles.userMessage : styles.aiMessage}`}>
+                            <div key={msg.id} className={`${styles.message} ${msg.role === 'user' ? styles.userMessage : styles.aiMessage} `}>
                                 {msg.role === 'ai' && (
                                     <div className={styles.avatar}>
                                         <div className={styles.avatarInner}>E</div>
@@ -165,43 +178,43 @@ export default function CreatePage() {
                                         <div className={styles.planCard}>
                                             <div className={styles.planHeader}>
                                                 <span className={styles.planCheck}>✅</span>
-                                                <h3>Your App Plan is Ready!</h3>
+                                                <h3>{blueprint?.prd ? 'App Plan Generated!' : 'Generating App Plan...'}</h3>
                                             </div>
                                             <div className={styles.planTitle}>
-                                                {userIdea.length > 50 ? userIdea.substring(0, 50) + '...' : userIdea}
+                                                {blueprint?.prd?.title || (userIdea.length > 50 ? userIdea.substring(0, 50) + '...' : userIdea)}
                                             </div>
-                                            <div className={styles.planFeatures}>
-                                                <div className={styles.planFeature}>
-                                                    <span>🏠</span> Landing page with hero section
+
+                                            {blueprint?.prd && (
+                                                <div className={styles.planFeatures}>
+                                                    {blueprint.prd.features.slice(0, 6).map((feat, idx) => (
+                                                        <div key={idx} className={styles.planFeature}>
+                                                            <span>✨</span> {feat.title}
+                                                        </div>
+                                                    ))}
                                                 </div>
-                                                <div className={styles.planFeature}>
-                                                    <span>👤</span> User accounts with profiles
+                                            )}
+
+                                            {!blueprint?.prd && (
+                                                <div className={styles.typingIndicator} style={{ margin: '1rem 0', justifyContent: 'flex-start' }}>
+                                                    <span /><span /><span />
                                                 </div>
-                                                <div className={styles.planFeature}>
-                                                    <span>📝</span> Forms with validation
-                                                </div>
-                                                <div className={styles.planFeature}>
-                                                    <span>📊</span> Admin dashboard
-                                                </div>
-                                                <div className={styles.planFeature}>
-                                                    <span>🔒</span> Secure authentication
-                                                </div>
-                                                <div className={styles.planFeature}>
-                                                    <span>📱</span> Mobile responsive design
-                                                </div>
-                                            </div>
+                                            )}
+
                                             <div className={styles.planAgents}>
-                                                <span>Assigned agents:</span>
+                                                <span>Pipeline Status: {blueprint?.status === 'building' ? 'Building...' : blueprint?.status === 'deployed' ? 'Complete!' : 'Initializing'}</span>
                                                 <div className={styles.agentBadges}>
-                                                    <span className={styles.agentBadge}>💡 Vision</span>
-                                                    <span className={styles.agentBadge}>🎨 Design</span>
-                                                    <span className={styles.agentBadge}>💻 Code</span>
-                                                    <span className={styles.agentBadge}>🧪 Testing</span>
-                                                    <span className={styles.agentBadge}>🔒 Security</span>
-                                                    <span className={styles.agentBadge}>🚀 Deploy</span>
+                                                    <span className={`${styles.agentBadge} ${blueprint?.currentPhase === 'vision' ? styles.agentActive : ''}`}>💡 Vision</span>
+                                                    <span className={`${styles.agentBadge} ${['ui_designer', 'db_architect', 'system_architect'].includes(blueprint?.currentPhase || '') ? styles.agentActive : ''}`}>🎨 Design & Arch</span>
+                                                    <span className={`${styles.agentBadge} ${blueprint?.currentPhase === 'code_generation' ? styles.agentActive : ''}`}>💻 Code Gen</span>
+                                                    <span className={`${styles.agentBadge} ${['qa_testing', 'security', 'debug_optimize'].includes(blueprint?.currentPhase || '') ? styles.agentActive : ''}`}>🧪 QA & Security</span>
+                                                    <span className={`${styles.agentBadge} ${blueprint?.currentPhase === 'deployment' ? styles.agentActive : ''}`}>🚀 Deploy</span>
                                                 </div>
                                             </div>
-                                            <a href="/builder" className={styles.planButton}>
+                                            <a
+                                                href={projectId ? `/builder?projectId=${projectId}` : '#'}
+                                                className={`${styles.planButton} ${!blueprint?.prd ? styles.planButtonDisabled : ''}`}
+                                                style={{ pointerEvents: !blueprint?.prd ? 'none' : 'auto', opacity: !blueprint?.prd ? 0.5 : 1 }}
+                                            >
                                                 Start Building →
                                             </a>
                                         </div>
@@ -235,7 +248,7 @@ export default function CreatePage() {
                         ))}
 
                         {isTyping && (
-                            <div className={`${styles.message} ${styles.aiMessage}`}>
+                            <div className={`${styles.message} ${styles.aiMessage} `}>
                                 <div className={styles.avatar}>
                                     <div className={styles.avatarInner}>E</div>
                                 </div>
