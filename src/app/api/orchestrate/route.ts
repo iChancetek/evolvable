@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/firebase/config';
-import { collection, doc, setDoc } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebase/admin';
 import { OrchestrationBus } from '@/lib/agents/orchestration-bus';
 import { ProjectBlueprint, AgentId } from '@/lib/agents/types';
 
@@ -19,7 +18,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Generate a new project ID
-        const projectRef = doc(collection(db, 'projects'));
+        const projectRef = adminDb.collection('projects').doc();
         const projectId = projectRef.id;
 
         // Initialize the empty blueprint
@@ -33,8 +32,8 @@ export async function POST(req: NextRequest) {
             status: 'building'
         };
 
-        // Save initial state to Firestore
-        await setDoc(projectRef, initialBlueprint);
+        // Save initial state to Firestore bypassing rules via Admin SDK
+        await projectRef.set(initialBlueprint);
 
         // We run the orchestrator asynchronously in the background so we don't block the response
         // In a true serverless environment like Vercel, background tasks might need 

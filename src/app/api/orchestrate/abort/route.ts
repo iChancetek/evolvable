@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/firebase/config';
-import { doc, updateDoc } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebase/admin';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,11 +15,11 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Project ID is required' }, { status: 400 });
         }
 
-        const projectRef = doc(db, 'projects', projectId);
+        const projectRef = adminDb.collection('projects').doc(projectId);
 
         // Setting status to 'error' and currentPhase to 'completed' will cause
         // the OrchestrationBus to halt its execution loop naturally on the next tick.
-        await updateDoc(projectRef, {
+        await projectRef.update({
             status: 'error',
             currentPhase: 'completed',
         });

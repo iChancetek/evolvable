@@ -405,6 +405,70 @@
     word-break: break-all;
 }
 
+/* Terminal Logs */
+.terminalContainer {
+    margin: var(--space-4) 0;
+    background: #0d0d0d;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 11px;
+    color: #a0a0a0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.terminalHeader {
+    background: #1a1a1a;
+    padding: var(--space-2) var(--space-4);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #fff;
+    font-weight: 600;
+}
+
+.terminalPulse {
+    width: 6px;
+    height: 6px;
+    background: var(--color-accent-green);
+    border-radius: 50%;
+    animation: glow-pulse 2s infinite;
+}
+
+.terminalLogs {
+    max-height: 200px;
+    overflow-y: auto;
+    padding: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.logLine {
+    display: flex;
+    gap: var(--space-3);
+    line-height: 1.5;
+}
+
+.logTime {
+    color: #666;
+    flex-shrink: 0;
+}
+
+.logAgent {
+    color: #569cd6;
+    font-weight: 600;
+    min-width: 100px;
+    flex-shrink: 0;
+}
+
+.logMessage {
+    color: #d4d4d4;
+    word-break: break-word;
+}
+
 /* Input Area */
 .inputArea {
     padding: var(--space-4) var(--space-8) var(--space-6);

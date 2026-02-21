@@ -63,8 +63,16 @@ export interface ProjectBlueprint {
     deploymentManifest?: DeploymentManifest;
 
     adrLog: ADREntry[];
+    pipelineLogs?: PipelineLog[];
     currentPhase: AgentId | 'completed';
     status: 'draft' | 'building' | 'deployed' | 'error';
+}
+
+export interface PipelineLog {
+    timestamp: number;
+    agentId?: string;
+    status: string;
+    message: string;
 }
 
 // ---------------------------------------------------------

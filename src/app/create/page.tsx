@@ -153,6 +153,29 @@ export default function CreatePage() {
                                                 </div>
                                             )}
 
+                                            {blueprint?.pipelineLogs && blueprint.pipelineLogs.length > 0 && (
+                                                <div className={styles.terminalContainer}>
+                                                    <div className={styles.terminalHeader}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                            {blueprint.status === 'building' && <div className={styles.terminalPulse} />}
+                                                            <span>Agent Execution Stream</span>
+                                                        </div>
+                                                        <span style={{ color: '#666', fontSize: '10px' }}>{blueprint.pipelineLogs.length} events</span>
+                                                    </div>
+                                                    <div className={styles.terminalLogs}>
+                                                        {blueprint.pipelineLogs.map((log, idx) => (
+                                                            <div key={idx} className={styles.logLine}>
+                                                                <span className={styles.logTime}>{new Date(log.timestamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
+                                                                <span className={styles.logAgent}>[{log.agentId}]</span>
+                                                                <span className={styles.logMessage} style={{ color: log.status === 'failed' ? '#f48771' : log.status === 'completed' ? '#89d185' : '#d4d4d4' }}>
+                                                                    {log.message}
+                                                                </span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+
                                             {!blueprint?.prd && (
                                                 <div className={styles.typingIndicator} style={{ margin: '1rem 0', justifyContent: 'flex-start' }}>
                                                     <span /><span /><span />

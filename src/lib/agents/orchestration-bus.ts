@@ -6,8 +6,7 @@ import {
 } from './types';
 import { ADRLogger } from './adr-logger';
 import { getAgent } from './agent-registry'; // We will build this next
-import { db } from '../firebase/config';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { adminDb, FieldValue } from '../firebase/admin';
 
 export type PipelineEventCallback = (event: {
     agentId?: AgentId;
@@ -148,6 +147,21 @@ export class OrchestrationBus {
     }
 
     private emit(agentId: AgentId | 'System', status: 'running' | 'completed' | 'failed' | 'vetoed', message: string, payload?: any) {
+        try {
+            const logEntry = {
+                timestamp: Date.now(),
+                agentId: agentId !== 'System' ? agentId : 'system',
+                status,
+                message
+            };
+            const ref = adminDb.collection('projects').doc(this.blueprint.id);
+            ref.update({
+                pipelineLogs: FieldValue.arrayUnion(logEntry)
+            }).catch(e => console.warn('[Log Stream] Non-fatal error:', e));
+        } catch (e) {
+            console.error('[Log Stream] Setup error:', e);
+        }
+
         this.onEvent({
             agentId: agentId !== 'System' ? agentId as AgentId : undefined,
             status,
@@ -160,13 +174,13 @@ export class OrchestrationBus {
         this.blueprint.status = status;
         if (phase) this.blueprint.currentPhase = phase;
 
-        const ref = doc(db, 'projects', this.blueprint.id);
-        await updateDoc(ref, { status, currentPhase: this.blueprint.currentPhase });
+        const ref = adminDb.collection('projects').doc(this.blueprint.id);
+        await ref.update({ status, currentPhase: this.blueprint.currentPhase });
     }
 
     private async saveBlueprintProgress(completedAgentId: AgentId) {
         this.blueprint.currentPhase = completedAgentId;
-        const ref = doc(db, 'projects', this.blueprint.id);
-        await setDoc(ref, this.blueprint, { merge: true });
+        const ref = adminDb.collection('projects').doc(this.blueprint.id);
+        await ref.set(this.blueprint, { merge: true });
     }
 }

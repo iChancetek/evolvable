@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/firebase/config';
-import { doc, getDoc } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebase/admin';
 import { ProjectBlueprint } from '@/lib/agents/types';
 
 export const dynamic = 'force-dynamic';
@@ -18,10 +17,10 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: 'Missing projectId' }, { status: 400 });
         }
 
-        const projectRef = doc(db, 'projects', projectId);
-        const docSnap = await getDoc(projectRef);
+        const projectRef = adminDb.collection('projects').doc(projectId);
+        const docSnap = await projectRef.get();
 
-        if (!docSnap.exists()) {
+        if (!docSnap.exists) {
             return NextResponse.json({ error: 'Project not found' }, { status: 404 });
         }
 

@@ -1,7 +1,6 @@
 import { Agent, AgentId, AgentInput, AgentOutput, GeneratedCodebase } from '../types';
 import { callLLM } from '../llm-adapter';
-import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../firebase/config';
+import { adminDb } from '../../firebase/admin';
 
 const SYSTEM_PROMPT_PLAN = `
 You are the Code Generation Architect for the Evolvable platform. 
@@ -53,7 +52,7 @@ export class CodeGenerationAgent implements Agent {
             console.log(`[CodeGenerationAgent] Planner identified ${plan.files.length} files to build. Beginning stream...`);
 
             const generatedFiles: Record<string, string> = {};
-            const projectRef = doc(db, 'projects', input.blueprint.id);
+            const projectRef = adminDb.collection('projects').doc(input.blueprint.id);
 
             // Step 2: Generate each file sequentially, streaming to Firestore
             for (const filePath of plan.files) {
@@ -76,7 +75,7 @@ export class CodeGenerationAgent implements Agent {
 
                     // Stream update to Firestore immediately so the UI flashes the new code
                     try {
-                        await updateDoc(projectRef, {
+                        await projectRef.update({
                             'codebase.files': generatedFiles
                         });
                     } catch (e) {
