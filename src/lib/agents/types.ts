@@ -16,6 +16,55 @@ export type AgentStatus = 'pending' | 'running' | 'completed' | 'failed' | 'veto
 
 export type LLMProvider = 'huggingface' | 'openai';
 
+// ---------------------------------------------------------
+// Visual Builder JSON AST Types
+// ---------------------------------------------------------
+
+export type ComponentType =
+    | 'hero'
+    | 'text'
+    | 'button'
+    | 'form'
+    | 'image'
+    | 'features'
+    | 'navbar'
+    | 'footer'
+    | 'card'
+    | 'columns'
+    | 'divider';
+
+export interface CanvasProp {
+    content?: string;
+    bgColor?: string;
+    textColor?: string;
+    padding?: number;
+    borderRadius?: number;
+    href?: string;
+    align?: 'left' | 'center' | 'right';
+    fontSize?: number;
+    [key: string]: any;
+}
+
+export interface CanvasNode {
+    id: string;
+    type: ComponentType;
+    props: CanvasProp;
+    pageId: string;
+}
+
+export interface CanvasPage {
+    id: string;
+    path: string;
+    title: string;
+    nodes: CanvasNode[];
+}
+
+export interface VisualLayout {
+    pages: CanvasPage[];
+    activePage: string;
+    version: number;
+}
+
 export interface AgentInput {
     projectId: string;
     payload: any;
@@ -70,6 +119,7 @@ export interface ProjectBlueprint {
     llmProvider: LLMProvider;
     currentPhase: AgentId | 'completed';
     status: 'draft' | 'building' | 'deployed' | 'error';
+    visualLayout?: VisualLayout;
 }
 
 export interface PipelineLog {
