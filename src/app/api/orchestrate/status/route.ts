@@ -3,6 +3,8 @@ import { db } from '@/lib/firebase/config';
 import { doc, getDoc } from 'firebase/firestore';
 import { ProjectBlueprint } from '@/lib/agents/types';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/orchestrate/status
  * Fetches the real-time status of the project blueprint from Firestore.

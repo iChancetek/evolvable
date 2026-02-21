@@ -4,6 +4,8 @@ import { collection, doc, setDoc } from 'firebase/firestore';
 import { OrchestrationBus } from '@/lib/agents/orchestration-bus';
 import { ProjectBlueprint, AgentId } from '@/lib/agents/types';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/orchestrate
  * Starts the autonomous agent orchestration pipeline for a new application idea.

@@ -1,5 +1,6 @@
 import { Agent, AgentId, AgentInput, AgentOutput, DeploymentManifest } from '../types';
 import { callLLM } from '../llm-adapter';
+import { DockerGenerator } from '../../deployment/docker-generator';
 
 const SYSTEM_PROMPT = `
 You are the DevOps Deployment Agent for the Evolvable platform.
@@ -26,9 +27,14 @@ export class DeploymentAgent implements Agent {
                 jsonSchema: true
             });
 
+            // Inject Docker config into the final codebase
+            if (input.blueprint.codebase) {
+                input.blueprint.codebase = DockerGenerator.injectDockerConfig(input.blueprint.codebase);
+            }
+
             // Simulate the generated stub URL for the new project
             if (manifest) {
-                manifest.liveUrl = `https://${input.blueprint.id.substring(0, 8)}.evolvable.us`;
+                manifest.liveUrl = `http://localhost:${Math.floor(Math.random() * 1000) + 3000}`;
             }
 
             return { agentId: this.id, status: 'completed', payload: manifest };

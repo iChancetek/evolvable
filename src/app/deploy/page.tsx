@@ -1,30 +1,64 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import styles from './deploy.module.css';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { useSearchParams } from 'next/navigation';
 
 const deploySteps = [
     { label: 'Building your app', icon: '🔨', duration: 2000 },
-    { label: 'Running tests', icon: '🧪', duration: 1500 },
+    { label: 'Packaging container', icon: '📦', duration: 1500 },
     { label: 'Security check', icon: '🔒', duration: 1200 },
-    { label: 'Deploying to cloud', icon: '☁️', duration: 2000 },
+    { label: 'Deploying to local mock cloud', icon: '☁️', duration: 2000 },
     { label: 'Configuring SSL', icon: '🔐', duration: 800 },
     { label: 'Setting up monitoring', icon: '📊', duration: 1000 },
 ];
 
-export default function DeployPage() {
+function DeployContent() {
+    const searchParams = useSearchParams();
+    const projectId = searchParams.get('projectId');
+
     const [deployState, setDeployState] = useState<'ready' | 'deploying' | 'done'>('ready');
     const [currentStep, setCurrentStep] = useState(-1);
     const [progress, setProgress] = useState(0);
+    const [errorMsg, setErrorMsg] = useState('');
+    const [liveUrl, setLiveUrl] = useState('https://my-app.evolvable.us');
+    const [buildDir, setBuildDir] = useState('');
 
-    const startDeploy = () => {
+    const startDeploy = async () => {
         setDeployState('deploying');
         setCurrentStep(0);
+        setErrorMsg('');
+
+        if (!projectId) {
+            setErrorMsg('Missing project ID in URL. Cannot deploy.');
+            setDeployState('ready');
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/deploy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ projectId })
+            });
+            const data = await res.json();
+
+            if (!res.ok) throw new Error(data.error || 'Failed to trigger deployment');
+
+            // Save the returned mock live URL and build directory from the API
+            setLiveUrl(data.liveUrl);
+            setBuildDir(data.buildDirectory);
+
+            // Allow the visual "fake" progress bar to continue rolling
+        } catch (err: any) {
+            setErrorMsg(err.message);
+            setDeployState('ready'); // Abort visual progress
+        }
     };
 
     useEffect(() => {
-        if (deployState !== 'deploying' || currentStep < 0) return;
+        if (deployState !== 'deploying' || currentStep < 0 || errorMsg) return;
 
         if (currentStep >= deploySteps.length) {
             setDeployState('done');
@@ -37,7 +71,7 @@ export default function DeployPage() {
         }, deploySteps[currentStep].duration);
 
         return () => clearTimeout(timer);
-    }, [deployState, currentStep]);
+    }, [deployState, currentStep, errorMsg]);
 
     return (
         <ProtectedRoute requiredRole="owner">
@@ -61,6 +95,11 @@ export default function DeployPage() {
                             </p>
 
                             <div className={styles.checklist}>
+                                {errorMsg && (
+                                    <div className={styles.errorBanner} style={{ color: 'red', marginBottom: '1rem' }}>
+                                        ❌ Deployment Error: {errorMsg}
+                                    </div>
+                                )}
                                 <div className={styles.checkItem}>
                                     <span className={styles.checkDone}>✅</span>
                                     <span>All features built</span>
@@ -146,9 +185,12 @@ export default function DeployPage() {
                                 <div className={styles.urlLabel}>Your app is live at:</div>
                                 <div className={styles.urlValue}>
                                     <span className={styles.urlLock}>🔒</span>
-                                    https://my-app.evolvable.us
+                                    <a href={liveUrl} target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>{liveUrl}</a>
                                 </div>
-                                <button className={styles.copyBtn}>Copy Link</button>
+                                <div style={{ fontSize: '0.8rem', color: '#888', marginTop: '0.5rem', fontFamily: 'monospace' }}>
+                                    App source assembled at: {buildDir}
+                                </div>
+                                <button className={styles.copyBtn} onClick={() => navigator.clipboard.writeText(liveUrl)}>Copy Link</button>
                             </div>
 
                             <div className={styles.doneStats}>
@@ -183,5 +225,13 @@ export default function DeployPage() {
                 </div>
             </div>
         </ProtectedRoute>
+    );
+}
+
+export default function DeployPage() {
+    return (
+        <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading deployment environment...</div>}>
+            <DeployContent />
+        </Suspense>
     );
 }

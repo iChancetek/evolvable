@@ -12,6 +12,16 @@ const firebaseConfig = {
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
+// Fallback for Firebase App Hosting build-time environment injection
+if (!firebaseConfig.apiKey && process.env.FIREBASE_WEBAPP_CONFIG) {
+    try {
+        const injectedConfig = JSON.parse(process.env.FIREBASE_WEBAPP_CONFIG);
+        Object.assign(firebaseConfig, injectedConfig);
+    } catch (e) {
+        console.error("Failed to parse FIREBASE_WEBAPP_CONFIG", e);
+    }
+}
+
 // Singleton — prevent re-initialization
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
