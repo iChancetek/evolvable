@@ -18,7 +18,7 @@ type Message = {
 
 export default function CreatePage() {
     const { user } = useAuth();
-    const { startPipeline, blueprint, isLoading: isOrchestrating, projectId } = useOrchestration();
+    const { startPipeline, abortPipeline, blueprint, isLoading: isOrchestrating, projectId } = useOrchestration();
 
     const [messages, setMessages] = useState<Message[]>([
         {
@@ -190,13 +190,24 @@ export default function CreatePage() {
                                                     <span className={`${styles.agentBadge} ${blueprint?.currentPhase === 'deployment' ? styles.agentActive : ''}`}>🚀 Deploy</span>
                                                 </div>
                                             </div>
-                                            <a
-                                                href={projectId ? `/builder?projectId=${projectId}` : '#'}
-                                                className={`${styles.planButton} ${!blueprint?.prd ? styles.planButtonDisabled : ''}`}
-                                                style={{ pointerEvents: !blueprint?.prd ? 'none' : 'auto', opacity: !blueprint?.prd ? 0.5 : 1 }}
-                                            >
-                                                Start Building →
-                                            </a>
+                                            <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                                                <a
+                                                    href={projectId ? `/builder?projectId=${projectId}` : '#'}
+                                                    className={`${styles.planButton} ${!blueprint?.prd ? styles.planButtonDisabled : ''}`}
+                                                    style={{ pointerEvents: !blueprint?.prd ? 'none' : 'auto', opacity: !blueprint?.prd ? 0.5 : 1, flex: 1 }}
+                                                >
+                                                    Start Building →
+                                                </a>
+                                                {blueprint?.status === 'building' && (
+                                                    <button
+                                                        onClick={() => abortPipeline()}
+                                                        className={styles.planButton}
+                                                        style={{ background: 'var(--color-error)', flex: 0.5 }}
+                                                    >
+                                                        Cancel Build
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     ) : (
                                         <div className={styles.messageText}>

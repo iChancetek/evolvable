@@ -6,6 +6,7 @@ interface UseOrchestrationReturn {
     isLoading: boolean;
     error: string | null;
     startPipeline: (idea: string, userId?: string) => Promise<string | null>;
+    abortPipeline: () => Promise<void>;
     projectId: string | null;
 }
 
@@ -88,11 +89,28 @@ export function useOrchestration(): UseOrchestrationReturn {
         }
     }, []);
 
+    const abortPipeline = useCallback(async () => {
+        if (!projectId) return;
+        setIsLoading(true);
+        try {
+            await fetch('/api/orchestrate/abort', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ projectId })
+            });
+        } catch (err: any) {
+            console.error('Failed to abort:', err);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [projectId]);
+
     return {
         blueprint,
         isLoading,
         error,
         startPipeline,
+        abortPipeline,
         projectId
     };
 }
