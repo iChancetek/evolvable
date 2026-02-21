@@ -159,6 +159,27 @@ export default function CreatePage() {
                                                 </div>
                                             )}
 
+                                            {blueprint?.codebase?.files && Object.keys(blueprint.codebase.files).length > 0 && (
+                                                <div className={styles.codePreview}>
+                                                    <div className={styles.codeHeader}>
+                                                        <span>Generated Codebase</span>
+                                                        <span className={styles.codeBadge}>{Object.keys(blueprint.codebase.files).length} files</span>
+                                                    </div>
+                                                    <div className={styles.fileList}>
+                                                        {Object.entries(blueprint.codebase.files).slice(0, 5).map(([filename, content]) => (
+                                                            <div key={filename} className={styles.fileItem}>
+                                                                <div className={styles.fileName}>
+                                                                    <span>📄</span> {filename}
+                                                                </div>
+                                                                <pre className={styles.fileContent}>
+                                                                    <code>{typeof content === 'string' ? content.substring(0, 300) + (content.length > 300 ? '\n...' : '') : ''}</code>
+                                                                </pre>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+
                                             <div className={styles.planAgents}>
                                                 <span>Pipeline Status: {blueprint?.status === 'building' ? 'Building...' : blueprint?.status === 'deployed' ? 'Complete!' : 'Initializing'}</span>
                                                 <div className={styles.agentBadges}>

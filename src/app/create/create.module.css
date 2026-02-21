@@ -338,6 +338,73 @@
     transform: translateY(-1px);
 }
 
+/* Code Preview */
+.codePreview {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-5);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    font-family: 'Consolas', 'Monaco', monospace;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.codeHeader {
+    padding: var(--space-3) var(--space-4);
+    background: #2d2d2d;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #111;
+}
+
+.codeBadge {
+    background: rgba(86, 156, 214, 0.2);
+    color: #569cd6;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+}
+
+.fileList {
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.fileItem {
+    border-bottom: 1px solid #333;
+}
+
+.fileItem:last-child {
+    border-bottom: none;
+}
+
+.fileName {
+    padding: var(--space-2) var(--space-4);
+    background: #252526;
+    font-size: 11px;
+    color: #4fc1ff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.fileContent {
+    margin: 0;
+    padding: var(--space-3) var(--space-4);
+    font-size: 11px;
+    line-height: 1.5;
+    overflow-x: auto;
+    color: #ce9178;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
 /* Input Area */
 .inputArea {
     padding: var(--space-4) var(--space-8) var(--space-6);
