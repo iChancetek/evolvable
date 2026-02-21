@@ -146,7 +146,7 @@ export default function CreatePage() {
                             <div key={msg.id} className={`${styles.message} ${msg.role === 'user' ? styles.userMessage : styles.aiMessage} `}>
                                 {msg.role === 'ai' && (
                                     <div className={styles.avatar}>
-                                        <div className={styles.avatarInner}>E</div>
+                                        <img src="/icons/icon-192x192.png" alt="Evolvable" className={styles.avatarInner} />
                                     </div>
                                 )}
                                 <div className={styles.messageContent}>
@@ -266,7 +266,7 @@ export default function CreatePage() {
                         {isTyping && (
                             <div className={`${styles.message} ${styles.aiMessage} `}>
                                 <div className={styles.avatar}>
-                                    <div className={styles.avatarInner}>E</div>
+                                    <img src="/icons/icon-192x192.png" alt="Evolvable" className={styles.avatarInner} />
                                 </div>
                                 <div className={styles.messageContent}>
                                     <div className={styles.typingIndicator}>
