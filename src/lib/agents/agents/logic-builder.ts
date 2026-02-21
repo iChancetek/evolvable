@@ -24,6 +24,7 @@ export class LogicBuilderAgent implements Agent {
 
             const workflows = await callLLM<WorkflowManifest>(SYSTEM_PROMPT, userPrompt, {
                 workloadType: 'standard',
+                provider: input.provider,
                 jsonSchema: true
             });
 

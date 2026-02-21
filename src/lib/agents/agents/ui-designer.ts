@@ -26,6 +26,7 @@ export class UIDesignerAgent implements Agent {
 
             const designSpec = await callLLM<DesignSystemSpec>(SYSTEM_PROMPT, userPrompt, {
                 workloadType: 'standard',
+                provider: input.provider,
                 jsonSchema: true
             });
 

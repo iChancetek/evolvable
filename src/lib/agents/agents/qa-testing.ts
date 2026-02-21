@@ -28,7 +28,8 @@ export class QAAgent implements Agent {
             const userPrompt = `Review these generated files against the PRD. \nFiles: ${JSON.stringify(fileList)}\nPRD: ${JSON.stringify(input.blueprint.prd?.features)}`;
 
             const report = await callLLM<QualityReport>(SYSTEM_PROMPT, userPrompt, {
-                workloadType: 'lightweight', // Simple validation task
+                workloadType: 'lightweight',
+                provider: input.provider, // Simple validation task
                 jsonSchema: true
             });
 

@@ -1,10 +1,14 @@
 import { HfInference } from '@huggingface/inference';
+import OpenAI from 'openai';
+import { LLMProvider } from './types';
 
 // Initialize the Hugging Face client
-// In production, this should use a secure server-side environment variable.
-// We fallback to a public token or throw if not available during real execution.
 const hfToken = process.env.NEXT_PUBLIC_HF_TOKEN || process.env.HF_TOKEN || '';
 const hf = new HfInference(hfToken);
+
+// Initialize the OpenAI client
+const openaiKey = process.env.OPENAI_API_KEY || '';
+const openai = new OpenAI({ apiKey: openaiKey });
 
 export type AgentWorkloadType = 'standard' | 'reasoning' | 'lightweight';
 
@@ -13,19 +17,26 @@ export interface LLMOptions {
     maxTokens?: number;
     workloadType?: AgentWorkloadType;
     jsonSchema?: boolean | Record<string, any>; // Optional JSON schema for structured output
+    provider?: LLMProvider;
 }
 
-const MODEL_ROUTING: Record<AgentWorkloadType, string> = {
+const HF_MODEL_ROUTING: Record<AgentWorkloadType, string> = {
     // Primary model for code generation, JSON structured output, and general agentic tasks
-    standard: 'Qwen/Qwen3-32B-Instruct', // Sticking to the 32B limit for freer tier access while testing; upgrade to Qwen/Qwen3-235B-A22B for pro
+    standard: 'Qwen/Qwen3-32B-Instruct', // downgrade to 32B for free tier testing
     // Deep reasoning tasks (Architect, Security)
     reasoning: 'deepseek-ai/DeepSeek-V3',
     // Fast, lightweight tasks (Documentation, simple parsing)
     lightweight: 'Qwen/Qwen3-7B-Instruct'
 };
 
+const OPENAI_MODEL_ROUTING: Record<AgentWorkloadType, string> = {
+    standard: 'gpt-5.2', // Migrated to gpt-5.2 per knowledge base
+    reasoning: 'gpt-5.2',
+    lightweight: 'gpt-4o-mini' // Fast fallback
+};
+
 /**
- * Shared adapter for making LLM calls to Hugging Face Inference API.
+ * Shared adapter for making LLM calls to Hugging Face Inference API and OpenAI.
  * Includes built-in retry logic, token management, and structured output parsing.
  */
 export async function callLLM<T = any>(
@@ -37,70 +48,110 @@ export async function callLLM<T = any>(
         temperature = 0.2, // Low temp by default for deterministic agent output
         maxTokens = 4096,
         workloadType = 'standard',
-        jsonSchema
+        jsonSchema,
+        provider = 'openai'
     } = options;
 
-    const modelName = MODEL_ROUTING[workloadType];
     const MAX_RETRIES = 3;
     let attempt = 0;
 
-    let payload: any = {
-        model: modelName,
-        messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt }
-        ],
-        temperature,
-        max_tokens: maxTokens,
-    };
-
-    // If a JSON schema is provided, we tell the HF TGI endpoint to strictly follow it
-    // Note: Not all models/endpoints support guided decoding. Qwen3 mostly does.
-    if (jsonSchema) {
-        payload.response_format = {
-            type: "json_object",
-            // In a real implementation using Outlines via TGI, we pass the schema
-            // schema: jsonSchema 
-        };
-        // Ensure the system prompt explicitly asks for JSON
-        if (!systemPrompt.includes('JSON')) {
-            payload.messages[0].content += '\n\nIMPORTANT: You must output ONLY valid JSON matching the required schema. Do not include markdown formatting or backticks.';
-        }
+    let systemStr = systemPrompt;
+    if (jsonSchema && !systemStr.includes('JSON')) {
+        systemStr += '\n\nIMPORTANT: You must output ONLY valid JSON matching the required schema. Do not include markdown formatting or backticks.';
     }
 
-    while (attempt < MAX_RETRIES) {
-        try {
-            console.log(`[LLM Adapter] Calling ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
+    if (provider === 'openai') {
+        const modelName = OPENAI_MODEL_ROUTING[workloadType] || 'gpt-5.2';
 
-            // Using the chat completion API which is standard across HF Text Generation Inference
-            const response = await hf.chatCompletion(payload);
+        while (attempt < MAX_RETRIES) {
+            try {
+                console.log(`[LLM Adapter] Calling OpenAI ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
 
-            const content = response.choices[0]?.message?.content || "";
+                const completionOptions: any = {
+                    model: modelName,
+                    messages: [
+                        { role: "system", content: systemStr },
+                        { role: "user", content: userPrompt }
+                    ],
+                    temperature,
+                };
 
-            if (jsonSchema) {
-                // Attempt to parse structured output
-                try {
-                    // Strip potential markdown code blocks returning from models that ignore instructions
-                    const cleanContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-                    return JSON.parse(cleanContent) as T;
-                } catch (parseError) {
-                    console.error('[LLM Adapter] Failed to parse JSON response:', content);
-                    throw new Error(`Invalid JSON format retrieved from LLM: ${parseError}`);
+                // OpenAI GPT-5.2 specific logic mapping maxTokens to max_completion_tokens
+                if (modelName === 'gpt-5.2') {
+                    completionOptions.max_completion_tokens = maxTokens;
+                } else {
+                    completionOptions.max_tokens = maxTokens;
                 }
+
+                if (jsonSchema) {
+                    completionOptions.response_format = { type: "json_object" };
+                }
+
+                const response = await openai.chat.completions.create(completionOptions);
+
+                const content = response.choices[0]?.message?.content || "";
+
+                if (jsonSchema) {
+                    try {
+                        const cleanContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                        return JSON.parse(cleanContent) as T;
+                    } catch (parseError) {
+                        console.error('[LLM Adapter] Failed to parse OpenAI JSON response:', content);
+                        throw new Error(`Invalid JSON format retrieved from OpenAI: ${parseError}`);
+                    }
+                }
+
+                return content as any;
+            } catch (error: any) {
+                attempt++;
+                console.error(`[LLM Adapter] Error calling OpenAI ${modelName}:`, error.message);
+                if (attempt >= MAX_RETRIES) throw new Error(`OpenAI call failed after ${MAX_RETRIES} attempts. Last error: ${error.message}`);
+                await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
             }
+        }
+    } else {
+        // HuggingFace Routing
+        const modelName = HF_MODEL_ROUTING[workloadType];
 
-            return content as any;
+        let payload: any = {
+            model: modelName,
+            messages: [
+                { role: "system", content: systemStr },
+                { role: "user", content: userPrompt }
+            ],
+            temperature,
+            max_tokens: maxTokens,
+        };
 
-        } catch (error: any) {
-            attempt++;
-            console.error(`[LLM Adapter] Error calling ${modelName}:`, error.message);
+        if (jsonSchema) {
+            payload.response_format = { type: "json_object" };
+        }
 
-            if (attempt >= MAX_RETRIES) {
-                throw new Error(`LLM call failed after ${MAX_RETRIES} attempts. Last error: ${error.message}`);
+        while (attempt < MAX_RETRIES) {
+            try {
+                console.log(`[LLM Adapter] Calling HF ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
+
+                const response = await hf.chatCompletion(payload);
+                const content = response.choices[0]?.message?.content || "";
+
+                if (jsonSchema) {
+                    try {
+                        const cleanContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                        return JSON.parse(cleanContent) as T;
+                    } catch (parseError) {
+                        console.error('[LLM Adapter] Failed to parse HF JSON response:', content);
+                        throw new Error(`Invalid JSON format retrieved from HF: ${parseError}`);
+                    }
+                }
+
+                return content as any;
+
+            } catch (error: any) {
+                attempt++;
+                console.error(`[LLM Adapter] Error calling HF ${modelName}:`, error.message);
+                if (attempt >= MAX_RETRIES) throw new Error(`HF call failed after ${MAX_RETRIES} attempts. Last error: ${error.message}`);
+                await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
             }
-
-            // Exponential backoff
-            await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
         }
     }
 

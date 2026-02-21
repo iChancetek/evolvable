@@ -24,7 +24,8 @@ export class DBArchitectAgent implements Agent {
             const userPrompt = `Design a database schema for this PRD:\n${JSON.stringify(input.blueprint.prd)}`;
 
             const schema = await callLLM<DatabaseSchema>(SYSTEM_PROMPT, userPrompt, {
-                workloadType: 'reasoning', // Use reasoning model for complex data architectures
+                workloadType: 'reasoning',
+                provider: input.provider, // Use reasoning model for complex data architectures
                 jsonSchema: true
             });
 

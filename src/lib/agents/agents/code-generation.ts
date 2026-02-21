@@ -42,6 +42,7 @@ export class CodeGenerationAgent implements Agent {
             const planPrompt = `Analyze this architecture and generate the list of files to be built:\n\n${JSON.stringify(context)}`;
             const plan = await callLLM<{ files: string[] }>(SYSTEM_PROMPT_PLAN, planPrompt, {
                 workloadType: 'standard',
+                provider: input.provider,
                 jsonSchema: true
             });
 
@@ -66,7 +67,8 @@ export class CodeGenerationAgent implements Agent {
 
                 try {
                     const result = await callLLM<{ code: string }>(SYSTEM_PROMPT_CODE, filePrompt, {
-                        workloadType: 'standard', // Use standard to keep it fast per file
+                        workloadType: 'standard',
+                provider: input.provider, // Use standard to keep it fast per file
                         maxTokens: 4000,
                         jsonSchema: true
                     });

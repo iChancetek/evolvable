@@ -24,7 +24,8 @@ export class SecurityAgent implements Agent {
             const userPrompt = `Audit these codebase file paths and architecture for strict OWASP compliance: ${JSON.stringify({ files, arch: input.blueprint.architecture })}`;
 
             const scan = await callLLM<SecurityAuditReport>(SYSTEM_PROMPT, userPrompt, {
-                workloadType: 'reasoning', // Security requires deep reasoning
+                workloadType: 'reasoning',
+                provider: input.provider, // Security requires deep reasoning
                 jsonSchema: true
             });
 

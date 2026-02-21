@@ -14,10 +14,13 @@ export enum AgentId {
 
 export type AgentStatus = 'pending' | 'running' | 'completed' | 'failed' | 'vetoed';
 
+export type LLMProvider = 'huggingface' | 'openai';
+
 export interface AgentInput {
     projectId: string;
     payload: any;
     blueprint: ProjectBlueprint; // Current accumulated state of the project
+    provider?: LLMProvider;
 }
 
 export interface AgentOutput {
@@ -64,6 +67,7 @@ export interface ProjectBlueprint {
 
     adrLog: ADREntry[];
     pipelineLogs?: PipelineLog[];
+    llmProvider: LLMProvider;
     currentPhase: AgentId | 'completed';
     status: 'draft' | 'building' | 'deployed' | 'error';
 }

@@ -5,6 +5,7 @@ import styles from './create.module.css';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useOrchestration } from '@/lib/hooks/useOrchestration';
 import { useAuth } from '@/lib/auth/auth-context';
+import { LLMProvider } from '@/lib/agents/types';
 
 type Message = {
     id: string;
@@ -31,6 +32,7 @@ export default function CreatePage() {
     const [isTyping, setIsTyping] = useState(false);
     const [showPlan, setShowPlan] = useState(false);
     const [userIdea, setUserIdea] = useState('');
+    const [provider, setProvider] = useState<LLMProvider>('openai');
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -68,7 +70,7 @@ export default function CreatePage() {
         setIsTyping(true);
 
         // Start the pipeline in the background using the real backend
-        startPipeline(text, user?.uid || 'anonymous').then(() => {
+        startPipeline(text, user?.uid || 'anonymous', provider).then(() => {
             setShowPlan(true);
             addMessage({
                 id: Date.now().toString(),
@@ -266,6 +268,23 @@ export default function CreatePage() {
 
                     {/* Input Area */}
                     <div className={styles.inputArea}>
+                        {!showPlan && (
+                            <div className={styles.modelSelector}>
+                                <span style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginRight: '4px', alignSelf: 'center', fontWeight: 600 }}>AI Brain:</span>
+                                <button
+                                    className={`${styles.modelButton} ${provider === 'openai' ? styles.modelButtonActive : ''}`}
+                                    onClick={() => setProvider('openai')}
+                                >
+                                    ✨ OpenAI (GPT-5.2)
+                                </button>
+                                <button
+                                    className={`${styles.modelButton} ${provider === 'huggingface' ? styles.modelButtonActive : ''}`}
+                                    onClick={() => setProvider('huggingface')}
+                                >
+                                    🤗 Hugging Face (Qwen)
+                                </button>
+                            </div>
+                        )}
                         <div className={styles.inputWrapper}>
                             <input
                                 type="text"

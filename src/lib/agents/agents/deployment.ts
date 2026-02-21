@@ -24,6 +24,7 @@ export class DeploymentAgent implements Agent {
 
             const manifest = await callLLM<DeploymentManifest>(SYSTEM_PROMPT, userPrompt, {
                 workloadType: 'standard',
+                provider: input.provider,
                 jsonSchema: true
             });
 

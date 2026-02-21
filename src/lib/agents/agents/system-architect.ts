@@ -30,6 +30,7 @@ export class SystemArchitectAgent implements Agent {
 
             const req = await callLLM<ArchitectureDesignDocument>(SYSTEM_PROMPT, userPrompt, {
                 workloadType: 'reasoning',
+                provider: input.provider,
                 jsonSchema: true
             });
 

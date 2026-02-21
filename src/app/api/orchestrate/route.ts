@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
  */
 export async function POST(req: NextRequest) {
     try {
-        const { idea, userId } = await req.json();
+        const { idea, userId, llmProvider = 'openai' } = await req.json();
 
         if (!idea) {
             return NextResponse.json({ error: 'Idea prompt is required' }, { status: 400 });
@@ -29,7 +29,8 @@ export async function POST(req: NextRequest) {
             createdAt: Date.now(),
             adrLog: [],
             currentPhase: AgentId.VISION, // Starts with vision agent
-            status: 'building'
+            status: 'building',
+            llmProvider
         };
 
         // Save initial state to Firestore bypassing rules via Admin SDK

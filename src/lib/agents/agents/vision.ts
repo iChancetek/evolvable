@@ -27,6 +27,7 @@ export class VisionAgent implements Agent {
 
             const prd = await callLLM<ProductRequirementsDocument>(SYSTEM_PROMPT, userPrompt, {
                 workloadType: 'standard',
+                provider: input.provider,
                 jsonSchema: true // Enforce JSON structured output for PRD schema
             });
 

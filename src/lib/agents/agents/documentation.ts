@@ -26,7 +26,8 @@ export class DocumentationAgent implements Agent {
             const userPrompt = `Create beginner-friendly documentation for this app:\n${JSON.stringify(context)}`;
 
             const docs = await callLLM(SYSTEM_PROMPT, userPrompt, {
-                workloadType: 'lightweight', // Perfect for doc gen
+                workloadType: 'lightweight',
+                provider: input.provider, // Perfect for doc gen
                 jsonSchema: true
             });
 

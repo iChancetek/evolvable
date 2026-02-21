@@ -24,6 +24,7 @@ export class DebugOptimizeAgent implements Agent {
 
             const patches = await callLLM(SYSTEM_PROMPT, userPrompt, {
                 workloadType: 'standard',
+                provider: input.provider,
                 jsonSchema: true
             });
 
