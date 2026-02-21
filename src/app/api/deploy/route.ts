@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/firebase/config';
-import { doc, getDoc } from 'firebase/firestore';
+import { adminDb } from '@/lib/firebase/admin';
 import { ProjectBlueprint } from '@/lib/agents/types';
 import fs from 'fs/promises';
 import path from 'path';
@@ -16,10 +15,10 @@ export async function POST(req: NextRequest) {
         }
 
         console.log(`[DeployAPI] Fetching blueprint for project: ${projectId}`);
-        const docRef = doc(db, 'projects', projectId);
-        const docSnap = await getDoc(docRef);
+        const docRef = adminDb.collection('projects').doc(projectId);
+        const docSnap = await docRef.get();
 
-        if (!docSnap.exists()) {
+        if (!docSnap.exists) {
             return NextResponse.json({ error: 'Project not found' }, { status: 404 });
         }
 

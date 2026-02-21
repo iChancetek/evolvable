@@ -1,5 +1,4 @@
-import { db } from '../firebase/config';
-import { collection, addDoc, serverTimestamp, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { adminDb, FieldValue } from '../firebase/admin';
 import { ADREntry, AgentId } from './types';
 
 /**
@@ -30,7 +29,7 @@ export class ADRLogger {
         tradeOffs: string = ''
     ): Promise<string> {
         try {
-            const docRef = await addDoc(collection(db, COLLECTION_NAME), {
+            const docRef = await adminDb.collection(COLLECTION_NAME).add({
                 projectId: this.projectId,
                 agentId,
                 decision,
@@ -38,7 +37,7 @@ export class ADRLogger {
                 alternativesConsidered,
                 tradeOffs,
                 status: 'accepted',
-                timestamp: serverTimestamp(),
+                timestamp: FieldValue.serverTimestamp(),
             });
 
             console.log(`[ADR] Recorded decision by ${agentId}: ${decision.substring(0, 50)}...`);
@@ -61,13 +60,11 @@ export class ADRLogger {
      */
     async getProjectADRs(): Promise<ADREntry[]> {
         try {
-            const q = query(
-                collection(db, COLLECTION_NAME),
-                where("projectId", "==", this.projectId),
-                orderBy("timestamp", "asc")
-            );
+            const querySnapshot = await adminDb.collection(COLLECTION_NAME)
+                .where("projectId", "==", this.projectId)
+                .orderBy("timestamp", "asc")
+                .get();
 
-            const querySnapshot = await getDocs(q);
             const adrs: ADREntry[] = [];
 
             querySnapshot.forEach((doc) => {

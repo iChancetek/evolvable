@@ -70,7 +70,17 @@ export default function CreatePage() {
         setIsTyping(true);
 
         // Start the pipeline in the background using the real backend
-        startPipeline(text, user?.uid || 'anonymous', provider).then(() => {
+        startPipeline(text, user?.uid || 'anonymous', provider).then((newProjectId) => {
+            if (!newProjectId) {
+                addMessage({
+                    id: Date.now().toString(),
+                    role: 'ai',
+                    content: 'An error occurred while initializing the AI Orchestration layer. Please check the logs.',
+                });
+                setIsTyping(false);
+                return;
+            }
+
             setShowPlan(true);
             addMessage({
                 id: Date.now().toString(),
@@ -80,7 +90,12 @@ export default function CreatePage() {
             });
             setIsTyping(false);
         }).catch(err => {
-            console.error("Pipeline failed", err);
+            console.error("Pipeline Promise rejection", err);
+            addMessage({
+                id: Date.now().toString(),
+                role: 'ai',
+                content: `Error: ${err.message}`,
+            });
             setIsTyping(false);
         });
     };
