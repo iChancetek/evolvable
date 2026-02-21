@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import styles from './create.module.css';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 type Message = {
     id: string;
@@ -118,163 +119,165 @@ export default function CreatePage() {
     };
 
     return (
-        <div className={styles.page}>
-            {/* Sidebar */}
-            <aside className={styles.sidebar}>
-                <a href="/" className={styles.backLink}>
-                    <span className={styles.backArrow}>←</span>
-                    <div className={styles.sidebarBrand}>
-                        <div className={styles.logoMark}>E</div>
-                        <span>Evolvable</span>
+        <ProtectedRoute>
+            <div className={styles.page}>
+                {/* Sidebar */}
+                <aside className={styles.sidebar}>
+                    <a href="/" className={styles.backLink}>
+                        <span className={styles.backArrow}>←</span>
+                        <div className={styles.sidebarBrand}>
+                            <div className={styles.logoMark}>E</div>
+                            <span>Evolvable</span>
+                        </div>
+                    </a>
+                    <div className={styles.sidebarSection}>
+                        <h3>Your Projects</h3>
+                        <div className={styles.projectItem}>
+                            <span className={styles.projectDot} style={{ background: 'var(--color-accent-green)' }} />
+                            <span>New Project</span>
+                        </div>
                     </div>
-                </a>
-                <div className={styles.sidebarSection}>
-                    <h3>Your Projects</h3>
-                    <div className={styles.projectItem}>
-                        <span className={styles.projectDot} style={{ background: 'var(--color-accent-green)' }} />
-                        <span>New Project</span>
+                    <div className={styles.sidebarFooter}>
+                        <div className={styles.agentStatus}>
+                            <div className={styles.statusDot} />
+                            <span>AI Agents Ready</span>
+                        </div>
                     </div>
-                </div>
-                <div className={styles.sidebarFooter}>
-                    <div className={styles.agentStatus}>
-                        <div className={styles.statusDot} />
-                        <span>AI Agents Ready</span>
-                    </div>
-                </div>
-            </aside>
+                </aside>
 
-            {/* Chat Area */}
-            <main className={styles.chatArea}>
-                <div className={styles.chatHeader}>
-                    <h1>Create Your App</h1>
-                    <p>Describe your idea and our AI will build it for you</p>
-                </div>
+                {/* Chat Area */}
+                <main className={styles.chatArea}>
+                    <div className={styles.chatHeader}>
+                        <h1>Create Your App</h1>
+                        <p>Describe your idea and our AI will build it for you</p>
+                    </div>
 
-                <div className={styles.messagesContainer}>
-                    {messages.map((msg) => (
-                        <div key={msg.id} className={`${styles.message} ${msg.role === 'user' ? styles.userMessage : styles.aiMessage}`}>
-                            {msg.role === 'ai' && (
+                    <div className={styles.messagesContainer}>
+                        {messages.map((msg) => (
+                            <div key={msg.id} className={`${styles.message} ${msg.role === 'user' ? styles.userMessage : styles.aiMessage}`}>
+                                {msg.role === 'ai' && (
+                                    <div className={styles.avatar}>
+                                        <div className={styles.avatarInner}>E</div>
+                                    </div>
+                                )}
+                                <div className={styles.messageContent}>
+                                    {msg.type === 'plan' ? (
+                                        <div className={styles.planCard}>
+                                            <div className={styles.planHeader}>
+                                                <span className={styles.planCheck}>✅</span>
+                                                <h3>Your App Plan is Ready!</h3>
+                                            </div>
+                                            <div className={styles.planTitle}>
+                                                {userIdea.length > 50 ? userIdea.substring(0, 50) + '...' : userIdea}
+                                            </div>
+                                            <div className={styles.planFeatures}>
+                                                <div className={styles.planFeature}>
+                                                    <span>🏠</span> Landing page with hero section
+                                                </div>
+                                                <div className={styles.planFeature}>
+                                                    <span>👤</span> User accounts with profiles
+                                                </div>
+                                                <div className={styles.planFeature}>
+                                                    <span>📝</span> Forms with validation
+                                                </div>
+                                                <div className={styles.planFeature}>
+                                                    <span>📊</span> Admin dashboard
+                                                </div>
+                                                <div className={styles.planFeature}>
+                                                    <span>🔒</span> Secure authentication
+                                                </div>
+                                                <div className={styles.planFeature}>
+                                                    <span>📱</span> Mobile responsive design
+                                                </div>
+                                            </div>
+                                            <div className={styles.planAgents}>
+                                                <span>Assigned agents:</span>
+                                                <div className={styles.agentBadges}>
+                                                    <span className={styles.agentBadge}>💡 Vision</span>
+                                                    <span className={styles.agentBadge}>🎨 Design</span>
+                                                    <span className={styles.agentBadge}>💻 Code</span>
+                                                    <span className={styles.agentBadge}>🧪 Testing</span>
+                                                    <span className={styles.agentBadge}>🔒 Security</span>
+                                                    <span className={styles.agentBadge}>🚀 Deploy</span>
+                                                </div>
+                                            </div>
+                                            <a href="/builder" className={styles.planButton}>
+                                                Start Building →
+                                            </a>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className={styles.messageText}>
+                                                {msg.content.split('\n').map((line, i) => (
+                                                    <span key={i}>
+                                                        {line}
+                                                        {i < msg.content.split('\n').length - 1 && <br />}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                            {msg.options && (
+                                                <div className={styles.optionsGrid}>
+                                                    {msg.options.map((opt, i) => (
+                                                        <button
+                                                            key={i}
+                                                            className={styles.optionButton}
+                                                            onClick={() => handleOptionSelect(opt)}
+                                                        >
+                                                            {opt}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+
+                        {isTyping && (
+                            <div className={`${styles.message} ${styles.aiMessage}`}>
                                 <div className={styles.avatar}>
                                     <div className={styles.avatarInner}>E</div>
                                 </div>
-                            )}
-                            <div className={styles.messageContent}>
-                                {msg.type === 'plan' ? (
-                                    <div className={styles.planCard}>
-                                        <div className={styles.planHeader}>
-                                            <span className={styles.planCheck}>✅</span>
-                                            <h3>Your App Plan is Ready!</h3>
-                                        </div>
-                                        <div className={styles.planTitle}>
-                                            {userIdea.length > 50 ? userIdea.substring(0, 50) + '...' : userIdea}
-                                        </div>
-                                        <div className={styles.planFeatures}>
-                                            <div className={styles.planFeature}>
-                                                <span>🏠</span> Landing page with hero section
-                                            </div>
-                                            <div className={styles.planFeature}>
-                                                <span>👤</span> User accounts with profiles
-                                            </div>
-                                            <div className={styles.planFeature}>
-                                                <span>📝</span> Forms with validation
-                                            </div>
-                                            <div className={styles.planFeature}>
-                                                <span>📊</span> Admin dashboard
-                                            </div>
-                                            <div className={styles.planFeature}>
-                                                <span>🔒</span> Secure authentication
-                                            </div>
-                                            <div className={styles.planFeature}>
-                                                <span>📱</span> Mobile responsive design
-                                            </div>
-                                        </div>
-                                        <div className={styles.planAgents}>
-                                            <span>Assigned agents:</span>
-                                            <div className={styles.agentBadges}>
-                                                <span className={styles.agentBadge}>💡 Vision</span>
-                                                <span className={styles.agentBadge}>🎨 Design</span>
-                                                <span className={styles.agentBadge}>💻 Code</span>
-                                                <span className={styles.agentBadge}>🧪 Testing</span>
-                                                <span className={styles.agentBadge}>🔒 Security</span>
-                                                <span className={styles.agentBadge}>🚀 Deploy</span>
-                                            </div>
-                                        </div>
-                                        <a href="/builder" className={styles.planButton}>
-                                            Start Building →
-                                        </a>
+                                <div className={styles.messageContent}>
+                                    <div className={styles.typingIndicator}>
+                                        <span />
+                                        <span />
+                                        <span />
                                     </div>
-                                ) : (
-                                    <>
-                                        <div className={styles.messageText}>
-                                            {msg.content.split('\n').map((line, i) => (
-                                                <span key={i}>
-                                                    {line}
-                                                    {i < msg.content.split('\n').length - 1 && <br />}
-                                                </span>
-                                            ))}
-                                        </div>
-                                        {msg.options && (
-                                            <div className={styles.optionsGrid}>
-                                                {msg.options.map((opt, i) => (
-                                                    <button
-                                                        key={i}
-                                                        className={styles.optionButton}
-                                                        onClick={() => handleOptionSelect(opt)}
-                                                    >
-                                                        {opt}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    ))}
-
-                    {isTyping && (
-                        <div className={`${styles.message} ${styles.aiMessage}`}>
-                            <div className={styles.avatar}>
-                                <div className={styles.avatarInner}>E</div>
-                            </div>
-                            <div className={styles.messageContent}>
-                                <div className={styles.typingIndicator}>
-                                    <span />
-                                    <span />
-                                    <span />
                                 </div>
                             </div>
-                        </div>
-                    )}
+                        )}
 
-                    <div ref={messagesEndRef} />
-                </div>
-
-                {/* Input Area */}
-                <div className={styles.inputArea}>
-                    <div className={styles.inputWrapper}>
-                        <input
-                            type="text"
-                            className={styles.chatInput}
-                            placeholder="Describe your app idea..."
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            disabled={showPlan}
-                        />
-                        <button
-                            className={styles.sendButton}
-                            onClick={handleSend}
-                            disabled={!input.trim() || showPlan}
-                        >
-                            <span>→</span>
-                        </button>
+                        <div ref={messagesEndRef} />
                     </div>
-                    <p className={styles.inputHint}>
-                        💡 Tip: Be descriptive! "I want a booking app for my salon" works great.
-                    </p>
-                </div>
-            </main>
-        </div>
+
+                    {/* Input Area */}
+                    <div className={styles.inputArea}>
+                        <div className={styles.inputWrapper}>
+                            <input
+                                type="text"
+                                className={styles.chatInput}
+                                placeholder="Describe your app idea..."
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                disabled={showPlan}
+                            />
+                            <button
+                                className={styles.sendButton}
+                                onClick={handleSend}
+                                disabled={!input.trim() || showPlan}
+                            >
+                                <span>→</span>
+                            </button>
+                        </div>
+                        <p className={styles.inputHint}>
+                            💡 Tip: Be descriptive! "I want a booking app for my salon" works great.
+                        </p>
+                    </div>
+                </main>
+            </div>
+        </ProtectedRoute>
     );
 }
