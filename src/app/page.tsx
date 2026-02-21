@@ -492,7 +492,7 @@ export default function Home() {
           </div>
         </div>
         <div className={styles.footerBottom}>
-          <span>© 2026 Evolvable. evolvable.us — All rights reserved.</span>
+          <span>© 2026 Evolvable by ChanceTEK LLC. evolvable.us — All rights reserved.</span>
         </div>
       </footer>
     </main>
