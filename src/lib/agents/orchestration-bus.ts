@@ -70,30 +70,13 @@ export class OrchestrationBus {
                 await this.runSequential(AgentId.CODE_GENERATION, 'codebase', 'Writing source code...');
             }
 
-            // Phase 5: Quality & Security Gates
-            if (!this.blueprint.qualityReport) {
-                await this.runSequential(AgentId.QA_TESTING, 'qualityReport', 'Running test suite and quality checks...');
-            }
-            if (!this.blueprint.securityReport) {
-                const secOutput = await this.runSequential(AgentId.SECURITY, 'securityReport', 'Performing SAST and vulnerability scan...');
-                // Security has veto power
-                if (!secOutput.payload.passed) {
-                    this.emit(AgentId.SECURITY, 'vetoed', 'Security Gate Failed. Halting pipeline for fix.');
-                    throw new Error('Security Veto');
-                }
-            }
+            // 🔥 SHORT-CIRCUIT: At this point, the core App is built. 
+            // We set the status to deployed immediately so the UI stops polling and takes the user to their app.
+            await this.updateStatus('deployed'); // Don't set phase to completed quite yet
+            this.emit('System', 'completed', 'Evolvable Core Generation Complete! Redirecting you into the visual builder...');
 
-            // Phase 6: Optimization & Deployment
-            if (!this.blueprint.deploymentManifest) { // We skip debug_optimize flag here and just run it if needed
-                await this.runSequential(AgentId.DEBUG_OPTIMIZE, null, 'Optimizing performance and resolving minor defects...');
-                await this.runSequential(AgentId.DEPLOYMENT, 'deploymentManifest', 'Preparing deployment configuration...');
-            }
-
-            // Phase 7: Documentation
-            await this.runSequential(AgentId.DOCUMENTATION, null, 'Generating final documentation and changelog...');
-
-            await this.updateStatus('deployed', 'completed');
-            this.emit('System', 'completed', 'Evolvable Pipeline Complete! App is ready.');
+            // Dispatch post-generation tasks without awaiting them
+            this.runPostGenerationTasks().catch(e => console.error('[Background] Post Tasks Failed:', e));
 
             return this.blueprint;
 
@@ -102,6 +85,37 @@ export class OrchestrationBus {
             await this.updateStatus('error');
             this.emit('System', 'failed', `Pipeline halted: ${error.message}`);
             throw error;
+        }
+    }
+
+    private async runPostGenerationTasks() {
+        try {
+            // Phase 5: Quality & Security Gates
+            if (!this.blueprint.qualityReport) {
+                await this.runSequential(AgentId.QA_TESTING, 'qualityReport', 'Running background test suite and quality checks...');
+            }
+            if (!this.blueprint.securityReport) {
+                const secOutput = await this.runSequential(AgentId.SECURITY, 'securityReport', 'Performing background SAST scan...');
+                // Security has veto power
+                if (!secOutput.payload.passed) {
+                    this.emit(AgentId.SECURITY, 'vetoed', 'Security Gate Failed during background scan.');
+                    return; // Stop background tasks but app remains accessible
+                }
+            }
+
+            // Phase 6: Optimization & Deployment
+            if (!this.blueprint.deploymentManifest) {
+                await this.runSequential(AgentId.DEBUG_OPTIMIZE, null, 'Running background optimizations...');
+                await this.runSequential(AgentId.DEPLOYMENT, 'deploymentManifest', 'Preparing deployment configuration...');
+            }
+
+            // Phase 7: Documentation
+            await this.runSequential(AgentId.DOCUMENTATION, null, 'Generating final documentation and changelog...');
+
+            await this.updateStatus('deployed', 'completed');
+            this.emit('System', 'completed', 'Background QA & DevOps sweeps fully complete.');
+        } catch (error) {
+            console.error('[Orchestrator Background] Failed:', error);
         }
     }
 

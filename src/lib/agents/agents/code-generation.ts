@@ -49,45 +49,49 @@ export class CodeGenerationAgent implements Agent {
             if (!plan.files || plan.files.length === 0) {
                 throw new Error("Failed to generate a file manifest.");
             }
-
-            console.log(`[CodeGenerationAgent] Planner identified ${plan.files.length} files to build. Beginning stream...`);
+            console.log(`[CodeGenerationAgent] Planner identified ${plan.files.length} files to build. Beginning batched stream...`);
 
             const generatedFiles: Record<string, string> = {};
             const projectRef = adminDb.collection('projects').doc(input.blueprint.id);
 
-            // Step 2: Generate each file sequentially, streaming to Firestore
-            for (const filePath of plan.files) {
-                console.log(`[CodeGenerationAgent] Generating: ${filePath}`);
+            // Step 2: Generate each file in parallel batches to massively speed up completion
+            const BATCH_SIZE = 5;
+            for (let i = 0; i < plan.files.length; i += BATCH_SIZE) {
+                const batch = plan.files.slice(i, i + BATCH_SIZE);
 
-                const filePrompt = `Write the complete code for ${filePath}. Architecture Context:\n\n${JSON.stringify({
-                    prd: context.prd,
-                    db: context.db,
-                    arch: context.arch
-                })}`;
+                await Promise.all(batch.map(async (filePath) => {
+                    console.log(`[CodeGenerationAgent] Generating: ${filePath}`);
 
-                try {
-                    const result = await callLLM<{ code: string }>(SYSTEM_PROMPT_CODE, filePrompt, {
-                        workloadType: 'standard',
-                provider: input.provider, // Use standard to keep it fast per file
-                        maxTokens: 4000,
-                        jsonSchema: true
-                    });
+                    const filePrompt = `Write the complete code for ${filePath}. Architecture Context:\n\n${JSON.stringify({
+                        prd: context.prd,
+                        db: context.db,
+                        arch: context.arch
+                    })}`;
 
-                    generatedFiles[filePath] = result.code;
-
-                    // Stream update to Firestore immediately so the UI flashes the new code
                     try {
-                        await projectRef.update({
-                            'codebase.files': generatedFiles
+                        const result = await callLLM<{ code: string }>(SYSTEM_PROMPT_CODE, filePrompt, {
+                            workloadType: 'standard', // Use standard to keep it fast per file
+                            provider: input.provider,
+                            maxTokens: 4000,
+                            jsonSchema: true
                         });
-                    } catch (e) {
-                        console.warn(`[CodeGenerationAgent] Non-fatal error streaming ${filePath} to dashboard:`, e);
-                    }
 
-                } catch (fileErr) {
-                    console.error(`[CodeGenerationAgent] Failed generating ${filePath}:`, fileErr);
-                    // We continue the loop so one bad file doesn't crash the entire generation
-                }
+                        generatedFiles[filePath] = result.code;
+
+                        // Stream update to Firestore immediately so the UI flashes the new code
+                        try {
+                            await projectRef.update({
+                                'codebase.files': generatedFiles
+                            });
+                        } catch (e) {
+                            console.warn(`[CodeGenerationAgent] Non-fatal error streaming ${filePath} to dashboard:`, e);
+                        }
+
+                    } catch (fileErr) {
+                        console.error(`[CodeGenerationAgent] Failed generating ${filePath}:`, fileErr);
+                        // We continue the loop so one bad file doesn't crash the entire generation
+                    }
+                }));
             }
 
             console.log(`[CodeGenerationAgent] Codebase generation stream complete.`);
