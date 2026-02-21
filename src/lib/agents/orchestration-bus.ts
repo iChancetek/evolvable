@@ -5,8 +5,9 @@ import {
     AgentInput
 } from './types';
 import { ADRLogger } from './adr-logger';
-import { getAgent } from './agent-registry'; // We will build this next
+import { getAgent } from './agent-registry';
 import { adminDb, FieldValue } from '../firebase/admin';
+import { AuditLogger } from '../audit/audit-logger';
 
 export type PipelineEventCallback = (event: {
     agentId?: AgentId;
@@ -16,14 +17,18 @@ export type PipelineEventCallback = (event: {
 }) => void;
 
 /**
- * Orchestration Bus
- * 
- * Manages the execution lifecycle of the 11-agent pipeline.
- * Enforces dependencies, parallelism, and ADR logging.
+ * OrchestrationBus — Two-Phase Pipeline Manager
+ *
+ * Phase 1 (Planning): Vision → DB Architect + UI Designer → System Architect → Plan Coordinator
+ *   → Sets project to 'awaiting_approval' and RETURNS. No code runs past this point.
+ *
+ * Phase 2 (Execution): Only runs after explicit user approval is written to Firestore.
+ *   Backend Generation → Code Generation → Security (VETO) → QA (GATE) → Optimize → Deploy → Docs
  */
 export class OrchestrationBus {
     private blueprint: ProjectBlueprint;
     private adrLogger: ADRLogger;
+    private auditLogger: AuditLogger;
     private onEvent: PipelineEventCallback;
 
     constructor(
@@ -32,114 +37,241 @@ export class OrchestrationBus {
     ) {
         this.blueprint = initialBlueprint;
         this.adrLogger = new ADRLogger(initialBlueprint.id);
+        this.auditLogger = new AuditLogger(initialBlueprint.id);
         this.onEvent = onEvent;
     }
 
-    /**
-     * Entry point to start or resume the AI build pipeline.
-     */
-    async executePipeline(): Promise<ProjectBlueprint> {
+    // ================================================================
+    // PHASE 1 — PLANNING (no code, no infra, no deploy)
+    // ================================================================
+    async executePlanningPhase(): Promise<ProjectBlueprint> {
         try {
-            await this.updateStatus('building');
-            this.emit('System', 'running', 'Orchestration pipeline initiated.');
+            await this.updatePhase('planning', 'building');
+            this.emit('System', 'running', '🧠 Planning Phase started. Analyzing your idea...');
 
-            // Phase 1: Requirements (Vision Agent)
+            // Step 1: Vision Agent — platform mode + PRD
             if (!this.blueprint.prd) {
-                await this.runSequential(AgentId.VISION, 'prd', 'Analyzing requirements and generating PRD...');
+                await this.runSequential(AgentId.VISION, 'prd', '🔍 Vision Agent: Classifying platform type and generating PRD...', true);
             }
 
-            // Phase 2: Parallel Design & Data Schema
+            // Step 2: Parallel — UI Designer + DB Architect
             if (!this.blueprint.designSystem || !this.blueprint.databaseSchema) {
-                this.emit('System', 'running', 'Running UI Designer and DB Architect in parallel...');
+                this.emit('System', 'running', '⚡ Running UI Designer and DB Architect in parallel...');
                 await Promise.all([
-                    this.blueprint.designSystem ? Promise.resolve() : this.runAgent(AgentId.UI_DESIGNER, 'designSystem'),
-                    this.blueprint.databaseSchema ? Promise.resolve() : this.runAgent(AgentId.DB_ARCHITECT, 'databaseSchema')
+                    this.blueprint.designSystem ? Promise.resolve() : this.runAgent(AgentId.UI_DESIGNER, 'designSystem', true),
+                    this.blueprint.databaseSchema ? Promise.resolve() : this.runAgent(AgentId.DB_ARCHITECT, 'databaseSchema', true)
                 ]);
             }
 
-            // Phase 3: Architecture & Logic
+            // Step 3: System Architect — generates ImplementationPlan
+            let archOutput: AgentOutput | null = null;
             if (!this.blueprint.architecture) {
-                await this.runSequential(AgentId.SYSTEM_ARCHITECT, 'architecture', 'Designing system architecture...');
-            }
-            if (!this.blueprint.workflows) {
-                await this.runSequential(AgentId.LOGIC_BUILDER, 'workflows', 'Building automation logic and workflows...');
-            }
-
-            // Phase 4: Code Generation
-            if (!this.blueprint.codebase) {
-                await this.runSequential(AgentId.CODE_GENERATION, 'codebase', 'Writing source code...');
+                archOutput = await this.runSequential(AgentId.SYSTEM_ARCHITECT, null, '🏗️ System Architect: Designing architecture and building implementation plan...', true);
+                // Architecture and plan come back together
+                if (archOutput?.payload?.architecture) {
+                    this.blueprint.architecture = archOutput.payload.architecture;
+                }
             }
 
-            // 🔥 SHORT-CIRCUIT: At this point, the core App is built. 
-            // We set the status to deployed immediately so the UI stops polling and takes the user to their app.
-            await this.updateStatus('deployed'); // Don't set phase to completed quite yet
-            this.emit('System', 'completed', 'Evolvable Core Generation Complete! Redirecting you into the visual builder...');
+            // Step 4: Plan Coordinator — persists plan, sets awaiting_approval, PAUSES BUS
+            this.emit('System', 'running', '📋 Plan Coordinator: Finalizing and presenting implementation plan...');
+            const planInput: AgentInput = {
+                projectId: this.blueprint.id,
+                payload: archOutput?.payload || { implementationPlan: null },
+                blueprint: this.blueprint,
+                provider: this.blueprint.llmProvider,
+                planningMode: true
+            };
 
-            // Dispatch post-generation tasks without awaiting them
-            this.runPostGenerationTasks().catch(e => console.error('[Background] Post Tasks Failed:', e));
+            const planAgent = getAgent(AgentId.PLAN_COORDINATOR);
+            if (!planAgent) throw new Error('PlanCoordinator agent not found');
+            const planOutput = await planAgent.execute(planInput);
 
+            if (planOutput.status === 'failed') {
+                throw new Error(`PlanCoordinator failed: ${planOutput.error}`);
+            }
+
+            await this.auditLogger.planGenerated(planOutput.payload?.planVersion || 1, [
+                AgentId.VISION, AgentId.UI_DESIGNER, AgentId.DB_ARCHITECT, AgentId.SYSTEM_ARCHITECT, AgentId.PLAN_COORDINATOR
+            ]);
+
+            // Update blueprint planVersions from Firestore output
+            if (planOutput.payload?.plan) {
+                this.blueprint.planVersions = [...(this.blueprint.planVersions || []), {
+                    version: planOutput.payload.planVersion,
+                    plan: planOutput.payload.plan,
+                    generatedAt: Date.now(),
+                    agentIds: planOutput.payload.plan.agentIds
+                }];
+                this.blueprint.activePlanVersion = planOutput.payload.planVersion;
+            }
+
+            this.emit('System', 'completed', `✅ Implementation Plan v${planOutput.payload?.planVersion || 1} ready for your review. Execution is paused until you approve.`);
+
+            // PAUSE — return here. Execution only resumes via /api/orchestrate/approve
             return this.blueprint;
 
         } catch (error: any) {
-            console.error('[Orchestrator] Pipeline failed:', error);
-            await this.updateStatus('error');
-            this.emit('System', 'failed', `Pipeline halted: ${error.message}`);
+            console.error('[Orchestrator] Planning phase failed:', error);
+            await this.updatePhase('error', 'error');
+            this.emit('System', 'failed', `Planning failed: ${error.message}`);
             throw error;
         }
     }
 
-    private async runPostGenerationTasks() {
+    // ================================================================
+    // PHASE 2 — EXECUTION (gated — only called after approval)
+    // ================================================================
+    async executeAfterApproval(userId: string): Promise<ProjectBlueprint> {
         try {
-            // Phase 5: Quality & Security Gates
-            if (!this.blueprint.qualityReport) {
-                await this.runSequential(AgentId.QA_TESTING, 'qualityReport', 'Running background test suite and quality checks...');
+            // Verify approval state in Firestore before proceeding
+            const projectDoc = await adminDb.collection('projects').doc(this.blueprint.id).get();
+            const data = projectDoc.data();
+
+            if (data?.status !== 'awaiting_approval') {
+                throw new Error(`Cannot execute: project status is '${data?.status}', expected 'awaiting_approval'.`);
             }
+
+            const approvedPlanVersion = data?.activePlanVersion;
+            const planVersions = data?.planVersions || [];
+            const approvedPlan = planVersions.find((v: any) => v.version === approvedPlanVersion);
+
+            if (!approvedPlan?.plan || approvedPlan.plan.status !== 'approved') {
+                throw new Error('Plan is not in approved state. Execution blocked.');
+            }
+
+            // Sync blueprint with Firestore approval state
+            this.blueprint = { ...this.blueprint, ...data } as ProjectBlueprint;
+
+            await this.updatePhase('executing', 'building');
+            await this.auditLogger.executionStarted(approvedPlanVersion);
+            this.emit('System', 'running', `🚀 Execution Phase — building under approved plan v${approvedPlanVersion}...`);
+
+            // Phase 2a: Backend Generation (new dedicated agent)
+            if (!this.blueprint.backendRoutes) {
+                await this.runSequential(AgentId.BACKEND_GENERATION, 'backendRoutes', '⚙️ Backend Agent: Generating API routes with RBAC...');
+            }
+
+            // Phase 2b: Parallel — Frontend Code Generation + Logic Builder
+            if (!this.blueprint.codebase || !this.blueprint.workflows) {
+                this.emit('System', 'running', '⚡ Generating frontend and workflows in parallel...');
+                await Promise.all([
+                    this.blueprint.codebase ? Promise.resolve() : this.runAgent(AgentId.CODE_GENERATION, 'codebase'),
+                    this.blueprint.workflows ? Promise.resolve() : this.runAgent(AgentId.LOGIC_BUILDER, 'workflows')
+                ]);
+            }
+
+            // SHORT-CIRCUIT: Core app built — redirect user to builder while post-tasks run
+            await this.updatePhase('executing', 'deployed');
+            this.emit('System', 'completed', '✅ Core application built! Redirecting to Visual Builder...');
+
+            // Phase 2c: Post-generation tasks (background)
+            this.runPostGenerationTasks(userId).catch(e =>
+                console.error('[Orchestrator Background] Post tasks failed:', e)
+            );
+
+            return this.blueprint;
+
+        } catch (error: any) {
+            console.error('[Orchestrator] Execution phase failed:', error);
+            await this.updatePhase('error', 'error');
+            this.emit('System', 'failed', `Execution failed: ${error.message}`);
+            throw error;
+        }
+    }
+
+    private async runPostGenerationTasks(userId: string) {
+        try {
+            // Security gate (VETO power)
             if (!this.blueprint.securityReport) {
-                const secOutput = await this.runSequential(AgentId.SECURITY, 'securityReport', 'Performing background SAST scan...');
-                // Security has veto power
+                const secOutput = await this.runSequential(AgentId.SECURITY, 'securityReport', '🔐 Security Agent: Running OWASP audit and attack simulations...');
                 if (!secOutput.payload.passed) {
-                    this.emit(AgentId.SECURITY, 'vetoed', 'Security Gate Failed during background scan.');
-                    return; // Stop background tasks but app remains accessible
+                    this.emit(AgentId.SECURITY, 'vetoed', '🚨 Security Gate FAILED. Deployment blocked. User re-approval required.');
+                    await this.auditLogger.securityVeto(secOutput.payload.criticalVulnerabilities);
+                    return; // Stop — deployment blocked
                 }
             }
 
-            // Phase 6: Optimization & Deployment
-            if (!this.blueprint.deploymentManifest) {
-                await this.runSequential(AgentId.DEBUG_OPTIMIZE, null, 'Running background optimizations...');
-                await this.runSequential(AgentId.DEPLOYMENT, 'deploymentManifest', 'Preparing deployment configuration...');
+            // QA gate (blocks deployment)
+            if (!this.blueprint.qualityReport) {
+                const qaOutput = await this.runSequential(AgentId.QA_TESTING, 'qualityReport', '🧪 QA Agent: Running full test suite...');
+                if (!qaOutput.payload.passed) {
+                    this.emit(AgentId.QA_TESTING, 'vetoed', '🚨 QA Gate FAILED. Deployment blocked.');
+                    return;
+                }
             }
 
-            // Phase 7: Documentation
-            await this.runSequential(AgentId.DOCUMENTATION, null, 'Generating final documentation and changelog...');
+            // Optimization
+            await this.runSequential(AgentId.DEBUG_OPTIMIZE, null, '⚡ Optimize Agent: Scanning for performance issues...');
 
-            await this.updateStatus('deployed', 'completed');
-            this.emit('System', 'completed', 'Background QA & DevOps sweeps fully complete.');
+            // Deployment
+            if (!this.blueprint.deploymentManifest) {
+                const deployOutput = await this.runSequential(AgentId.DEPLOYMENT, null, '🚀 Deployment Agent: Generating deployment manifest...');
+                if (deployOutput.payload?.deploymentManifest) {
+                    this.blueprint.deploymentManifest = deployOutput.payload.deploymentManifest;
+                }
+                if (deployOutput.payload?.monitoringConfig) {
+                    this.blueprint.monitoringConfig = deployOutput.payload.monitoringConfig;
+                }
+            }
+
+            // Documentation
+            await this.runSequential(AgentId.DOCUMENTATION, null, '📄 Generating documentation...');
+
+            await this.updatePhase('completed', 'deployed');
+            this.emit('System', 'completed', '🎉 All background tasks complete. Platform is ready.');
         } catch (error) {
             console.error('[Orchestrator Background] Failed:', error);
         }
     }
 
+    // ================================================================
+    // Plan Revision — Replay planning phase with revision notes
+    // ================================================================
+    async revisePlan(revisionNotes: string, userId: string): Promise<ProjectBlueprint> {
+        await this.auditLogger.planRevisionRequested(
+            this.blueprint.activePlanVersion,
+            revisionNotes,
+            userId
+        );
+
+        // Reset planning outputs so agents re-run
+        this.blueprint.prd = undefined;
+        this.blueprint.databaseSchema = undefined;
+        this.blueprint.architecture = undefined;
+
+        return this.executePlanningPhase();
+    }
+
+    // ================================================================
+    // Helpers
+    // ================================================================
     private async runSequential(
         agentId: AgentId,
         blueprintKey: keyof ProjectBlueprint | null,
-        message: string
+        message: string,
+        planningMode = false
     ): Promise<AgentOutput> {
         this.emit(agentId, 'running', message);
-        const output = await this.runAgent(agentId, blueprintKey);
-        this.emit(agentId, 'completed', `${agentId} completed successfully.`, output.payload);
+        const output = await this.runAgent(agentId, blueprintKey, planningMode);
+        this.emit(agentId, 'completed', `${agentId} completed.`, output.payload);
         return output;
     }
 
-    private async runAgent(agentId: AgentId, blueprintKey: keyof ProjectBlueprint | null): Promise<AgentOutput> {
+    private async runAgent(
+        agentId: AgentId,
+        blueprintKey: keyof ProjectBlueprint | null,
+        planningMode = false
+    ): Promise<AgentOutput> {
         const agent = getAgent(agentId);
-        if (!agent) throw new Error(`Agent ${agentId} not found in registry.`);
-
-        console.log(`[Orchestrator] Starting ${agentId}...`);
+        if (!agent) throw new Error(`Agent ${agentId} not registered.`);
 
         const input: AgentInput = {
             projectId: this.blueprint.id,
-            payload: this.blueprint.originalPrompt, // Many agents will primarily just look at the accumulated blueprint
-            blueprint: this.blueprint
+            payload: this.blueprint.originalPrompt,
+            blueprint: this.blueprint,
+            provider: this.blueprint.llmProvider,
+            planningMode
         };
 
         const output = await agent.execute(input);
@@ -148,53 +280,41 @@ export class OrchestrationBus {
             throw new Error(`${agentId} failed: ${output.error}`);
         }
 
-        // Apply result to blueprint if applicable
         if (blueprintKey && output.payload) {
             (this.blueprint as any)[blueprintKey] = output.payload;
         }
 
-        // Save progress to database
         await this.saveBlueprintProgress(agentId);
-
-        console.log(`[Orchestrator] Finished ${agentId}.`);
         return output;
     }
 
-    private emit(agentId: AgentId | 'System', status: 'running' | 'completed' | 'failed' | 'vetoed', message: string, payload?: any) {
+    private emit(
+        agentId: AgentId | 'System',
+        status: 'running' | 'completed' | 'failed' | 'vetoed',
+        message: string,
+        payload?: any
+    ) {
         try {
-            const logEntry = {
-                timestamp: Date.now(),
-                agentId: agentId !== 'System' ? agentId : 'system',
-                status,
-                message
-            };
-            const ref = adminDb.collection('projects').doc(this.blueprint.id);
-            ref.update({
+            const logEntry = { timestamp: Date.now(), agentId: agentId !== 'System' ? agentId : 'system', status, message };
+            adminDb.collection('projects').doc(this.blueprint.id).update({
                 pipelineLogs: FieldValue.arrayUnion(logEntry)
-            }).catch(e => console.warn('[Log Stream] Non-fatal error:', e));
-        } catch (e) {
-            console.error('[Log Stream] Setup error:', e);
-        }
+            }).catch(e => console.warn('[Log Stream]', e));
+        } catch (e) { console.error('[Log Stream]', e); }
 
-        this.onEvent({
-            agentId: agentId !== 'System' ? agentId as AgentId : undefined,
-            status,
-            message,
-            payload
-        });
+        this.onEvent({ agentId: agentId !== 'System' ? agentId as AgentId : undefined, status, message, payload });
     }
 
-    private async updateStatus(status: ProjectBlueprint['status'], phase?: ProjectBlueprint['currentPhase']) {
+    private async updatePhase(
+        phase: ProjectBlueprint['phase'],
+        status: ProjectBlueprint['status']
+    ) {
+        this.blueprint.phase = phase;
         this.blueprint.status = status;
-        if (phase) this.blueprint.currentPhase = phase;
-
-        const ref = adminDb.collection('projects').doc(this.blueprint.id);
-        await ref.update({ status, currentPhase: this.blueprint.currentPhase });
+        await adminDb.collection('projects').doc(this.blueprint.id).update({ phase, status });
     }
 
     private async saveBlueprintProgress(completedAgentId: AgentId) {
         this.blueprint.currentPhase = completedAgentId;
-        const ref = adminDb.collection('projects').doc(this.blueprint.id);
-        await ref.set(this.blueprint, { merge: true });
+        await adminDb.collection('projects').doc(this.blueprint.id).set(this.blueprint, { merge: true });
     }
 }

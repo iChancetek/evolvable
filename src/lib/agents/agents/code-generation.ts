@@ -1,107 +1,121 @@
 import { Agent, AgentId, AgentInput, AgentOutput, GeneratedCodebase } from '../types';
 import { callLLM } from '../llm-adapter';
 import { adminDb } from '../../firebase/admin';
+import { AuditLogger } from '../../audit/audit-logger';
 
 const SYSTEM_PROMPT_PLAN = `
-You are the Code Generation Architect for the Evolvable platform. 
-Given the architectural documents, generate a JSON object containing a SINGLE ARRAY of strings under the key "files".
-These strings must be the absolute file paths (e.g. "src/app/page.tsx", "src/lib/db.ts") that need to be generated for this project.
-Do NOT generate the code yet. Just the file paths.
+You are the Frontend Code Planner for the Evolvable platform.
+Given the approved implementation plan and architecture, generate a JSON object with key "files" containing an array of file paths to generate.
+The file list MUST exactly match the pages listed in the approved plan's featureBreakdown.pages[]. Do not add unlisted pages.
+Include all supporting files: CSS modules, lib utilities, hooks, components.
 `;
 
 const SYSTEM_PROMPT_CODE = `
-You are the Code Generation Agent for the Evolvable platform, an elite Full-Stack TypeScript Next.js Engineer.
-Your goal is to write the complete, production-ready source code for a specific requested file.
+You are the Frontend Code Generation Agent for the Evolvable platform — an elite Full-Stack TypeScript Next.js Engineer.
+Generate complete, production-ready source code for the requested file.
 
-Constraints: Next.js 16 App Router, React 19, Vanilla CSS Modules (no Tailwind), Firebase Auth.
-Output ONLY a JSON object with a single key "code" containing the raw code string. Do NOT output markdown backticks around the json.
+Rules:
+- Next.js 16 App Router, React 19, Vanilla CSS Modules (no Tailwind), Firebase Auth
+- Apply role-based UI rendering: hide/show sections based on user role from auth context
+- Wire all data fetching to the approved API route contracts
+- For SaaS/multi-tenant: include tenant context and org switcher if applicable
+- For marketplace: include seller/buyer-specific views
+- For social: include real-time subscription hooks
+- Output ONLY a JSON object with key "code" containing the raw file content string
 `;
 
 export class CodeGenerationAgent implements Agent {
     id = AgentId.CODE_GENERATION;
 
     async execute(input: AgentInput): Promise<AgentOutput> {
-        console.log(`[CodeGenerationAgent] Writing source code...`);
+        console.log(`[CodeGenerationAgent] Generating frontend from approved plan...`);
 
         if (!input.blueprint.architecture || !input.blueprint.databaseSchema) {
-            return { agentId: this.id, status: 'failed', payload: null, error: 'Missing upstream dependencies (Architecture or Schema)' };
+            return { agentId: this.id, status: 'failed', payload: null, error: 'Missing upstream dependencies' };
         }
 
+        // Retrieve approved plan for plan-derived file manifest
+        const approvedPlan = input.blueprint.planVersions?.find(
+            v => v.version === input.blueprint.activePlanVersion
+        )?.plan;
+
+        if (!approvedPlan) {
+            return { agentId: this.id, status: 'failed', payload: null, error: 'No approved plan found. Cannot generate code.' };
+        }
+
+        const auditLogger = new AuditLogger(input.projectId);
+
         try {
-            // We pass large amounts of context here
             const context = {
                 prd: input.blueprint.prd,
                 design: input.blueprint.designSystem,
                 db: input.blueprint.databaseSchema,
                 arch: input.blueprint.architecture,
-                logic: input.blueprint.workflows
+                logic: input.blueprint.workflows,
+                platformMode: input.blueprint.prd?.platformMode,
+                approvedPages: approvedPlan.featureBreakdown.pages,
+                apiContracts: input.blueprint.architecture.apiContracts,
+                rbacPolicy: input.blueprint.architecture.rbacPolicy
             };
 
-            // Step 1: Map out the necessary files
-            console.log(`[CodeGenerationAgent] Generating file manifest...`);
-            const planPrompt = `Analyze this architecture and generate the list of files to be built:\n\n${JSON.stringify(context)}`;
+            // Step 1: Generate file manifest derived from approved plan (not LLM hallucination)
+            console.log(`[CodeGenerationAgent] Generating plan-derived file manifest...`);
+            const planPrompt = `
+Approved pages from plan: ${JSON.stringify(approvedPlan.featureBreakdown.pages)}
+Platform mode: ${context.platformMode}
+Architecture: ${JSON.stringify(context.arch)}
+Generate the complete list of files to build (pages + components + utilities). Stay within the approved scope.
+`;
             const plan = await callLLM<{ files: string[] }>(SYSTEM_PROMPT_PLAN, planPrompt, {
                 workloadType: 'standard',
                 provider: input.provider,
                 jsonSchema: true
             });
 
-            if (!plan.files || plan.files.length === 0) {
-                throw new Error("Failed to generate a file manifest.");
-            }
-            console.log(`[CodeGenerationAgent] Planner identified ${plan.files.length} files to build. Beginning batched stream...`);
+            if (!plan.files || plan.files.length === 0) throw new Error('Failed to generate file manifest.');
+            console.log(`[CodeGenerationAgent] Planning ${plan.files.length} files.`);
 
             const generatedFiles: Record<string, string> = {};
             const projectRef = adminDb.collection('projects').doc(input.blueprint.id);
 
-            // Step 2: Generate each file in parallel batches to massively speed up completion
-            const BATCH_SIZE = 5;
+            // Step 2: Generate files in parallel batches of 4
+            const BATCH_SIZE = 4;
             for (let i = 0; i < plan.files.length; i += BATCH_SIZE) {
                 const batch = plan.files.slice(i, i + BATCH_SIZE);
-
                 await Promise.all(batch.map(async (filePath) => {
                     console.log(`[CodeGenerationAgent] Generating: ${filePath}`);
-
-                    const filePrompt = `Write the complete code for ${filePath}. Architecture Context:\n\n${JSON.stringify({
-                        prd: context.prd,
-                        db: context.db,
-                        arch: context.arch
-                    })}`;
-
+                    const filePrompt = `
+File to generate: ${filePath}
+Platform Mode: ${context.platformMode}
+API Contracts (approved): ${JSON.stringify(context.apiContracts?.slice(0, 5))}
+RBAC Policy: ${JSON.stringify(context.rbacPolicy)}
+DB Schema: ${JSON.stringify(context.db)}
+Architecture: ${JSON.stringify(context.arch)}
+PRD: ${JSON.stringify(context.prd)}
+`;
                     try {
                         const result = await callLLM<{ code: string }>(SYSTEM_PROMPT_CODE, filePrompt, {
-                            workloadType: 'standard', // Use standard to keep it fast per file
+                            workloadType: 'standard',
                             provider: input.provider,
                             maxTokens: 4000,
                             jsonSchema: true
                         });
-
                         generatedFiles[filePath] = result.code;
-
-                        // Stream update to Firestore immediately so the UI flashes the new code
-                        try {
-                            await projectRef.update({
-                                'codebase.files': generatedFiles
-                            });
-                        } catch (e) {
-                            console.warn(`[CodeGenerationAgent] Non-fatal error streaming ${filePath} to dashboard:`, e);
-                        }
-
+                        // Stream progress to Firestore
+                        await projectRef.update({ 'codebase.files': generatedFiles }).catch(() => { });
                     } catch (fileErr) {
                         console.error(`[CodeGenerationAgent] Failed generating ${filePath}:`, fileErr);
-                        // We continue the loop so one bad file doesn't crash the entire generation
                     }
                 }));
             }
 
-            console.log(`[CodeGenerationAgent] Codebase generation stream complete.`);
+            console.log(`[CodeGenerationAgent] Frontend generation complete. ${Object.keys(generatedFiles).length} files written.`);
 
-            const codebase: GeneratedCodebase = {
-                files: generatedFiles,
-                dependencies: {}
+            return {
+                agentId: this.id,
+                status: 'completed',
+                payload: { files: generatedFiles, dependencies: {} } as GeneratedCodebase
             };
-
-            return { agentId: this.id, status: 'completed', payload: codebase };
         } catch (error: any) {
             console.error('[CodeGenerationAgent] Failed:', error);
             return { agentId: this.id, status: 'failed', payload: null, error: error.message };

@@ -1,8 +1,15 @@
+// ================================================================
+// Evolvable Agent System — Types
+// Platform Generation + Plan-First Execution Model
+// ================================================================
+
 export enum AgentId {
     VISION = 'vision',
     SYSTEM_ARCHITECT = 'system_architect',
+    PLAN_COORDINATOR = 'plan_coordinator',
     UI_DESIGNER = 'ui_designer',
     DB_ARCHITECT = 'db_architect',
+    BACKEND_GENERATION = 'backend_generation',
     CODE_GENERATION = 'code_generation',
     LOGIC_BUILDER = 'logic_builder',
     QA_TESTING = 'qa_testing',
@@ -15,6 +22,180 @@ export enum AgentId {
 export type AgentStatus = 'pending' | 'running' | 'completed' | 'failed' | 'vetoed';
 
 export type LLMProvider = 'huggingface' | 'openai' | 'deepseek';
+
+// ---------------------------------------------------------
+// Platform Intelligence
+// ---------------------------------------------------------
+
+export type PlatformMode =
+    | 'single_app'
+    | 'saas'
+    | 'marketplace'
+    | 'social'
+    | 'enterprise_dashboard'
+    | 'api_platform'
+    | 'multi_tenant';
+
+export type MonetizationModel = 'free' | 'freemium' | 'subscription' | 'usage_based' | 'marketplace_fee' | 'none';
+
+export type TenantIsolationStrategy = 'schema_per_tenant' | 'row_level' | 'shared' | 'none';
+
+export type PipelinePhase =
+    | 'planning'
+    | 'awaiting_approval'
+    | 'executing'
+    | 'completed'
+    | 'error';
+
+export type PlanStatus =
+    | 'draft'
+    | 'awaiting_approval'
+    | 'approved'
+    | 'revision_requested'
+    | 'cancelled';
+
+// ---------------------------------------------------------
+// RBAC & Security
+// ---------------------------------------------------------
+
+export interface UserRole {
+    name: string;
+    description: string;
+    permissions: string[];
+}
+
+export interface RBACPolicy {
+    roles: UserRole[];
+    routeMap: Record<string, string[]>; // route → allowed roles[]
+    tenantScoped: boolean;
+}
+
+// ---------------------------------------------------------
+// Implementation Plan (9 mandatory sections)
+// ---------------------------------------------------------
+
+export interface ImplementationPlan {
+    version: number;
+    generatedAt: number;
+    agentIds: AgentId[];
+    status: PlanStatus;
+
+    executiveSummary: {
+        appType: PlatformMode;
+        targetUsers: string[];
+        coreFeatures: string[];
+        estimatedComplexity: 'low' | 'medium' | 'high' | 'enterprise';
+        estimatedBuildTime: string;
+        monetizationModel: MonetizationModel;
+    };
+
+    architectureOverview: {
+        frontend: string;
+        backend: string;
+        database: string;
+        auth: string;
+        hosting: string;
+        topology: 'monolith' | 'microservices' | 'serverless';
+        multiTenantStrategy?: TenantIsolationStrategy;
+    };
+
+    featureBreakdown: {
+        pages: { path: string; purpose: string; roles: string[] }[];
+        components: { name: string; purpose: string }[];
+        apis: { method: string; path: string; description: string; auth: boolean; roles: string[] }[];
+        workflows: string[];
+        userRoles: string[];
+        permissions: Record<string, string[]>;
+    };
+
+    databaseDesign: {
+        engine: string;
+        models: { name: string; fields: Record<string, string>; tenantScoped: boolean }[];
+        relationships: string[];
+        indexStrategy: string[];
+        isolationLogic?: string;
+    };
+
+    securityPlan: {
+        authFlow: string;
+        authorizationLogic: string;
+        roleMapping: Record<string, string[]>;
+        routeProtection: string[];
+        rateLimiting: string;
+        inputValidation: string;
+        firestoreRules?: string;
+    };
+
+    deploymentStrategy: {
+        hosting: string;
+        envVars: string[];
+        domainSetup: string;
+        scalingModel: string;
+        rollbackStrategy: string;
+        healthChecks: string[];
+    };
+
+    testingPlan: {
+        unitScope: string[];
+        integrationScope: string[];
+        authFlowTests: string[];
+        securityTests: string[];
+        rbacMatrix: { role: string; route: string; allowed: boolean }[];
+    };
+
+    monitoringPlan: {
+        metrics: string[];
+        errorLogging: string;
+        authAnalytics: string;
+        performanceTracking: string;
+    };
+
+    riskAnalysis: {
+        technicalRisks: { risk: string; severity: 'low' | 'medium' | 'high'; mitigation: string }[];
+        securityRisks: { risk: string; severity: 'low' | 'medium' | 'high'; mitigation: string }[];
+        scalabilityRisks: { risk: string; severity: 'low' | 'medium' | 'high'; mitigation: string }[];
+    };
+
+    selfValidation: {
+        architectureCrossReviewed: boolean;
+        scalabilityValidated: boolean;
+        securityValidated: boolean;
+        multiTenantIntegrityChecked: boolean;
+        feasibilityConfirmed: boolean;
+    };
+}
+
+export interface PlanVersion {
+    version: number;
+    plan: ImplementationPlan;
+    generatedAt: number;
+    approvedAt?: number;
+    approvedByUserId?: string;
+    revisionNotes?: string;
+    agentIds: AgentId[];
+}
+
+// ---------------------------------------------------------
+// Testing & Monitoring
+// ---------------------------------------------------------
+
+export interface TestSuite {
+    passed: boolean;
+    coverage: number;
+    unit: { name: string; passed: boolean; description: string }[];
+    integration: { name: string; passed: boolean; endpoint: string }[];
+    authFlows: { scenario: string; passed: boolean }[];
+    rbacMatrix: { role: string; route: string; allowed: boolean; tested: boolean }[];
+    edgeCases: { scenario: string; passed: boolean }[];
+}
+
+export interface MonitoringConfig {
+    metrics: string[];
+    errorReporting: string;
+    authActivityTracking: boolean;
+    performanceMonitoring: boolean;
+    dashboardUrl?: string;
+}
 
 // ---------------------------------------------------------
 // Visual Builder JSON AST Types
@@ -65,11 +246,16 @@ export interface VisualLayout {
     version: number;
 }
 
+// ---------------------------------------------------------
+// Agent I/O
+// ---------------------------------------------------------
+
 export interface AgentInput {
     projectId: string;
     payload: any;
-    blueprint: ProjectBlueprint; // Current accumulated state of the project
+    blueprint: ProjectBlueprint;
     provider?: LLMProvider;
+    planningMode?: boolean; // When true, agents must not generate code/infra/deploy calls
 }
 
 export interface AgentOutput {
@@ -84,7 +270,10 @@ export interface Agent {
     execute(input: AgentInput): Promise<AgentOutput>;
 }
 
-// Immutable log of architectural decisions
+// ---------------------------------------------------------
+// ADR & Audit
+// ---------------------------------------------------------
+
 export interface ADREntry {
     id: string;
     timestamp: number;
@@ -96,29 +285,66 @@ export interface ADREntry {
     status: 'accepted' | 'superseded' | 'deprecated';
 }
 
-// Global state accumulated as pipeline progresses
+export type AuditEventType =
+    | 'plan_generated'
+    | 'plan_revision_requested'
+    | 'plan_approved'
+    | 'plan_cancelled'
+    | 'execution_started'
+    | 'plan_drift'
+    | 'security_veto'
+    | 'qa_gate_failed'
+    | 'deployed';
+
+export interface AuditLogEntry {
+    id: string;
+    event: AuditEventType;
+    timestamp: number;
+    projectId: string;
+    userId?: string;
+    planVersion?: number;
+    agentId?: string;
+    description: string;
+    metadata?: Record<string, any>;
+}
+
+// ---------------------------------------------------------
+// ProjectBlueprint — Global state accumulated as pipeline progresses
+// ---------------------------------------------------------
+
 export interface ProjectBlueprint {
     id: string;
     userId: string;
     originalPrompt: string;
     createdAt: number;
 
-    // Agent Outputs
+    // Two-phase pipeline state
+    phase: PipelinePhase;
+    planVersions: PlanVersion[];
+    activePlanVersion: number;
+    platformMode?: PlatformMode;
+    rbacPolicy?: RBACPolicy;
+
+    // Agent outputs — Planning Phase
     prd?: ProductRequirementsDocument;
     designSystem?: DesignSystemSpec;
     databaseSchema?: DatabaseSchema;
     architecture?: ArchitectureDesignDocument;
+
+    // Agent outputs — Execution Phase
     workflows?: WorkflowManifest;
     codebase?: GeneratedCodebase;
-    qualityReport?: QualityReport;
+    backendRoutes?: GeneratedBackendRoutes;
+    qualityReport?: TestSuite;
     securityReport?: SecurityAuditReport;
     deploymentManifest?: DeploymentManifest;
+    monitoringConfig?: MonitoringConfig;
 
     adrLog: ADREntry[];
     pipelineLogs?: PipelineLog[];
     llmProvider: LLMProvider;
     currentPhase: AgentId | 'completed';
-    status: 'draft' | 'building' | 'deployed' | 'error';
+    status: 'draft' | 'building' | 'awaiting_approval' | 'deployed' | 'error';
     visualLayout?: VisualLayout;
 }
 
@@ -130,17 +356,21 @@ export interface PipelineLog {
 }
 
 // ---------------------------------------------------------
-// Specific Agent Output Types (Stubs for now)
+// Specific Agent Output Types
 // ---------------------------------------------------------
 
 export interface ProductRequirementsDocument {
     title: string;
     description: string;
+    platformMode: PlatformMode;
     targetUsers: string[];
-    features: { id: string; title: string; required: boolean }[];
+    userRoles: string[];
+    monetizationModel: MonetizationModel;
+    features: { id: string; title: string; description: string; required: boolean; phase: 'mvp' | 'growth' | 'scale' }[];
     userFlows: string[];
-    pageInventory: { path: string; purpose: string }[];
-    dataEntities: { name: string; fields: string[] }[];
+    pageInventory: { path: string; purpose: string; roles: string[] }[];
+    dataEntities: { name: string; fields: string[]; tenantScoped: boolean }[];
+    roadmap: { phase: string; features: string[] }[];
 }
 
 export interface DesignSystemSpec {
@@ -151,43 +381,83 @@ export interface DesignSystemSpec {
 
 export interface DatabaseSchema {
     engine: 'postgresql' | 'mongodb' | 'firestore' | 'redis';
-    tables: any[];
+    tables: {
+        name: string;
+        fields: Record<string, string>;
+        indexes: string[];
+        tenantScoped: boolean;
+    }[];
+    isolationStrategy: TenantIsolationStrategy;
+    firestoreRules?: string;
+    queryPatterns?: string[];
 }
 
 export interface ArchitectureDesignDocument {
     topology: 'monolith' | 'microservices' | 'serverless';
+    platformMode: PlatformMode;
     stack: {
         frontend: string;
         backend: string;
         database: string;
         hosting: string;
     };
-    apiContracts: any[];
+    apiContracts: {
+        method: string;
+        path: string;
+        description: string;
+        auth: boolean;
+        roles: string[];
+        requestSchema?: string;
+        responseSchema?: string;
+    }[];
+    tenantIsolation: TenantIsolationStrategy;
+    rbacPolicy: RBACPolicy;
+    serviceBoundaries?: string[];
 }
 
 export interface WorkflowManifest {
-    automations: any[];
+    automations: { name: string; trigger: string; actions: string[] }[];
 }
 
 export interface GeneratedCodebase {
-    files: Record<string, string>; // path -> content
+    files: Record<string, string>; // path → content
     dependencies: Record<string, string>;
 }
 
-export interface QualityReport {
-    passed: boolean;
-    coverage: number;
-    testResults: any[];
+export interface GeneratedBackendRoutes {
+    routes: {
+        path: string;
+        method: string;
+        auth: boolean;
+        roles: string[];
+        code: string;
+    }[];
 }
 
 export interface SecurityAuditReport {
     passed: boolean;
     criticalVulnerabilities: number;
-    findings: any[];
+    findings: {
+        severity: 'critical' | 'high' | 'medium' | 'low';
+        type: string;
+        description: string;
+        location?: string;
+        remediation: string;
+    }[];
+    attackSimulations: {
+        scenario: string;
+        passed: boolean;
+        details: string;
+    }[];
+    driftFromPlan: boolean;
 }
 
 export interface DeploymentManifest {
     provider: string;
     liveUrl: string;
     resources: any[];
+    envVars: string[];
+    healthCheckEndpoints: string[];
+    scalingRules: string;
+    rollbackProcedure: string;
 }

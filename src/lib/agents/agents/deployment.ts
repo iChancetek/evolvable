@@ -1,44 +1,74 @@
-import { Agent, AgentId, AgentInput, AgentOutput, DeploymentManifest } from '../types';
+import { Agent, AgentId, AgentInput, AgentOutput, DeploymentManifest, MonitoringConfig } from '../types';
 import { callLLM } from '../llm-adapter';
-import { DockerGenerator } from '../../deployment/docker-generator';
+import { AuditLogger } from '../../audit/audit-logger';
 
 const SYSTEM_PROMPT = `
-You are the DevOps Deployment Agent for the Evolvable platform.
-Your goal is to take a validated Next.js codebase and define the exact deployment manifest for Firebase App Hosting or Vercel edge deployment.
+You are the DevOps & Deployment Agent for the Evolvable platform — a Senior DevOps Engineer.
 
-Output strictly JSON describing the provider, initial live URL stub, and resource requirements.
+Generate a complete deployment manifest from the approved plan. Include:
+1. Hosting configuration (Firebase App Hosting / Vercel)
+2. All required environment variable names (no actual secrets)
+3. Domain setup instructions
+4. Scaling model (based on platform mode):
+   - saas/marketplace/social: auto-scaling, CDN, edge functions
+   - enterprise_dashboard: dedicated regions, private networking
+   - api_platform: rate-limit-aware scaling, DDoS protection
+   - single_app: standard serverless
+5. Health check endpoints (at minimum: /api/health)
+6. Rollback strategy (blue-green or feature flag based)
+7. Monitoring bootstrap configuration
+
+Return JSON with keys "deploymentManifest" and "monitoringConfig".
 `;
 
 export class DeploymentAgent implements Agent {
     id = AgentId.DEPLOYMENT;
 
     async execute(input: AgentInput): Promise<AgentOutput> {
-        console.log(`[DeploymentAgent] Generating infrastructure and deployment manifests...`);
+        console.log(`[DeploymentAgent] Generating deployment configuration...`);
 
-        if (!input.blueprint.codebase) {
-            return { agentId: this.id, status: 'failed', payload: null, error: 'Missing codebase' };
+        // Hard gate: QA must have passed
+        if (!input.blueprint.qualityReport?.passed) {
+            console.warn('[DeploymentAgent] QA gate not passed — aborting deployment.');
+            return { agentId: this.id, status: 'vetoed', payload: null, error: 'Deployment blocked: QA gate failed.' };
         }
 
-        try {
-            const userPrompt = `Generate a deployment manifest for a Next.js 16 App Router application.`;
+        // Hard gate: Security must have passed
+        if (!input.blueprint.securityReport?.passed) {
+            console.warn('[DeploymentAgent] Security gate not passed — aborting deployment.');
+            return { agentId: this.id, status: 'vetoed', payload: null, error: 'Deployment blocked: Security gate failed.' };
+        }
 
-            const manifest = await callLLM<DeploymentManifest>(SYSTEM_PROMPT, userPrompt, {
+        const approvedPlan = input.blueprint.planVersions?.find(
+            v => v.version === input.blueprint.activePlanVersion
+        )?.plan;
+
+        const auditLogger = new AuditLogger(input.projectId);
+
+        try {
+            const userPrompt = `
+Platform Mode: ${input.blueprint.prd?.platformMode}
+Approved Deployment Strategy: ${JSON.stringify(approvedPlan?.deploymentStrategy)}
+Approved Monitoring Plan: ${JSON.stringify(approvedPlan?.monitoringPlan)}
+Architecture: ${JSON.stringify(input.blueprint.architecture)}
+
+Generate the complete DeploymentManifest and MonitoringConfig.
+Ensure health checks, rollback, and scaling match the approved plan.
+`;
+
+            const result = await callLLM<{ deploymentManifest: DeploymentManifest; monitoringConfig: MonitoringConfig }>(
+                SYSTEM_PROMPT, userPrompt, {
                 workloadType: 'standard',
                 provider: input.provider,
-                jsonSchema: true
-            });
-
-            // Inject Docker config into the final codebase
-            if (input.blueprint.codebase) {
-                input.blueprint.codebase = DockerGenerator.injectDockerConfig(input.blueprint.codebase);
+                jsonSchema: true,
+                maxTokens: 4000
             }
+            );
 
-            // Simulate the generated stub URL for the new project
-            if (manifest) {
-                manifest.liveUrl = `http://localhost:${Math.floor(Math.random() * 1000) + 3000}`;
-            }
+            await auditLogger.deployed(result.deploymentManifest.liveUrl || 'pending');
 
-            return { agentId: this.id, status: 'completed', payload: manifest };
+            console.log(`[DeploymentAgent] Deployment manifest ready.`);
+            return { agentId: this.id, status: 'completed', payload: result };
         } catch (error: any) {
             console.error('[DeploymentAgent] Failed:', error);
             return { agentId: this.id, status: 'failed', payload: null, error: error.message };
