@@ -1,8 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import styles from './builder.module.css';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { useSearchParams } from 'next/navigation';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase/config';
+import { ProjectBlueprint } from '@/lib/agents/types';
 
 const componentLibrary = [
     { icon: '📝', name: 'Text', category: 'Basic' },
@@ -22,19 +26,63 @@ const componentLibrary = [
     { icon: '💬', name: 'Chat', category: 'Social' },
 ];
 
-const canvasElements = [
-    { id: '1', type: 'hero', content: 'Welcome to Your App' },
-    { id: '2', type: 'text', content: 'This is your homepage. Drag components to customize it.' },
-    { id: '3', type: 'form', content: 'Contact Form' },
-    { id: '4', type: 'features', content: 'Feature Grid' },
-];
-
 type DeviceView = 'desktop' | 'tablet' | 'mobile';
 
-export default function BuilderPage() {
+function BuilderContent() {
+    const searchParams = useSearchParams();
+    const projectId = searchParams.get('projectId');
+
+    const [project, setProject] = useState<ProjectBlueprint | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [selectedElement, setSelectedElement] = useState<string | null>(null);
     const [deviceView, setDeviceView] = useState<DeviceView>('desktop');
     const [sidebarTab, setSidebarTab] = useState<'components' | 'pages'>('components');
+
+    // Dynamic canvas mapped from the AI-generated Product Requirements Document
+    const [canvasElements, setCanvasElements] = useState<any[]>([
+        { id: '1', type: 'hero', content: 'Loading Application...' }
+    ]);
+
+    useEffect(() => {
+        const fetchProject = async () => {
+            if (!projectId) {
+                setIsLoading(false);
+                return;
+            }
+            try {
+                const docRef = doc(db, 'projects', projectId);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data() as ProjectBlueprint;
+                    setProject(data);
+
+                    // Map the real generated AI features onto the visual builder canvas
+                    if (data.prd) {
+                        const dynamicElements = [
+                            { id: 'hero', type: 'hero', content: data.prd.title || 'Welcome to Your App' },
+                            { id: 'desc', type: 'text', content: data.prd.description },
+                        ];
+
+                        data.prd.features.forEach((feat, idx) => {
+                            dynamicElements.push({
+                                id: `feat-${idx}`,
+                                type: idx % 2 === 0 ? 'features' : 'text',
+                                content: feat.title
+                            });
+                        });
+
+                        setCanvasElements(dynamicElements);
+                    }
+                }
+            } catch (err) {
+                console.error("Error fetching project:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchProject();
+    }, [projectId]);
 
     return (
         <ProtectedRoute>
@@ -47,7 +95,7 @@ export default function BuilderPage() {
                             <span>Evolvable</span>
                         </a>
                         <div className={styles.divider} />
-                        <span className={styles.projectName}>My App</span>
+                        <span className={styles.projectName}>{project?.prd?.title || 'My App'}</span>
                     </div>
 
                     <div className={styles.toolbarCenter}>
@@ -74,7 +122,7 @@ export default function BuilderPage() {
 
                     <div className={styles.toolbarRight}>
                         <button className={styles.previewBtn}>Preview</button>
-                        <a href="/deploy" className={styles.deployBtn}>
+                        <a href={`/deploy${projectId ? `?projectId=${projectId}` : ''}`} className={styles.deployBtn}>
                             🚀 Deploy
                         </a>
                     </div>
@@ -128,7 +176,7 @@ export default function BuilderPage() {
                             <div className={styles.canvasContent}>
                                 {/* Simulated app preview */}
                                 <div className={styles.previewNav}>
-                                    <span className={styles.previewLogo}>MyApp</span>
+                                    <span className={styles.previewLogo}>{project?.prd?.title || 'MyApp'}</span>
                                     <div className={styles.previewNavLinks}>
                                         <span>Home</span>
                                         <span>About</span>
@@ -200,7 +248,7 @@ export default function BuilderPage() {
                             <h3 className={styles.propTitle}>Properties</h3>
                             <div className={styles.propGroup}>
                                 <label>Content</label>
-                                <input type="text" className={styles.propInput} defaultValue={canvasElements.find(e => e.id === selectedElement)?.content} />
+                                <textarea className={styles.propInput} style={{ minHeight: '80px', resize: 'vertical' }} defaultValue={canvasElements.find(e => e.id === selectedElement)?.content} />
                             </div>
                             <div className={styles.propGroup}>
                                 <label>Background</label>
@@ -225,5 +273,13 @@ export default function BuilderPage() {
                 </div>
             </div>
         </ProtectedRoute>
+    );
+}
+
+export default function BuilderPage() {
+    return (
+        <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading builder...</div>}>
+            <BuilderContent />
+        </Suspense>
     );
 }

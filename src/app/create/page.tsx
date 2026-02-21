@@ -14,24 +14,7 @@ type Message = {
     options?: string[];
 };
 
-const clarifyingQuestions: { question: string; options: string[] }[] = [
-    {
-        question: "Great idea! 🎉 Let me ask a few quick questions to get it perfect.\n\nWhat type of app is this?",
-        options: ['Booking / Scheduling', 'Online Store', 'Portfolio / Website', 'Community / Social', 'Dashboard / Tool', 'Something else'],
-    },
-    {
-        question: "Who will use this app?",
-        options: ['My customers', 'My team', 'Both customers and team', 'The general public'],
-    },
-    {
-        question: "Should users create accounts?",
-        options: ['Yes, with full profiles', 'Optional — guest access is fine', 'No accounts needed'],
-    },
-    {
-        question: "Any design preference?",
-        options: ['Clean & minimal', 'Bold & colorful', 'Professional & corporate', 'Fun & playful', 'Surprise me ✨'],
-    },
-];
+
 
 export default function CreatePage() {
     const { user } = useAuth();
@@ -45,11 +28,9 @@ export default function CreatePage() {
         },
     ]);
     const [input, setInput] = useState('');
-    const [questionIndex, setQuestionIndex] = useState(-1);
     const [isTyping, setIsTyping] = useState(false);
     const [showPlan, setShowPlan] = useState(false);
     const [userIdea, setUserIdea] = useState('');
-    const [collectedAnswers, setCollectedAnswers] = useState<string[]>([]);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -64,15 +45,14 @@ export default function CreatePage() {
         setMessages((prev) => [...prev, msg]);
     };
 
-    const simulateAIResponse = (content: string, options?: string[], type?: 'text' | 'options' | 'plan') => {
+    const simulateAIResponse = (content: string, type?: 'text' | 'plan') => {
         setIsTyping(true);
         setTimeout(() => {
             addMessage({
                 id: Date.now().toString(),
                 role: 'ai',
                 content,
-                type: type || (options ? 'options' : 'text'),
-                options,
+                type: type || 'text',
             });
             setIsTyping(false);
         }, 1200);
@@ -84,44 +64,23 @@ export default function CreatePage() {
         setInput('');
 
         addMessage({ id: Date.now().toString(), role: 'user', content: text });
+        setUserIdea(text);
+        setIsTyping(true);
 
-        if (questionIndex === -1) {
-            setUserIdea(text);
-            setQuestionIndex(0);
-            const q = clarifyingQuestions[0];
-            simulateAIResponse(q.question, q.options, 'options');
-        }
-    };
-
-    const handleOptionSelect = (option: string) => {
-        addMessage({ id: Date.now().toString(), role: 'user', content: option });
-
-        const newAnswers = [...collectedAnswers, option];
-        setCollectedAnswers(newAnswers);
-
-        const nextIndex = questionIndex + 1;
-        if (nextIndex < clarifyingQuestions.length) {
-            setQuestionIndex(nextIndex);
-            const q = clarifyingQuestions[nextIndex];
-            simulateAIResponse(q.question, q.options, 'options');
-        } else {
-            // Trigger the actual backend pipeline
-            const fullPrompt = `Idea: ${userIdea}\nPreferences: ${newAnswers.join(', ')}`;
-
-            setIsTyping(true);
-
-            // Start the pipeline in the background
-            startPipeline(fullPrompt, user?.uid || 'anonymous').then(() => {
-                setShowPlan(true);
-                addMessage({
-                    id: Date.now().toString(),
-                    role: 'ai',
-                    content: 'plan',
-                    type: 'plan',
-                });
-                setIsTyping(false);
+        // Start the pipeline in the background using the real backend
+        startPipeline(text, user?.uid || 'anonymous').then(() => {
+            setShowPlan(true);
+            addMessage({
+                id: Date.now().toString(),
+                role: 'ai',
+                content: 'plan',
+                type: 'plan',
             });
-        }
+            setIsTyping(false);
+        }).catch(err => {
+            console.error("Pipeline failed", err);
+            setIsTyping(false);
+        });
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -219,29 +178,14 @@ export default function CreatePage() {
                                             </a>
                                         </div>
                                     ) : (
-                                        <>
-                                            <div className={styles.messageText}>
-                                                {msg.content.split('\n').map((line, i) => (
-                                                    <span key={i}>
-                                                        {line}
-                                                        {i < msg.content.split('\n').length - 1 && <br />}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                            {msg.options && (
-                                                <div className={styles.optionsGrid}>
-                                                    {msg.options.map((opt, i) => (
-                                                        <button
-                                                            key={i}
-                                                            className={styles.optionButton}
-                                                            onClick={() => handleOptionSelect(opt)}
-                                                        >
-                                                            {opt}
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </>
+                                        <div className={styles.messageText}>
+                                            {msg.content.split('\n').map((line, i) => (
+                                                <span key={i}>
+                                                    {line}
+                                                    {i < msg.content.split('\n').length - 1 && <br />}
+                                                </span>
+                                            ))}
+                                        </div>
                                     )}
                                 </div>
                             </div>
@@ -290,7 +234,7 @@ export default function CreatePage() {
                         </p>
                     </div>
                 </main>
-            </div>
-        </ProtectedRoute>
+            </div >
+        </ProtectedRoute >
     );
 }

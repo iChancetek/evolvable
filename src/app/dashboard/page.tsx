@@ -3,40 +3,48 @@
 import { useEffect, useState } from 'react';
 import styles from './dashboard.module.css';
 import ProtectedRoute from '@/components/ProtectedRoute';
-
-const metrics = [
-    { label: 'Total Users', value: '2,847', trend: '+12.5%', trendUp: true, icon: '👤' },
-    { label: 'Active Today', value: '342', trend: '+8.2%', trendUp: true, icon: '📈' },
-    { label: 'Revenue', value: '$14,230', trend: '+23.1%', trendUp: true, icon: '💰' },
-    { label: 'Form Submissions', value: '89', trend: '-2.4%', trendUp: false, icon: '📋' },
-];
-
-const automations = [
-    { name: 'Welcome Email', trigger: 'New user signs up', status: 'active', runs: 847 },
-    { name: 'Booking Confirmation', trigger: 'Booking confirmed', status: 'active', runs: 423 },
-    { name: 'Weekly Summary', trigger: 'Every Monday 9am', status: 'active', runs: 52 },
-    { name: 'Abandoned Cart', trigger: 'Cart idle 1 hour', status: 'paused', runs: 156 },
-];
-
-const topPages = [
-    { name: 'Homepage', views: 4821 },
-    { name: 'Book Now', views: 2134 },
-    { name: 'Pricing', views: 1567 },
-    { name: 'About Us', views: 892 },
-    { name: 'Contact', views: 634 },
-];
+import { useAuth } from '@/lib/auth/auth-context';
+import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { db } from '@/lib/firebase/config';
+import { ProjectBlueprint } from '@/lib/agents/types';
 
 export default function DashboardPage() {
+    const { user } = useAuth();
+    const [projects, setProjects] = useState<ProjectBlueprint[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [healthStatus] = useState<'healthy' | 'degraded' | 'down'>('healthy');
-    const [trafficData, setTrafficData] = useState<number[]>([]);
 
     useEffect(() => {
-        // Simulate traffic data
-        const data = Array.from({ length: 24 }, () => Math.floor(Math.random() * 150 + 50));
-        setTrafficData(data);
-    }, []);
+        const fetchProjects = async () => {
+            if (!user) return;
+            try {
+                const projectsRef = collection(db, 'projects');
+                const q = query(
+                    projectsRef,
+                    where('userId', '==', user.uid),
+                    // Firestore requires a composite index for where + orderBy. 
+                    // To avoid crash without index, we fetch and sort on client for MVP
+                );
 
-    const maxTraffic = Math.max(...trafficData, 1);
+                const querySnapshot = await getDocs(q);
+                const fetchedProjects: ProjectBlueprint[] = [];
+                querySnapshot.forEach((doc) => {
+                    fetchedProjects.push(doc.data() as ProjectBlueprint);
+                });
+
+                // Sort by newest first
+                fetchedProjects.sort((a, b) => b.createdAt - a.createdAt);
+
+                setProjects(fetchedProjects);
+            } catch (err) {
+                console.error("Error fetching projects:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchProjects();
+    }, [user]);
 
     return (
         <ProtectedRoute>
@@ -93,98 +101,45 @@ export default function DashboardPage() {
                         </div>
                     </header>
 
-                    {/* Metric Cards */}
-                    <div className={styles.metricsGrid}>
-                        {metrics.map((m, i) => (
-                            <div key={i} className={styles.metricCard}>
-                                <div className={styles.metricTop}>
-                                    <span className={styles.metricIcon}>{m.icon}</span>
-                                    <span className={`${styles.metricTrend} ${m.trendUp ? styles.trendUp : styles.trendDown}`}>
-                                        {m.trendUp ? '↑' : '↓'} {m.trend}
-                                    </span>
-                                </div>
-                                <div className={styles.metricValue}>{m.value}</div>
-                                <div className={styles.metricLabel}>{m.label}</div>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Charts Row */}
+                    {/* Real Projects Grid */}
                     <div className={styles.chartsRow}>
-                        {/* Traffic Chart */}
-                        <div className={styles.chartCard}>
+                        <div className={styles.chartCard} style={{ flex: 1 }}>
                             <div className={styles.chartHeader}>
-                                <h3>Traffic Today</h3>
-                                <span className={styles.chartMeta}>Visitors by hour</span>
+                                <h3>Your Generated Applications</h3>
+                                <a href="/create" className={styles.addAutoBtn}>+ New App</a>
                             </div>
-                            <div className={styles.chart}>
-                                {trafficData.map((val, i) => (
-                                    <div
-                                        key={i}
-                                        className={styles.chartBar}
-                                        style={{ height: `${(val / maxTraffic) * 100}%` }}
-                                        title={`${i}:00 — ${val} visitors`}
-                                    />
-                                ))}
-                            </div>
-                            <div className={styles.chartLabels}>
-                                <span>12am</span>
-                                <span>6am</span>
-                                <span>12pm</span>
-                                <span>6pm</span>
-                                <span>Now</span>
-                            </div>
-                        </div>
 
-                        {/* Top Pages */}
-                        <div className={styles.chartCard}>
-                            <div className={styles.chartHeader}>
-                                <h3>Top Pages</h3>
-                                <span className={styles.chartMeta}>Most visited</span>
-                            </div>
-                            <div className={styles.pagesList}>
-                                {topPages.map((page, i) => (
-                                    <div key={i} className={styles.pageRow}>
-                                        <div className={styles.pageInfo}>
-                                            <span className={styles.pageRank}>{i + 1}</span>
-                                            <span className={styles.pageName}>{page.name}</span>
-                                        </div>
-                                        <div className={styles.pageViews}>
-                                            <div className={styles.pageBar}>
-                                                <div
-                                                    className={styles.pageBarFill}
-                                                    style={{ width: `${(page.views / topPages[0].views) * 100}%` }}
-                                                />
-                                            </div>
-                                            <span>{page.views.toLocaleString()}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Automations */}
-                    <div className={styles.automationsCard}>
-                        <div className={styles.chartHeader}>
-                            <h3>⚡ Active Automations</h3>
-                            <button className={styles.addAutoBtn}>+ Add Automation</button>
-                        </div>
-                        <div className={styles.autoList}>
-                            {automations.map((auto, i) => (
-                                <div key={i} className={styles.autoItem}>
-                                    <div className={styles.autoInfo}>
-                                        <div className={styles.autoName}>{auto.name}</div>
-                                        <div className={styles.autoTrigger}>When: {auto.trigger}</div>
-                                    </div>
-                                    <div className={styles.autoStats}>
-                                        <span className={styles.autoRuns}>{auto.runs} runs</span>
-                                        <span className={`${styles.autoStatus} ${styles[auto.status]}`}>
-                                            {auto.status === 'active' ? '✅ Active' : '⏸️ Paused'}
-                                        </span>
-                                    </div>
+                            {isLoading ? (
+                                <div style={{ padding: '2rem', textAlign: 'center', opacity: 0.7 }}>Loading projects...</div>
+                            ) : projects.length === 0 ? (
+                                <div style={{ padding: '3rem 1rem', textAlign: 'center' }}>
+                                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🏗️</div>
+                                    <h3 style={{ marginBottom: '0.5rem' }}>No apps built yet</h3>
+                                    <p style={{ opacity: 0.7, marginBottom: '1.5rem' }}>Describe an idea to the AI and watch it generate an entire application.</p>
+                                    <a href="/create" className={styles.deployBtn}>Start Building</a>
                                 </div>
-                            ))}
+                            ) : (
+                                <div className={styles.autoList}>
+                                    {projects.map((project, i) => (
+                                        <div key={project.id} className={styles.autoItem}>
+                                            <div className={styles.autoInfo}>
+                                                <div className={styles.autoName}>{project.prd?.title || `Project ${project.id.substring(0, 6)}`}</div>
+                                                <div className={styles.autoTrigger} style={{ maxWidth: '400px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                    {project.originalPrompt}
+                                                </div>
+                                            </div>
+                                            <div className={styles.autoStats}>
+                                                <span className={`${styles.autoStatus} ${project.status === 'deployed' ? styles.active : project.status === 'error' ? styles.paused : ''}`}>
+                                                    {project.status === 'deployed' ? '✅ Live' : project.status === 'building' ? '🏗️ Building' : '⚠️ Failed'}
+                                                </span>
+                                                <a href={`/builder?projectId=${project.id}`} className={styles.previewBtn} style={{ marginLeft: '1rem', background: 'transparent', border: '1px solid var(--border)', padding: '0.25rem 0.75rem', fontSize: '0.8rem' }}>
+                                                    Open Builder
+                                                </a>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </main>
