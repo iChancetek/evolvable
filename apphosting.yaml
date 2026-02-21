@@ -1,0 +1,3 @@
+env:
+  - variable: HF_TOKEN
+    secret: HF_TOKEN
