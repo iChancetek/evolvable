@@ -29,6 +29,13 @@ const HF_MODEL_ROUTING: Record<AgentWorkloadType, string> = {
     lightweight: 'Qwen/Qwen3-7B-Instruct'
 };
 
+// DeepSeek V3.2 — latest model via HuggingFace Inference
+const DEEPSEEK_MODEL_ROUTING: Record<AgentWorkloadType, string> = {
+    standard: 'deepseek-ai/DeepSeek-V3.2',
+    reasoning: 'deepseek-ai/DeepSeek-V3.2',
+    lightweight: 'deepseek-ai/DeepSeek-V3.2'
+};
+
 const OPENAI_MODEL_ROUTING: Record<AgentWorkloadType, string> = {
     standard: 'gpt-5.2', // Migrated to gpt-5.2 per knowledge base
     reasoning: 'gpt-5.2',
@@ -109,8 +116,52 @@ export async function callLLM<T = any>(
                 await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
             }
         }
+    } else if (provider === 'deepseek') {
+        // DeepSeek V3.2 via HuggingFace Inference
+        const modelName = DEEPSEEK_MODEL_ROUTING[workloadType];
+
+        let payload: any = {
+            model: modelName,
+            messages: [
+                { role: "system", content: systemStr },
+                { role: "user", content: userPrompt }
+            ],
+            temperature,
+            max_tokens: maxTokens,
+        };
+
+        if (jsonSchema) {
+            payload.response_format = { type: "json_object" };
+        }
+
+        while (attempt < MAX_RETRIES) {
+            try {
+                console.log(`[LLM Adapter] Calling DeepSeek ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
+
+                const response = await hf.chatCompletion(payload);
+                const content = response.choices[0]?.message?.content || "";
+
+                if (jsonSchema) {
+                    try {
+                        const cleanContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                        return JSON.parse(cleanContent) as T;
+                    } catch (parseError) {
+                        console.error('[LLM Adapter] Failed to parse DeepSeek JSON response:', content);
+                        throw new Error(`Invalid JSON format retrieved from DeepSeek: ${parseError}`);
+                    }
+                }
+
+                return content as any;
+
+            } catch (error: any) {
+                attempt++;
+                console.error(`[LLM Adapter] Error calling DeepSeek ${modelName}:`, error.message);
+                if (attempt >= MAX_RETRIES) throw new Error(`DeepSeek call failed after ${MAX_RETRIES} attempts. Last error: ${error.message}`);
+                await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
+            }
+        }
     } else {
-        // HuggingFace Routing
+        // HuggingFace Routing (Qwen)
         const modelName = HF_MODEL_ROUTING[workloadType];
 
         let payload: any = {

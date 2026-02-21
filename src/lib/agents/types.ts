@@ -14,7 +14,7 @@ export enum AgentId {
 
 export type AgentStatus = 'pending' | 'running' | 'completed' | 'failed' | 'vetoed';
 
-export type LLMProvider = 'huggingface' | 'openai';
+export type LLMProvider = 'huggingface' | 'openai' | 'deepseek';
 
 // ---------------------------------------------------------
 // Visual Builder JSON AST Types

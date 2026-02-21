@@ -293,6 +293,12 @@ export default function CreatePage() {
                                     ✨ OpenAI (GPT-5.2)
                                 </button>
                                 <button
+                                    className={`${styles.modelButton} ${provider === 'deepseek' ? styles.modelButtonActive : ''}`}
+                                    onClick={() => setProvider('deepseek')}
+                                >
+                                    🐋 DeepSeek (V3.2)
+                                </button>
+                                <button
                                     className={`${styles.modelButton} ${provider === 'huggingface' ? styles.modelButtonActive : ''}`}
                                     onClick={() => setProvider('huggingface')}
                                 >
