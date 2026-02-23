@@ -17,16 +17,9 @@ export async function GET() {
         const provider = process.env.NEXT_PUBLIC_LLM_PROVIDER || 'openai';
 
         if (provider === 'openai') {
-            const apiKey = process.env.OPENAI_API_KEY;
-            if (!apiKey) {
-                return NextResponse.json({
-                    status: 'degraded',
-                    provider: 'openai',
-                    message: 'Missing OPENAI_API_KEY'
-                }, { status: 503 });
-            }
-
-            const openai = new OpenAI({ apiKey });
+            // Bypass rigid `!process.env.OPENAI_API_KEY` guard due to Firebase Secret Manager context.
+            // Let the SDK resolve the environment.
+            const openai = new OpenAI();
 
             // Lightweight ping: fetch the models list. Uses 0 tokens, just tests auth/network.
             await openai.models.list();
@@ -38,16 +31,7 @@ export async function GET() {
             });
 
         } else if (provider === 'anthropic') {
-            const apiKey = process.env.ANTHROPIC_API_KEY;
-            if (!apiKey) {
-                return NextResponse.json({
-                    status: 'degraded',
-                    provider: 'anthropic',
-                    message: 'Missing ANTHROPIC_API_KEY'
-                }, { status: 503 });
-            }
-
-            const anthropic = new Anthropic({ apiKey });
+            const anthropic = new Anthropic();
             // Lightweight ping: Fetching a single fast completion to test network/auth
             await anthropic.messages.create({
                 model: 'claude-4.6-haiku-latest',

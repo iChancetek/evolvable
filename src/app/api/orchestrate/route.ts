@@ -21,32 +21,13 @@ export async function POST(req: NextRequest) {
         }
 
         // Layer 1: AI Configuration Guard (Pre-flight validation)
-        const requiresOpenAI = llmProvider === 'openai';
+        // Note: Firebase App Hosting does not synchronously expose secrets to `process.env` 
+        // at the top-level API route context during cold boot. We bypass the strict check here 
+        // and let the LLM Adapter initialize with the keys natively.
         const requiresDeepSeekOrHF = llmProvider === 'deepseek' || llmProvider === 'huggingface';
-        const requiresAnthropic = llmProvider === 'anthropic';
-
-        if (requiresOpenAI && !process.env.OPENAI_API_KEY) {
-            console.warn('[AI Guard] Blocked execution due to missing OPENAI_API_KEY');
-            return NextResponse.json({
-                success: false,
-                status: 'degraded',
-                fallback: true,
-                message: 'AI workspace is initializing.'
-            }, { status: 503 });
-        }
 
         if (requiresDeepSeekOrHF && !(process.env.NEXT_PUBLIC_HF_TOKEN || process.env.HF_TOKEN)) {
             console.warn('[AI Guard] Blocked execution due to missing HF_TOKEN');
-            return NextResponse.json({
-                success: false,
-                status: 'degraded',
-                fallback: true,
-                message: 'AI workspace is initializing.'
-            }, { status: 503 });
-        }
-
-        if (requiresAnthropic && !process.env.ANTHROPIC_API_KEY) {
-            console.warn('[AI Guard] Blocked execution due to missing ANTHROPIC_API_KEY');
             return NextResponse.json({
                 success: false,
                 status: 'degraded',

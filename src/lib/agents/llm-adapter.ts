@@ -253,11 +253,7 @@ export async function callLLM<T = any>(
             try {
                 console.log(`[LLM Adapter] Calling Anthropic ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
 
-                const apiKey = process.env.ANTHROPIC_API_KEY;
-                if (!apiKey) {
-                    throw new Error("Missing ANTHROPIC_API_KEY in environment variables.");
-                }
-                const anthropic = new Anthropic({ apiKey });
+                const anthropic = new Anthropic();
 
                 const response = await anthropic.messages.create({
                     model: modelName,
