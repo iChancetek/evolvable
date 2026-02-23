@@ -30,6 +30,7 @@ export default function ProfileSettingsPage() {
                                 <span style={{ fontSize: '13px' }}>Default LLM Provider</span>
                                 <select style={{ background: '#1e1e1e', color: '#ccc', border: '1px solid #333', padding: '0.25rem 0.5rem', borderRadius: '2px', fontSize: '12px' }}>
                                     <option value="openai">OpenAI (GPT-5.2)</option>
+                                    <option value="anthropic">Claude (4.6)</option>
                                     <option value="huggingface">Hugging Face (Qwen)</option>
                                 </select>
                             </div>

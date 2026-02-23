@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth/auth-context';
@@ -10,6 +10,43 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 export default function WorkspaceLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const { signOut, user } = useAuth();
+    const [aiHealth, setAiHealth] = useState<'healthy' | 'degraded' | 'checking'>('checking');
+    const [aiMessage, setAiMessage] = useState<string>('Checking AI status...');
+
+    useEffect(() => {
+        let mounted = true;
+
+        const checkHealth = async () => {
+            try {
+                const res = await fetch('/api/health/ai');
+                if (!mounted) return;
+
+                if (res.ok) {
+                    setAiHealth('healthy');
+                    setAiMessage('AI Systems Online');
+                } else {
+                    const data = await res.json();
+                    setAiHealth('degraded');
+                    setAiMessage(data.message || 'AI Warming Up...');
+                }
+            } catch (err) {
+                if (mounted) {
+                    setAiHealth('degraded');
+                    setAiMessage('AI Service Unreachable');
+                }
+            }
+        };
+
+        // Initial check
+        checkHealth();
+
+        // Poll every 30 seconds
+        const interval = setInterval(checkHealth, 30000);
+        return () => {
+            mounted = false;
+            clearInterval(interval);
+        };
+    }, []);
 
     return (
         <ProtectedRoute>
@@ -35,6 +72,21 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
                     </div>
 
                     <div className={styles.bottomIcons}>
+                        {/* AI Health Indicator (Invisible when healthy to reduce clutter) */}
+                        {aiHealth !== 'healthy' && (
+                            <div
+                                className={styles.actIcon}
+                                title={aiMessage}
+                                style={{
+                                    cursor: 'help',
+                                    opacity: 1,
+                                    filter: aiHealth === 'degraded' ? 'drop-shadow(0 0 4px rgba(255, 165, 0, 0.8))' : 'none'
+                                }}
+                            >
+                                {aiHealth === 'degraded' ? '🟡' : '🔄'}
+                            </div>
+                        )}
+
                         <Link href="/settings" className={`${styles.actIcon} ${pathname.startsWith('/settings') ? styles.actIconActive : ''}`} title="Settings">
                             ⚙️
                         </Link>

@@ -12,6 +12,7 @@ import { doc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { AuditLogger } from '../audit/audit-logger';
 import { GitHubTokenService } from '../github/github-token-service';
 import { GitHubIntegrationService } from '../github/github-service';
+import { FallbackGeneratorService } from './fallback-generator';
 
 export type PipelineEventCallback = (event: {
     agentId?: AgentId;
@@ -165,9 +166,23 @@ export class OrchestrationBus {
 
         } catch (error: any) {
             console.error('[Orchestrator ERROR] Planning phase failed at step:', error);
-            await this.updatePhase('error', 'error');
-            this.emit('System', 'failed', `Planning failed: ${error.message}`);
-            throw error;
+
+            // Layer 2: Graceful Fallback Mode
+            // If the AI fails (rate limits, 500, or missing keys that slipped past Pre-flight),
+            // do not hard-crash. Recover with a static blueprint.
+            this.emit('System', 'running', '⚠️ AI Service temporarily unavailable. Loading Fallback Template...');
+
+            this.blueprint = FallbackGeneratorService.generateFallbackBlueprint(
+                this.blueprint.originalPrompt,
+                this.blueprint
+            );
+
+            // Persist the fallback blueprint to Firestore so the user can see it on the Plan Review screen
+            await this.saveBlueprintProgress(AgentId.PLAN_COORDINATOR);
+
+            this.emit('System', 'completed', `✅ Fallback Template ready for your review. Platform running in degraded mode.`);
+
+            return this.blueprint;
         }
     }
 

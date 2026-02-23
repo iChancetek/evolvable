@@ -70,7 +70,7 @@ export enum AgentId {
 
 export type AgentStatus = 'pending' | 'running' | 'completed' | 'failed' | 'vetoed';
 
-export type LLMProvider = 'huggingface' | 'openai' | 'deepseek';
+export type LLMProvider = 'huggingface' | 'openai' | 'deepseek' | 'anthropic';
 
 // ---------------------------------------------------------
 // Platform Intelligence

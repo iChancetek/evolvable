@@ -331,6 +331,12 @@ export default function CreatePage() {
                             >
                                 🤗 Hugging Face (Qwen)
                             </button>
+                            <button
+                                className={`${styles.modelButton} ${provider === 'anthropic' ? styles.modelButtonActive : ''}`}
+                                onClick={() => setProvider('anthropic')}
+                            >
+                                🧠 Claude (4.6)
+                            </button>
                         </div>
                     )}
                     <div className={styles.inputWrapper}>

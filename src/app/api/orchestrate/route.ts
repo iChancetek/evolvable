@@ -20,6 +20,41 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Idea prompt is required' }, { status: 400 });
         }
 
+        // Layer 1: AI Configuration Guard (Pre-flight validation)
+        const requiresOpenAI = llmProvider === 'openai';
+        const requiresDeepSeekOrHF = llmProvider === 'deepseek' || llmProvider === 'huggingface';
+        const requiresAnthropic = llmProvider === 'anthropic';
+
+        if (requiresOpenAI && !process.env.OPENAI_API_KEY) {
+            console.warn('[AI Guard] Blocked execution due to missing OPENAI_API_KEY');
+            return NextResponse.json({
+                success: false,
+                status: 'degraded',
+                fallback: true,
+                message: 'AI workspace is initializing.'
+            }, { status: 503 });
+        }
+
+        if (requiresDeepSeekOrHF && !(process.env.NEXT_PUBLIC_HF_TOKEN || process.env.HF_TOKEN)) {
+            console.warn('[AI Guard] Blocked execution due to missing HF_TOKEN');
+            return NextResponse.json({
+                success: false,
+                status: 'degraded',
+                fallback: true,
+                message: 'AI workspace is initializing.'
+            }, { status: 503 });
+        }
+
+        if (requiresAnthropic && !process.env.ANTHROPIC_API_KEY) {
+            console.warn('[AI Guard] Blocked execution due to missing ANTHROPIC_API_KEY');
+            return NextResponse.json({
+                success: false,
+                status: 'degraded',
+                fallback: true,
+                message: 'AI workspace is initializing.'
+            }, { status: 503 });
+        }
+
         let projectId = '';
 
         try {
