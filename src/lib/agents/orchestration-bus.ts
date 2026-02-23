@@ -7,6 +7,8 @@ import {
 import { ADRLogger } from './adr-logger';
 import { getAgent } from './agent-registry';
 import { adminDb, FieldValue } from '../firebase/admin';
+import { db } from '../firebase/config';
+import { doc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { AuditLogger } from '../audit/audit-logger';
 import { GitHubTokenService } from '../github/github-token-service';
 import { GitHubIntegrationService } from '../github/github-service';
@@ -48,8 +50,51 @@ export class OrchestrationBus {
     // ================================================================
     async executePlanningPhase(): Promise<ProjectBlueprint> {
         try {
+            console.log('[Orchestrator] executePlanningPhase triggered');
             await this.updatePhase('planning', 'building');
             this.emit('System', 'running', '🧠 Planning Phase started. Analyzing your idea...');
+
+            // Step 0: Natural Language Infrastructure Interpreter (NLII)
+            console.log('[Orchestrator] Checking if we need to run NLII...');
+            if (!this.blueprint.infrastructure) {
+                console.log('[Orchestrator] Running NLII...');
+                const nliiOutput = await this.runSequential(AgentId.NLII, 'infrastructure', '🔍 NLII: Interpreting infrastructure and deployment requirements...', true);
+                console.log('[Orchestrator] NLII finished.');
+
+                // If NLII flagged clarificationsNeeded, we must pause the bus
+                if (nliiOutput?.payload?.nliiSummary?.clarificationsNeeded?.length > 0) {
+                    this.emit('System', 'completed', '⚠️ Pause: We need a few more details before designing your infrastructure.');
+                    await this.updatePhase('awaiting_clarification', 'awaiting_clarification');
+
+                    this.auditLogger.log('infra_clarification_requested', 'NLII requested explicit clarification on vague infrastructure prompt', {
+                        planVersion: this.blueprint.activePlanVersion,
+                        metadata: { questions: nliiOutput.payload.nliiSummary.clarificationsNeeded }
+                    });
+
+                    return this.blueprint; // Pause the pipeline until the user clarifies
+                }
+            }
+
+            // Step 0.5: Natural Language Deployment Intelligence (NLDI)
+            if (!this.blueprint.nldiSummary) {
+                const nldiOutput = await this.runSequential(AgentId.NLDI, 'nldiSummary', '🌐 NLDI: Interpreting domain and hosting preferences...', true);
+
+                // If NLDI flagged clarificationsNeeded, pause the bus
+                if (nldiOutput?.payload?.clarificationsNeeded?.length > 0) {
+                    this.emit('System', 'completed', '⚠️ Pause: We need a few more details before configuring your domain and hosting.');
+                    await this.updatePhase('awaiting_clarification', 'awaiting_clarification');
+
+                    this.auditLogger.log('infra_clarification_requested', 'NLDI requested explicit clarification on vague hosting intent', {
+                        planVersion: this.blueprint.activePlanVersion,
+                        metadata: { questions: nldiOutput.payload.clarificationsNeeded }
+                    });
+
+                    // Temporarily store the nldiSummary on the blueprint so the UI can render it
+                    // The UI will pass the clarificationsNeeded back.
+                    this.blueprint.nldiSummary = nldiOutput.payload;
+                    return this.blueprint;
+                }
+            }
 
             // Step 1: Vision Agent — platform mode + PRD
             if (!this.blueprint.prd) {
@@ -97,24 +142,24 @@ export class OrchestrationBus {
                 AgentId.VISION, AgentId.UI_DESIGNER, AgentId.DB_ARCHITECT, AgentId.SYSTEM_ARCHITECT, AgentId.PLAN_COORDINATOR
             ]);
 
+            console.log('[Orchestrator] Plan generated successfully!');
             // Update blueprint planVersions from Firestore output
-            if (planOutput.payload?.plan) {
-                this.blueprint.planVersions = [...(this.blueprint.planVersions || []), {
-                    version: planOutput.payload.planVersion,
-                    plan: planOutput.payload.plan,
-                    generatedAt: Date.now(),
-                    agentIds: planOutput.payload.plan.agentIds
-                }];
-                this.blueprint.activePlanVersion = planOutput.payload.planVersion;
+            const projectDoc = await adminDb.collection('projects').doc(this.blueprint.id).get();
+            const projectData = projectDoc.data();
+            if (projectData?.planVersions) {
+                this.blueprint.planVersions = projectData.planVersions;
+                this.blueprint.activePlanVersion = projectData.activePlanVersion;
             }
 
+            await this.updatePhase('awaiting_approval', 'awaiting_approval');
             this.emit('System', 'completed', `✅ Implementation Plan v${planOutput.payload?.planVersion || 1} ready for your review. Execution is paused until you approve.`);
 
+            console.log('[Orchestrator] executePlanningPhase complete. Waiting for UI approval.');
             // PAUSE — return here. Execution only resumes via /api/orchestrate/approve
             return this.blueprint;
 
         } catch (error: any) {
-            console.error('[Orchestrator] Planning phase failed:', error);
+            console.error('[Orchestrator ERROR] Planning phase failed at step:', error);
             await this.updatePhase('error', 'error');
             this.emit('System', 'failed', `Planning failed: ${error.message}`);
             throw error;
@@ -147,21 +192,29 @@ export class OrchestrationBus {
 
             await this.updatePhase('executing', 'building');
             await this.auditLogger.executionStarted(approvedPlanVersion);
-            this.emit('System', 'running', `🚀 Execution Phase — building under approved plan v${approvedPlanVersion}...`);
+            this.emit('System', 'running', '⚙️ Execution Phase started. Assembling system components...');
 
-            // Phase 2a: Backend Generation (new dedicated agent)
-            if (!this.blueprint.backendRoutes) {
-                await this.runSequential(AgentId.BACKEND_GENERATION, 'backendRoutes', '⚙️ Backend Agent: Generating API routes with RBAC...');
+            // Step 1: Logic Builder
+            if (!this.blueprint.workflows) {
+                await this.runSequential(AgentId.LOGIC_BUILDER, 'workflows', '🧩 Logic Builder: Designing application state and workflows...', true);
             }
 
-            // Phase 2b: Parallel — Frontend Code Generation + Logic Builder
-            if (!this.blueprint.codebase || !this.blueprint.workflows) {
-                this.emit('System', 'running', '⚡ Generating frontend and workflows in parallel...');
-                await Promise.all([
-                    this.blueprint.codebase ? Promise.resolve() : this.runAgent(AgentId.CODE_GENERATION, 'codebase'),
-                    this.blueprint.workflows ? Promise.resolve() : this.runAgent(AgentId.LOGIC_BUILDER, 'workflows')
-                ]);
-            }
+            // Step 2: Parallel Code Generation
+            this.emit('System', 'running', '💻 Generating Frontend, Backend, and Infrastructure code in parallel...');
+            const [, , tfOutput, dockerOutput, scriptOutput] = await Promise.all([
+                this.blueprint.codebase ? Promise.resolve() : this.runAgent(AgentId.CODE_GENERATION, 'codebase', true),
+                this.blueprint.backendRoutes ? Promise.resolve() : this.runAgent(AgentId.BACKEND_GENERATION, 'backendRoutes', true),
+
+                // NLP Infrastructure Generators
+                this.runAgent(AgentId.INFRA_TERRAFORM, null, true),
+                this.runAgent(AgentId.INFRA_DOCKER, null, true),
+                this.runAgent(AgentId.INFRA_SCRIPT, null, true)
+            ]);
+
+            // Save infrastructure artifacts to blueprint if generated
+            if (tfOutput?.payload) this.blueprint.infraTerraform = tfOutput.payload;
+            if (dockerOutput?.payload) this.blueprint.infraDocker = dockerOutput.payload;
+            if (scriptOutput?.payload) this.blueprint.infraScript = scriptOutput.payload;
 
             // SHORT-CIRCUIT: Core app built — redirect user to builder while post-tasks run
             await this.updatePhase('executing', 'deployed');
@@ -256,6 +309,30 @@ export class OrchestrationBus {
                     ])
                 ))
             };
+
+            // Inject Infrastructure Artifacts into specific folders
+            if (this.blueprint.infraTerraform?.files) {
+                for (const [filename, content] of Object.entries(this.blueprint.infraTerraform.files)) {
+                    allFiles[`infra/${filename}`] = content;
+                }
+            }
+            if (this.blueprint.infraDocker?.files) {
+                for (const [filename, content] of Object.entries(this.blueprint.infraDocker.files)) {
+                    allFiles[`docker/${filename}`] = content;
+                }
+            }
+            if (this.blueprint.infraScript?.files) {
+                for (const [filename, content] of Object.entries(this.blueprint.infraScript.files)) {
+                    // Sort by extension
+                    if (filename.endsWith('.sh')) {
+                        allFiles[`scripts/bash/${filename}`] = content;
+                    } else if (filename.endsWith('.ps1')) {
+                        allFiles[`scripts/powershell/${filename}`] = content;
+                    } else {
+                        allFiles[`scripts/${filename}`] = content;
+                    }
+                }
+            }
 
             const commitMessage = GitHubIntegrationService.buildCommitMessage({
                 platformMode: prd?.platformMode || 'single_app',
@@ -388,8 +465,14 @@ export class OrchestrationBus {
             const logEntry = { timestamp: Date.now(), agentId: agentId !== 'System' ? agentId : 'system', status, message };
             adminDb.collection('projects').doc(this.blueprint.id).update({
                 pipelineLogs: FieldValue.arrayUnion(logEntry)
-            }).catch(e => console.warn('[Log Stream]', e));
-        } catch (e) { console.error('[Log Stream]', e); }
+            }).catch(adminErr => {
+                // Async fallback: if Admin SDK rejects due to permissions, cascade to Client SDK
+                const clientRef = doc(db, 'projects', this.blueprint.id);
+                updateDoc(clientRef, {
+                    pipelineLogs: arrayUnion(logEntry)
+                }).catch(e => console.warn('[Log Stream Client fallback failed]', e));
+            });
+        } catch (e) { console.error('[Log Stream Sync Error]', e); }
 
         this.onEvent({ agentId: agentId !== 'System' ? agentId as AgentId : undefined, status, message, payload });
     }
@@ -400,11 +483,21 @@ export class OrchestrationBus {
     ) {
         this.blueprint.phase = phase;
         this.blueprint.status = status;
-        await adminDb.collection('projects').doc(this.blueprint.id).update({ phase, status });
+        try {
+            await adminDb.collection('projects').doc(this.blueprint.id).update({ phase, status });
+        } catch (adminErr) {
+            const clientRef = doc(db, 'projects', this.blueprint.id);
+            await updateDoc(clientRef, { phase, status });
+        }
     }
 
     private async saveBlueprintProgress(completedAgentId: AgentId) {
         this.blueprint.currentPhase = completedAgentId;
-        await adminDb.collection('projects').doc(this.blueprint.id).set(this.blueprint, { merge: true });
+        try {
+            await adminDb.collection('projects').doc(this.blueprint.id).set(this.blueprint, { merge: true });
+        } catch (adminErr) {
+            const clientRef = doc(db, 'projects', this.blueprint.id);
+            await setDoc(clientRef, this.blueprint, { merge: true });
+        }
     }
 }

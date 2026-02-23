@@ -7,22 +7,25 @@ You are the Security Agent for the Evolvable platform — a Principal AppSec Eng
 You hold VETO POWER. You may halt the entire deployment pipeline.
 
 Your mandate:
-1. Audit ALL generated API routes for:
+1. Audit ALL generated code (App & Infrastructure) for:
    - Missing authentication guards (open endpoints)
    - Missing RBAC enforcement
    - SQL/NoSQL injection vectors
-   - XSS attack surfaces in generated frontend
    - Tenant data isolation breaches (IDOR)
-   - Least-privilege violations
-   - Missing input validation
-   - Missing rate limiting
+   - Infrastructure: Open ports (e.g. 0.0.0.0/0 on port 22 or 3389)
+   - Infrastructure: Publicly exposed databases or storage buckets
+   - Infrastructure: Over-permissioned IAM roles (e.g. * on *)
+   - Infrastructure: Hardcoded secrets or missing encryption
+   - Docker: Root user execution or bloated vulnerable bases
 
-2. Simulate FIVE attack scenarios and report pass/fail for each:
+2. Simulate SEVEN attack scenarios and report pass/fail for each:
    - IDOR: Can user A access user B's data?
    - Privilege Escalation: Can a viewer perform admin actions?
    - Tenant Bleed: Can tenant A read tenant B's data?
    - SQL/NoSQL Injection: Is user input properly sanitised?
    - XSS: Can malicious script be injected via form inputs?
+   - Container Breakout: Does the Docker setup allow container escape?
+   - Cloud Blast Radius: Does the Terraform config restrict public cloud access?
 
 3. Check for drift from the approved security plan:
    - Compare generated routes against the approved securityPlan.routeProtection[]
@@ -58,14 +61,18 @@ export class SecurityAgent implements Agent {
             const userPrompt = `
 Platform Mode: ${input.blueprint.prd?.platformMode}
 RBAC Policy: ${JSON.stringify(input.blueprint.architecture?.rbacPolicy)}
-Tenant Isolation Strategy: ${input.blueprint.architecture?.tenantIsolation}
-Generated API Routes: ${JSON.stringify(backendRoutes.map(r => ({ path: r.path, method: r.method, auth: r.auth, roles: r.roles })))}
-Generated Frontend Files: ${JSON.stringify(files)}
-Architecture: ${JSON.stringify(input.blueprint.architecture)}
-Approved Security Plan: ${JSON.stringify(approvedPlan?.securityPlan)}
-Approved Route Protection List: ${JSON.stringify(approvedPlan?.securityPlan?.routeProtection)}
+Security Plan: ${JSON.stringify(approvedPlan?.securityPlan)}
+Infrastructure Blueprint: ${JSON.stringify(input.blueprint.infrastructure)}
 
-Audit the codebase. Simulate all 5 attack scenarios. Check drift from approved security plan. Return SecurityAuditReport.
+Generated Files List: ${JSON.stringify(files)}
+Generated API Routes: ${JSON.stringify(backendRoutes.map(r => ({ path: r.path, auth: r.auth, roles: r.roles })))}
+
+Terraform Artifacts: ${input.blueprint.infraTerraform ? JSON.stringify(input.blueprint.infraTerraform.files) : 'None'}
+Docker Artifacts: ${input.blueprint.infraDocker ? JSON.stringify(input.blueprint.infraDocker.files) : 'None'}
+Script Artifacts: ${input.blueprint.infraScript ? JSON.stringify(input.blueprint.infraScript.files) : 'None'}
+
+Perform a rigorous security audit of the application and infrastructure code.
+Return ALL properties of SecurityAuditReport.
 `;
 
             const scan = await callLLM<SecurityAuditReport>(SYSTEM_PROMPT, userPrompt, {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/auth-context';
 import styles from './login.module.css';
@@ -15,9 +15,14 @@ export default function LoginPage() {
     const [submitting, setSubmitting] = useState(false);
 
     // Already authenticated — redirect
+    useEffect(() => {
+        if (!loading && user) {
+            router.push('/create');
+        }
+    }, [user, loading, router]);
+
     if (!loading && user) {
-        router.push('/create');
-        return null;
+        return null; // Render nothing while redirecting
     }
 
     const handleEmailLogin = async (e: React.FormEvent) => {

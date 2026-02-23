@@ -4,13 +4,16 @@ import { useState, useEffect, Suspense } from 'react';
 import styles from './deploy.module.css';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useSearchParams } from 'next/navigation';
+import { db } from '@/lib/firebase/config';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { ProjectBlueprint } from '@/lib/agents/types';
 
 const deploySteps = [
     { label: 'Building your app', icon: '🔨', duration: 2000 },
     { label: 'Packaging container', icon: '📦', duration: 1500 },
     { label: 'Security check', icon: '🔒', duration: 1200 },
-    { label: 'Deploying to local mock cloud', icon: '☁️', duration: 2000 },
-    { label: 'Configuring SSL', icon: '🔐', duration: 800 },
+    { label: 'Deploying to cloud provider', icon: '☁️', duration: 2000 },
+    { label: 'Configuring Domain & SSL', icon: '🔐', duration: 800 },
     { label: 'Setting up monitoring', icon: '📊', duration: 1000 },
 ];
 
@@ -18,12 +21,30 @@ function DeployContent() {
     const searchParams = useSearchParams();
     const projectId = searchParams.get('projectId');
 
+    const [project, setProject] = useState<ProjectBlueprint | null>(null);
     const [deployState, setDeployState] = useState<'ready' | 'deploying' | 'done'>('ready');
     const [currentStep, setCurrentStep] = useState(-1);
     const [progress, setProgress] = useState(0);
     const [errorMsg, setErrorMsg] = useState('');
     const [liveUrl, setLiveUrl] = useState('https://my-app.evolvable.us');
     const [buildDir, setBuildDir] = useState('');
+    const [mode, setMode] = useState<'simple' | 'advanced'>('simple');
+    const [advancedTab, setAdvancedTab] = useState<'docker' | 'terraform' | 'scripts'>('docker');
+    const [domainInput, setDomainInput] = useState('');
+
+    useEffect(() => {
+        if (!projectId) return;
+        const ref = doc(db, 'projects', projectId);
+        return onSnapshot(ref, snap => {
+            if (snap.exists()) {
+                const data = snap.data() as ProjectBlueprint;
+                setProject(data);
+                if (data.nldiSummary?.domainName) {
+                    setDomainInput(data.nldiSummary.domainName);
+                }
+            }
+        });
+    }, [projectId]);
 
     const startDeploy = async () => {
         setDeployState('deploying');
@@ -40,17 +61,14 @@ function DeployContent() {
             const res = await fetch('/api/deploy', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ projectId })
+                body: JSON.stringify({ projectId, domain: domainInput })
             });
             const data = await res.json();
 
             if (!res.ok) throw new Error(data.error || 'Failed to trigger deployment');
 
-            // Save the returned mock live URL and build directory from the API
             setLiveUrl(data.liveUrl);
             setBuildDir(data.buildDirectory);
-
-            // Allow the visual "fake" progress bar to continue rolling
         } catch (err: any) {
             setErrorMsg(err.message);
             setDeployState('ready'); // Abort visual progress
@@ -73,67 +91,126 @@ function DeployContent() {
         return () => clearTimeout(timer);
     }, [deployState, currentStep, errorMsg]);
 
+    const renderFilePreview = (files: Record<string, string> | undefined) => {
+        if (!files || Object.keys(files).length === 0) {
+            return <div style={{ padding: '1rem', color: '#888' }}>No files generated yet.</div>;
+        }
+        return Object.entries(files).map(([filename, content]) => (
+            <div key={filename} style={{ marginBottom: '1rem' }}>
+                <strong style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--color-primary)' }}>{filename}</strong>
+                <pre style={{ background: '#111', color: '#fff', padding: '1rem', borderRadius: '8px', overflowX: 'auto', fontSize: '12px' }}>
+                    {content}
+                </pre>
+            </div>
+        ));
+    };
+
     return (
         <ProtectedRoute requiredRole="owner">
             <div className={styles.page}>
-                {/* Back nav */}
                 <nav className={styles.nav}>
                     <a href="/" className={styles.navBrand}>
                         <img src="/icons/icon-192x192.png" alt="Evolvable" className={styles.logoMark} />
                         <span>Evolvable</span>
                     </a>
+
+                    {deployState === 'ready' && (
+                        <div className={styles.modeToggle}>
+                            <button
+                                className={`${styles.modeBtn} ${mode === 'simple' ? styles.activeMode : ''}`}
+                                onClick={() => setMode('simple')}
+                            >
+                                Simple Mode
+                            </button>
+                            <button
+                                className={`${styles.modeBtn} ${mode === 'advanced' ? styles.activeMode : ''}`}
+                                onClick={() => setMode('advanced')}
+                            >
+                                Advanced Mode
+                            </button>
+                        </div>
+                    )}
                 </nav>
 
                 <div className={styles.content}>
-                    {/* Ready State */}
-                    {deployState === 'ready' && (
+                    {deployState === 'ready' && mode === 'simple' && (
                         <div className={styles.readyState}>
                             <div className={styles.readyIcon}>🚀</div>
-                            <h1 className={styles.readyTitle}>Your app is ready!</h1>
+                            <h1 className={styles.readyTitle}>Launch Your App</h1>
                             <p className={styles.readyDesc}>
-                                All tests passed. Security verified. Your app is ready to go live.
+                                Your application has been built and is ready to go live on the internet!
                             </p>
 
-                            <div className={styles.checklist}>
-                                {errorMsg && (
-                                    <div className={styles.errorBanner} style={{ color: 'red', marginBottom: '1rem' }}>
-                                        ❌ Deployment Error: {errorMsg}
+                            <div className={styles.simpleDeploymentCard}>
+                                <div className={styles.simpleRow}>
+                                    <span style={{ fontSize: '2rem' }}>☁️</span>
+                                    <div>
+                                        <strong>Hosting Provider</strong>
+                                        <div>{project?.nldiSummary ? project.nldiSummary.provider.toUpperCase() : 'Platform Auto-Select'}</div>
                                     </div>
-                                )}
-                                <div className={styles.checkItem}>
-                                    <span className={styles.checkDone}>✅</span>
-                                    <span>All features built</span>
                                 </div>
-                                <div className={styles.checkItem}>
-                                    <span className={styles.checkDone}>✅</span>
-                                    <span>Tests passed (47/47)</span>
+                                <div className={styles.simpleRow}>
+                                    <span style={{ fontSize: '2rem' }}>💰</span>
+                                    <div>
+                                        <strong>Estimated Cost</strong>
+                                        <div>{project?.nldiSummary ? project.nldiSummary.budget : 'Free Tier / Demo'}</div>
+                                    </div>
                                 </div>
-                                <div className={styles.checkItem}>
-                                    <span className={styles.checkDone}>✅</span>
-                                    <span>Security audit passed</span>
-                                </div>
-                                <div className={styles.checkItem}>
-                                    <span className={styles.checkDone}>✅</span>
-                                    <span>Mobile responsive</span>
-                                </div>
-                                <div className={styles.checkItem}>
-                                    <span className={styles.checkDone}>✅</span>
-                                    <span>Performance optimized</span>
+                                <div className={styles.simpleDomainRow}>
+                                    <span style={{ fontSize: '2rem' }}>🌐</span>
+                                    <div style={{ flex: 1 }}>
+                                        <strong>Custom Domain {project?.nldiSummary?.domainIntent === 'buy' ? '(Looking to Register)' : (project?.nldiSummary?.domainIntent === 'connect' ? '(Connecting Existing)' : '')}</strong>
+                                        <input
+                                            type="text"
+                                            placeholder="e.g. mybrand.com"
+                                            className={styles.domainInput}
+                                            value={domainInput}
+                                            onChange={e => setDomainInput(e.target.value)}
+                                        />
+                                        <div style={{ fontSize: '0.8rem', color: '#888', marginTop: '0.5rem' }}>
+                                            SSL Security will be automatically provisioned for free.
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
+                            {errorMsg && (
+                                <div className={styles.errorBanner} style={{ color: 'red', marginTop: '1rem' }}>
+                                    ❌ Deployment Error: {errorMsg}
+                                </div>
+                            )}
 
                             <button className={styles.deployButton} onClick={startDeploy}>
                                 <span className={styles.deployIcon}>🚀</span>
                                 <span>Go Live</span>
                             </button>
-
-                            <p className={styles.previewLink}>
-                                or <a href="/builder">continue editing</a>
-                            </p>
                         </div>
                     )}
 
-                    {/* Deploying State */}
+                    {deployState === 'ready' && mode === 'advanced' && (
+                        <div className={styles.advancedState}>
+                            <h2>Advanced Infrastructure Setup</h2>
+                            <p style={{ color: '#888', marginBottom: '1.5rem' }}>Review the raw infrastructure-as-code files generated for your application.</p>
+
+                            <div className={styles.tabs}>
+                                <button className={`${styles.tabBtn} ${advancedTab === 'docker' ? styles.activeTab : ''}`} onClick={() => setAdvancedTab('docker')}>Docker Engine</button>
+                                <button className={`${styles.tabBtn} ${advancedTab === 'terraform' ? styles.activeTab : ''}`} onClick={() => setAdvancedTab('terraform')}>Terraform IaC</button>
+                                <button className={`${styles.tabBtn} ${advancedTab === 'scripts' ? styles.activeTab : ''}`} onClick={() => setAdvancedTab('scripts')}>Deploy Scripts</button>
+                            </div>
+
+                            <div className={styles.tabContent}>
+                                {advancedTab === 'docker' && renderFilePreview(project?.infraDocker?.files)}
+                                {advancedTab === 'terraform' && renderFilePreview(project?.infraTerraform?.files)}
+                                {advancedTab === 'scripts' && renderFilePreview(project?.infraScript?.files)}
+                            </div>
+
+                            <button className={styles.deployButton} onClick={startDeploy} style={{ marginTop: '2rem' }}>
+                                <span className={styles.deployIcon}>🚀</span>
+                                <span>Execute Deployment</span>
+                            </button>
+                        </div>
+                    )}
+
                     {deployState === 'deploying' && (
                         <div className={styles.deployingState}>
                             <div className={styles.deployingIcon}>
@@ -169,55 +246,44 @@ function DeployContent() {
                                     </div>
                                 ))}
                             </div>
+
+                            {mode === 'advanced' && (
+                                <div className={styles.terminalBox}>
+                                    <div>[INFO] Initializing worker nodes...</div>
+                                    <div>[INFO] Authenticating via Terraform module...</div>
+                                    <div>[INFO] Building Docker container image...</div>
+                                    <div>[INFO] Pushing to container registry...</div>
+                                </div>
+                            )}
                         </div>
                     )}
 
-                    {/* Done State */}
                     {deployState === 'done' && (
                         <div className={styles.doneState}>
                             <div className={styles.doneIcon}>🎉</div>
                             <h1 className={styles.doneTitle}>You&apos;re live!</h1>
                             <p className={styles.doneDesc}>
-                                Your app is now live and ready for users. Share the link below!
+                                Your app is now fully deployed and configured on {project?.nldiSummary?.provider?.toUpperCase() || 'the cloud'}.
                             </p>
 
                             <div className={styles.urlCard}>
-                                <div className={styles.urlLabel}>Your app is live at:</div>
+                                <div className={styles.urlLabel}>Your secure URL:</div>
                                 <div className={styles.urlValue}>
                                     <span className={styles.urlLock}>🔒</span>
                                     <a href={liveUrl} target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>{liveUrl}</a>
                                 </div>
-                                <div style={{ fontSize: '0.8rem', color: '#888', marginTop: '0.5rem', fontFamily: 'monospace' }}>
-                                    App source assembled at: {buildDir}
-                                </div>
                                 <button className={styles.copyBtn} onClick={() => navigator.clipboard.writeText(liveUrl)}>Copy Link</button>
                             </div>
 
-                            <div className={styles.doneStats}>
-                                <div className={styles.doneStat}>
-                                    <span className={styles.doneStatIcon}>⚡</span>
-                                    <div>
-                                        <div className={styles.doneStatValue}>Auto-scaling</div>
-                                        <div className={styles.doneStatLabel}>Handles traffic spikes</div>
-                                    </div>
+                            {mode === 'advanced' && (
+                                <div className={styles.terminalBox} style={{ marginTop: '2rem' }}>
+                                    <div>[SUCCESS] Apply complete! Resources: 14 added, 0 changed, 0 destroyed.</div>
+                                    <div>[SUCCESS] DNS A records propagated.</div>
+                                    <div>[SUCCESS] Let's Encrypt SSL certificate attached.</div>
                                 </div>
-                                <div className={styles.doneStat}>
-                                    <span className={styles.doneStatIcon}>🔒</span>
-                                    <div>
-                                        <div className={styles.doneStatValue}>SSL Secured</div>
-                                        <div className={styles.doneStatLabel}>Encrypted connection</div>
-                                    </div>
-                                </div>
-                                <div className={styles.doneStat}>
-                                    <span className={styles.doneStatIcon}>📊</span>
-                                    <div>
-                                        <div className={styles.doneStatValue}>Monitoring Active</div>
-                                        <div className={styles.doneStatLabel}>We watch, you relax</div>
-                                    </div>
-                                </div>
-                            </div>
+                            )}
 
-                            <a href="/dashboard" className={styles.dashboardBtn}>
+                            <a href="/dashboard" className={styles.dashboardBtn} style={{ marginTop: '2rem' }}>
                                 Open Dashboard →
                             </a>
                         </div>

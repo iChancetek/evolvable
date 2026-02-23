@@ -1,6 +1,11 @@
 import { Agent, AgentId } from './types';
 
 import { VisionAgent } from './agents/vision';
+import { NLIIAgent } from './agents/nlii-agent';
+import { NLDIAgent } from './agents/nldi-agent';
+import { InfraTerraformAgent } from './agents/infra-terraform';
+import { InfraDockerAgent } from './agents/infra-docker';
+import { InfraScriptAgent } from './agents/infra-script';
 import { UIDesignerAgent } from './agents/ui-designer';
 import { DBArchitectAgent } from './agents/db-architect';
 import { SystemArchitectAgent } from './agents/system-architect';
@@ -21,6 +26,11 @@ import { DocumentationAgent } from './agents/documentation';
  */
 export function getAgent(id: AgentId): Agent {
     switch (id) {
+        case AgentId.NLII: return new NLIIAgent();
+        case AgentId.NLDI: return new NLDIAgent();
+        case AgentId.INFRA_TERRAFORM: return new InfraTerraformAgent();
+        case AgentId.INFRA_DOCKER: return new InfraDockerAgent();
+        case AgentId.INFRA_SCRIPT: return new InfraScriptAgent();
         case AgentId.VISION: return new VisionAgent();
         case AgentId.UI_DESIGNER: return new UIDesignerAgent();
         case AgentId.DB_ARCHITECT: return new DBArchitectAgent();

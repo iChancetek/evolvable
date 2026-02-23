@@ -83,7 +83,7 @@ export function useOrchestration(): UseOrchestrationReturn {
             }
         } catch (err: any) {
             setError(err.message);
-            return null;
+            throw err;
         } finally {
             setIsLoading(false);
         }

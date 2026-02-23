@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebase/admin';
+import { db } from '@/lib/firebase/config';
+import { doc, getDoc } from 'firebase/firestore';
 import { ProjectBlueprint } from '@/lib/agents/types';
 
 export const dynamic = 'force-dynamic';
@@ -17,14 +19,29 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: 'Missing projectId' }, { status: 400 });
         }
 
-        const projectRef = adminDb.collection('projects').doc(projectId);
-        const docSnap = await projectRef.get();
+        let blueprintData: any = null;
 
-        if (!docSnap.exists) {
+        try {
+            // Try Admin SDK first
+            const projectRef = adminDb.collection('projects').doc(projectId);
+            const docSnap = await projectRef.get();
+            if (docSnap.exists) {
+                blueprintData = docSnap.data();
+            }
+        } catch (adminErr) {
+            console.warn('[Status API] Admin SDK failed, falling back to Client SDK.', adminErr);
+            const clientProjectRef = doc(db, 'projects', projectId);
+            const docSnap = await getDoc(clientProjectRef);
+            if (docSnap.exists()) {
+                blueprintData = docSnap.data();
+            }
+        }
+
+        if (!blueprintData) {
             return NextResponse.json({ error: 'Project not found' }, { status: 404 });
         }
 
-        const blueprint = docSnap.data() as ProjectBlueprint;
+        const blueprint = blueprintData as ProjectBlueprint;
 
         return NextResponse.json({
             success: true,

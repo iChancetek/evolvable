@@ -153,22 +153,35 @@ export default function CreatePage() {
                                     {msg.type === 'plan' ? (
                                         <div className={styles.planCard}>
                                             <div className={styles.planHeader}>
-                                                <span className={styles.planCheck}>✅</span>
-                                                <h3>{blueprint?.prd ? 'App Plan Generated!' : 'Generating App Plan...'}</h3>
+                                                {blueprint?.status === 'awaiting_clarification' ? (
+                                                    <>
+                                                        <span className={styles.planCheck}>⚠️</span>
+                                                        <h3>Clarification Needed</h3>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <span className={styles.planCheck}>✅</span>
+                                                        <h3>{blueprint?.prd ? 'App Plan Generated!' : 'Generating App Plan...'}</h3>
+                                                    </>
+                                                )}
                                             </div>
                                             <div className={styles.planTitle}>
                                                 {blueprint?.prd?.title || (userIdea.length > 50 ? userIdea.substring(0, 50) + '...' : userIdea)}
                                             </div>
 
-                                            {blueprint?.prd && (
-                                                <div className={styles.planFeatures}>
-                                                    {blueprint.prd.features.slice(0, 6).map((feat, idx) => (
-                                                        <div key={idx} className={styles.planFeature}>
-                                                            <span>✨</span> {feat.title}
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
+                                            {(() => {
+                                                const features = Array.isArray(blueprint?.prd?.features) ? blueprint.prd.features : [];
+                                                if (features.length === 0) return null;
+                                                return (
+                                                    <div className={styles.planFeatures}>
+                                                        {features.slice(0, 6).map((feat: any, idx: number) => (
+                                                            <div key={idx} className={styles.planFeature}>
+                                                                <span>✨</span> {feat?.title || 'Feature'}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                );
+                                            })()}
 
                                             {blueprint?.pipelineLogs && blueprint.pipelineLogs.length > 0 && (
                                                 <div className={styles.terminalContainer}>
@@ -221,23 +234,39 @@ export default function CreatePage() {
                                             )}
 
                                             <div className={styles.planAgents}>
-                                                <span>Pipeline Status: {blueprint?.status === 'building' ? 'Building...' : blueprint?.status === 'deployed' ? 'Complete!' : 'Initializing'}</span>
+                                                <span>Pipeline Status: {
+                                                    blueprint?.status === 'building' ? 'Building...' :
+                                                        blueprint?.status === 'deployed' ? 'Complete!' :
+                                                            blueprint?.status === 'awaiting_clarification' ? 'Needs Clarification' :
+                                                                blueprint?.status === 'awaiting_approval' ? 'Awaiting Approval' :
+                                                                    'Initializing'
+                                                }</span>
                                                 <div className={styles.agentBadges}>
-                                                    <span className={`${styles.agentBadge} ${blueprint?.currentPhase === 'vision' ? styles.agentActive : ''}`}>💡 Vision</span>
+                                                    <span className={`${styles.agentBadge} ${['vision', 'nlii', 'nldi', 'plan_coordinator'].includes(blueprint?.currentPhase || '') ? styles.agentActive : ''}`}>💡 Vision</span>
                                                     <span className={`${styles.agentBadge} ${['ui_designer', 'db_architect', 'system_architect'].includes(blueprint?.currentPhase || '') ? styles.agentActive : ''}`}>🎨 Design & Arch</span>
-                                                    <span className={`${styles.agentBadge} ${blueprint?.currentPhase === 'code_generation' ? styles.agentActive : ''}`}>💻 Code Gen</span>
+                                                    <span className={`${styles.agentBadge} ${['code_generation', 'backend_generation', 'logic_builder'].includes(blueprint?.currentPhase || '') ? styles.agentActive : ''}`}>💻 Code Gen</span>
                                                     <span className={`${styles.agentBadge} ${['qa_testing', 'security', 'debug_optimize'].includes(blueprint?.currentPhase || '') ? styles.agentActive : ''}`}>🧪 QA & Security</span>
                                                     <span className={`${styles.agentBadge} ${blueprint?.currentPhase === 'deployment' ? styles.agentActive : ''}`}>🚀 Deploy</span>
                                                 </div>
                                             </div>
                                             <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                                                <a
-                                                    href={projectId ? `/builder?projectId=${projectId}` : '#'}
-                                                    className={`${styles.planButton} ${!blueprint?.prd ? styles.planButtonDisabled : ''}`}
-                                                    style={{ pointerEvents: !blueprint?.prd ? 'none' : 'auto', opacity: !blueprint?.prd ? 0.5 : 1, flex: 1 }}
-                                                >
-                                                    Start Building →
-                                                </a>
+                                                {blueprint?.status === 'awaiting_clarification' ? (
+                                                    <a
+                                                        href={`/plan-review?projectId=${projectId}`}
+                                                        className={styles.planButton}
+                                                        style={{ background: 'var(--color-error)', flex: 1 }}
+                                                    >
+                                                        Review & Clarify →
+                                                    </a>
+                                                ) : (
+                                                    <a
+                                                        href={projectId ? `/builder?projectId=${projectId}` : '#'}
+                                                        className={`${styles.planButton} ${!blueprint?.prd ? styles.planButtonDisabled : ''}`}
+                                                        style={{ pointerEvents: !blueprint?.prd ? 'none' : 'auto', opacity: !blueprint?.prd ? 0.5 : 1, flex: 1 }}
+                                                    >
+                                                        Start Building →
+                                                    </a>
+                                                )}
                                                 {blueprint?.status === 'building' && (
                                                     <button
                                                         onClick={() => abortPipeline()}

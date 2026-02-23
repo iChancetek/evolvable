@@ -27,7 +27,7 @@ For each platform mode, apply appropriate patterns:
 
 Output a JSON object with TWO keys:
 1. "architecture" — ArchitectureDesignDocument
-2. "implementationPlan" — Full 9-section ImplementationPlan
+2. "implementationPlan" — Full 12-section ImplementationPlan (including Section 10: nliiSummary and Section 12: nldiSummary)
 
 Self-validation rules (all must be true before returning):
 - architectureCrossReviewed: verify frontend + backend + DB are coherent
@@ -55,8 +55,12 @@ Platform Mode: ${input.blueprint.prd.platformMode}
 User Roles: ${JSON.stringify(input.blueprint.prd.userRoles)}
 PRD: ${JSON.stringify(input.blueprint.prd)}
 DB Schema: ${JSON.stringify(input.blueprint.databaseSchema)}
+Infrastructure Blueprint (NLII): ${input.blueprint.infrastructure ? JSON.stringify(input.blueprint.infrastructure) : 'None provided'}
+Hosting & Domain Strategy (NLDI): ${input.blueprint.nldiSummary ? JSON.stringify(input.blueprint.nldiSummary) : 'None provided'}
 
-Generate the complete ArchitectureDesignDocument AND the full 9-section ImplementationPlan.
+Generate the complete ArchitectureDesignDocument AND the full 12-section ImplementationPlan.
+If an Infrastructure Blueprint was provided, you MUST include its 'nliiSummary' as Section 10 of the ImplementationPlan.
+If a Hosting & Domain Strategy was provided, you MUST include its 'nldiSummary' as Section 12 of the ImplementationPlan. Ensure this strategy is written in non-technical, plain English and mentions Docker containerization if applicable.
 Ensure ALL selfValidation flags are true before returning — reject and retry if any is false.
 `;
 
@@ -80,8 +84,16 @@ Ensure ALL selfValidation flags are true before returning — reject and retry i
             // Stamp metadata
             result.implementationPlan.version = 1;
             result.implementationPlan.generatedAt = Date.now();
-            result.implementationPlan.agentIds = [AgentId.VISION, AgentId.DB_ARCHITECT, AgentId.SYSTEM_ARCHITECT];
+            result.implementationPlan.agentIds = [AgentId.NLII, AgentId.VISION, AgentId.DB_ARCHITECT, AgentId.SYSTEM_ARCHITECT];
             result.implementationPlan.status = 'draft';
+
+            // Ensure Section 10 and 12 are populated if we have NLII/NLDI output
+            if (input.blueprint.infrastructure?.nliiSummary && !result.implementationPlan.nliiSummary) {
+                result.implementationPlan.nliiSummary = input.blueprint.infrastructure.nliiSummary;
+            }
+            if (input.blueprint.nldiSummary && !result.implementationPlan.nldiSummary) {
+                result.implementationPlan.nldiSummary = input.blueprint.nldiSummary;
+            }
 
             console.log(`[SystemArchitectAgent] Plan generated. Mode: ${result.architecture.platformMode}. Self-validation: PASSED`);
 

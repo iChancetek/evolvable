@@ -10,7 +10,7 @@ import { ProjectBlueprint, ImplementationPlan, PlanVersion } from '@/lib/agents/
 import styles from './plan-review.module.css';
 import Link from 'next/link';
 
-type Section = 'executive' | 'architecture' | 'features' | 'database' | 'security' | 'deployment' | 'testing' | 'monitoring' | 'risks';
+type Section = 'executive' | 'architecture' | 'features' | 'database' | 'security' | 'deployment' | 'testing' | 'monitoring' | 'risks' | 'infrastructure' | 'domain_hosting';
 
 const SECTIONS: { key: Section; label: string; icon: string }[] = [
     { key: 'executive', label: 'Executive Summary', icon: '📋' },
@@ -22,6 +22,8 @@ const SECTIONS: { key: Section; label: string; icon: string }[] = [
     { key: 'testing', label: 'Testing Plan', icon: '🧪' },
     { key: 'monitoring', label: 'Monitoring Plan', icon: '📊' },
     { key: 'risks', label: 'Risk Analysis', icon: '⚠️' },
+    { key: 'infrastructure', label: 'Infrastructure Setup', icon: '☁️' },
+    { key: 'domain_hosting', label: 'Domain & Hosting', icon: '🌐' },
 ];
 
 const COMPLEXITY_COLORS: Record<string, string> = {
@@ -38,6 +40,7 @@ export default function PlanReviewPage() {
     const [activePlan, setActivePlan] = useState<ImplementationPlan | null>(null);
     const [expandedSections, setExpandedSections] = useState<Set<Section>>(new Set(['executive']));
     const [revisionNotes, setRevisionNotes] = useState('');
+    const [clarificationNotes, setClarificationNotes] = useState('');
     const [showRevisionInput, setShowRevisionInput] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -115,6 +118,26 @@ export default function PlanReviewPage() {
             setLoading(false);
         }
     }, [user, project, revisionNotes, projectId]);
+
+    const handleClarify = useCallback(async () => {
+        if (!user || !project || !clarificationNotes.trim()) return;
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await fetch('/api/orchestrate/clarify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ projectId, userId: user.uid, clarificationNotes })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+            router.push(`/create?projectId=${projectId}`);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }, [user, project, clarificationNotes, projectId, router]);
 
     const handleCancel = useCallback(async () => {
         router.push('/dashboard');
@@ -388,6 +411,99 @@ export default function PlanReviewPage() {
                             </div>
                         </section>
                     )}
+
+                    {/* Infrastructure (NLII) */}
+                    {expandedSections.has('infrastructure') && activePlan.nliiSummary && (
+                        <section className={styles.section}>
+                            <h2 className={styles.sectionTitle}>☁️ Infrastructure Setup</h2>
+                            <div className={styles.grid2}>
+                                <div className={styles.card}>
+                                    <div className={styles.cardLabel}>Identified Environment</div>
+                                    <p><strong>Cloud:</strong> {activePlan.nliiSummary.identifiedCloud.toUpperCase()}</p>
+                                    <p><strong>OS:</strong> {activePlan.nliiSummary.identifiedOS.toUpperCase()}</p>
+                                </div>
+                                <div className={styles.card}>
+                                    <div className={styles.cardLabel}>Required Tooling</div>
+                                    <ul className={styles.list}>
+                                        {activePlan.nliiSummary.identifiedTooling?.map((tool, i) => (
+                                            <li key={i}>{tool}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {activePlan.nliiSummary.assumptionsMade?.length > 0 && (
+                                <div className={`${styles.card} ${styles.isolationCard}`} style={{ marginTop: '16px' }}>
+                                    <div className={styles.cardLabel}>🧠 AI Assumptions</div>
+                                    <ul className={styles.list}>
+                                        {activePlan.nliiSummary.assumptionsMade.map((asm, i) => (
+                                            <li key={i}>{asm}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+
+                            <div className={styles.grid2} style={{ marginTop: '16px' }}>
+                                <div className={styles.card}>
+                                    <div className={styles.cardLabel}>Estimated Cost Tier</div>
+                                    <p>{activePlan.nliiSummary.estimatedCostTier.replace(/_/g, ' ').toUpperCase()}</p>
+                                </div>
+                                <div className={styles.card}>
+                                    <div className={styles.cardLabel}>Risk Level</div>
+                                    <p style={{ color: COMPLEXITY_COLORS[activePlan.nliiSummary.riskLevel] || '#fff' }}>
+                                        {activePlan.nliiSummary.riskLevel.toUpperCase()}
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+                    )}
+
+                    {/* Domain & Hosting (NLDI) */}
+                    {expandedSections.has('domain_hosting') && activePlan.nldiSummary && (
+                        <section className={styles.section}>
+                            <h2 className={styles.sectionTitle}>🌐 Domain & Hosting Strategy</h2>
+                            <div className={styles.grid2}>
+                                <div className={styles.card}>
+                                    <div className={styles.cardLabel}>Target Provider</div>
+                                    <p style={{ fontSize: '1.5rem', fontWeight: 600 }}>
+                                        {activePlan.nldiSummary.provider.toUpperCase()}
+                                    </p>
+                                    <div style={{ marginTop: '8px', color: 'var(--color-text-secondary)' }}>
+                                        <strong>Region:</strong> {activePlan.nldiSummary.region}
+                                    </div>
+                                </div>
+                                <div className={styles.card}>
+                                    <div className={styles.cardLabel}>Custom Domain Intent</div>
+                                    <p>
+                                        {activePlan.nldiSummary.domainIntent === 'buy' ? '💸 Register New Domain' :
+                                            activePlan.nldiSummary.domainIntent === 'connect' ? '🔗 Connect Existing Domain' :
+                                                '⚡ Use Platform Subdomain'}
+                                    </p>
+                                    {activePlan.nldiSummary.domainName && (
+                                        <div style={{ marginTop: '8px', fontWeight: 600, color: 'var(--color-primary)' }}>
+                                            {activePlan.nldiSummary.domainName}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className={styles.grid2} style={{ marginTop: '16px' }}>
+                                <div className={styles.card}>
+                                    <div className={styles.cardLabel}>Scalability & Performance</div>
+                                    <p>📈 {activePlan.nldiSummary.scaling}</p>
+                                </div>
+                                <div className={styles.card}>
+                                    <div className={styles.cardLabel}>Budget Sentiment</div>
+                                    <p>💰 {activePlan.nldiSummary.budget}</p>
+                                </div>
+                            </div>
+
+                            <div className={`${styles.card}`} style={{ marginTop: '16px', background: 'var(--color-surface-hover)' }}>
+                                <div className={styles.cardLabel}>Security & SSL</div>
+                                <p>🔒 <strong>Enterprise-grade SSL</strong> will be {activePlan.nldiSummary.sslStatus.replace('_', ' ')} for all traffic.</p>
+                            </div>
+                        </section>
+                    )}
                 </div>
 
                 {/* Action Bar */}
@@ -413,6 +529,33 @@ export default function PlanReviewPage() {
                                     <button className={styles.btnSecondary} onClick={() => setShowRevisionInput(false)}>Cancel</button>
                                     <button className={styles.btnRevise} onClick={handleRevise} disabled={loading || !revisionNotes.trim()}>
                                         {loading ? 'Submitting...' : '🔄 Submit Revision'}
+                                    </button>
+                                </div>
+                            </div>
+                        ) : project.phase === 'awaiting_clarification' ? (
+                            <div className={styles.revisionBox}>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <strong style={{ color: 'var(--color-error)' }}>⚠️ The AI needs more details:</strong>
+                                    <ul style={{ marginTop: '8px', paddingLeft: '20px', color: 'var(--color-text-secondary)' }}>
+                                        {project.infrastructure?.nliiSummary?.clarificationsNeeded?.map((q, i) => (
+                                            <li key={`nlii-${i}`}>{q}</li>
+                                        ))}
+                                        {project.nldiSummary?.clarificationsNeeded?.map((q, i) => (
+                                            <li key={`nldi-${i}`}>{q}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <textarea
+                                    className={styles.revisionInput}
+                                    placeholder="Answer the questions above so the AI can continue building..."
+                                    value={clarificationNotes}
+                                    onChange={e => setClarificationNotes(e.target.value)}
+                                    rows={3}
+                                />
+                                <div className={styles.revisionActions}>
+                                    <button className={styles.btnSecondary} onClick={handleCancel}>Cancel</button>
+                                    <button className={styles.btnRevise} onClick={handleClarify} disabled={loading || !clarificationNotes.trim()}>
+                                        {loading ? 'Submitting...' : 'Send Clarification →'}
                                     </button>
                                 </div>
                             </div>
