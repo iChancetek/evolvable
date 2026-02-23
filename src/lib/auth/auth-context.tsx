@@ -59,6 +59,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setError(null); // User cancelled, not an error
         } else if (message.includes('auth/too-many-requests')) {
             setError('Too many attempts. Please wait a moment and try again.');
+        } else if (message === 'Email not verified') {
+            setError('Please verify your email address before logging in.');
         } else {
             setError(message);
         }
@@ -87,7 +89,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const signInWithEmail = async (email: string, password: string) => {
         setError(null);
         try {
-            await adapter.signInWithEmail(email, password);
+            const authUser = await adapter.signInWithEmail(email, password);
+            if (!authUser.emailVerified) {
+                await adapter.signOut();
+                throw new Error('Email not verified');
+            }
         } catch (err) {
             handleError(err);
         }
@@ -104,6 +110,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 provider: 'password',
                 role: getDefaultRole(),
             });
+            // Force sign out immediately to enforce verification
+            await adapter.signOut();
         } catch (err) {
             handleError(err);
         }
