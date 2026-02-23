@@ -200,6 +200,14 @@ export default function CreatePage() {
                                                             </span>
                                                         </div>
                                                     ))}
+                                                    {blueprint.status === 'awaiting_clarification' && (
+                                                        <div className={styles.logLine} style={{ marginTop: '12px', padding: '12px', background: 'rgba(244, 135, 113, 0.1)', border: '1px solid rgba(244, 135, 113, 0.3)', borderRadius: '6px' }}>
+                                                            <span className={styles.logTime}>⚠️ AI Paused</span>
+                                                            <span className={styles.logMessage} style={{ color: '#f48771', fontWeight: 600 }}>
+                                                                The pipeline requires user input to proceed. Please click the "Review & Clarify →" button below to answer the AI's questions.
+                                                            </span>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         )}
