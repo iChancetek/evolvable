@@ -964,3 +964,38 @@
     at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
     at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
 [error] 
+[debug] [2026-02-23T22:33:41.266Z] ----------------------------------------------------------------------
+[debug] [2026-02-23T22:33:41.271Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\firebase-tools\lib\bin\firebase.js apphosting:secrets:set OPENAI_API_KEY --project evolvable-ab705
+[debug] [2026-02-23T22:33:41.272Z] CLI Version:   15.7.0
+[debug] [2026-02-23T22:33:41.272Z] Platform:      win32
+[debug] [2026-02-23T22:33:41.272Z] Node Version:  v24.13.1
+[debug] [2026-02-23T22:33:41.272Z] Time:          Mon Feb 23 2026 17:33:41 GMT-0500 (Eastern Standard Time)
+[debug] [2026-02-23T22:33:41.272Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-02-23T22:33:41.386Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-23T22:33:41.387Z] > authorizing via signed-in user (isydneyai@gmail.com)
+[debug] [2026-02-23T22:33:41.389Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-23T22:33:41.389Z] > authorizing via signed-in user (isydneyai@gmail.com)
+[debug] [2026-02-23T22:33:41.389Z] [iam] checking project evolvable-ab705 for permissions ["firebase.projects.get","secretmanager.secrets.create","secretmanager.secrets.get","secretmanager.secrets.getIamPolicy","secretmanager.secrets.setIamPolicy","secretmanager.secrets.update","secretmanager.versions.add"]
+[debug] [2026-02-23T22:33:41.391Z] Checked if tokens are valid: true, expires at: 1771888505266
+[debug] [2026-02-23T22:33:41.391Z] Checked if tokens are valid: true, expires at: 1771888505266
+[debug] [2026-02-23T22:33:41.393Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/evolvable-ab705:testIamPermissions [none]
+[debug] [2026-02-23T22:33:41.393Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/evolvable-ab705:testIamPermissions  x-goog-user-project=evolvable-ab705
+[debug] [2026-02-23T22:33:41.393Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/evolvable-ab705:testIamPermissions {"permissions":["firebase.projects.get","secretmanager.secrets.create","secretmanager.secrets.get","secretmanager.secrets.getIamPolicy","secretmanager.secrets.setIamPolicy","secretmanager.secrets.update","secretmanager.versions.add"]}
+[debug] [2026-02-23T22:33:41.680Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/evolvable-ab705:testIamPermissions 200
+[debug] [2026-02-23T22:33:41.680Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/evolvable-ab705:testIamPermissions {"permissions":["firebase.projects.get","secretmanager.secrets.create","secretmanager.secrets.get","secretmanager.secrets.getIamPolicy","secretmanager.secrets.setIamPolicy","secretmanager.secrets.update","secretmanager.versions.add"]}
+[debug] [2026-02-23T22:33:41.683Z] Checked if tokens are valid: true, expires at: 1771888505266
+[debug] [2026-02-23T22:33:41.683Z] Checked if tokens are valid: true, expires at: 1771888505266
+[debug] [2026-02-23T22:33:41.684Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/evolvable-ab705 [none]
+[debug] [2026-02-23T22:33:41.802Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/evolvable-ab705 200
+[debug] [2026-02-23T22:33:41.802Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/evolvable-ab705 {"projectNumber":"241386462301","projectId":"evolvable-ab705","lifecycleState":"ACTIVE","name":"Evolvable","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2026-02-20T23:28:27.464314Z","parent":{"type":"organization","id":"562901183862"}}
+[debug] [2026-02-23T22:33:41.803Z] Checked if tokens are valid: true, expires at: 1771888505266
+[debug] [2026-02-23T22:33:41.803Z] Checked if tokens are valid: true, expires at: 1771888505266
+[debug] [2026-02-23T22:33:41.803Z] >>> [apiv2][query] GET https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/OPENAI_API_KEY [none]
+[debug] [2026-02-23T22:33:41.978Z] <<< [apiv2][status] GET https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/OPENAI_API_KEY 404
+[debug] [2026-02-23T22:33:41.978Z] <<< [apiv2][body] GET https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/OPENAI_API_KEY {"error":{"code":404,"message":"Secret [projects/241386462301/secrets/OPENAI_API_KEY] not found.","status":"NOT_FOUND"}}
+[debug] [2026-02-23T22:33:41.980Z] Checked if tokens are valid: true, expires at: 1771888505266
+[debug] [2026-02-23T22:33:41.981Z] Checked if tokens are valid: true, expires at: 1771888505266
+[debug] [2026-02-23T22:33:41.981Z] >>> [apiv2][query] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets secretId=OPENAI_API_KEY
+[debug] [2026-02-23T22:33:41.981Z] >>> [apiv2][body] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets {"name":"OPENAI_API_KEY","replication":{"automatic":{}},"labels":{"firebase-managed":"apphosting"}}
+[debug] [2026-02-23T22:33:42.291Z] <<< [apiv2][status] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets 200
