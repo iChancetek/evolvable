@@ -40,7 +40,8 @@ export type PlatformMode =
     | 'social'
     | 'enterprise_dashboard'
     | 'api_platform'
-    | 'multi_tenant';
+    | 'multi_tenant'
+    | 'ai_agent';
 
 export type MonetizationModel = 'free' | 'freemium' | 'subscription' | 'usage_based' | 'marketplace_fee' | 'none';
 

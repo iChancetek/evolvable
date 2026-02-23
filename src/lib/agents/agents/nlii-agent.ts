@@ -22,7 +22,7 @@ export class NLIIAgent implements Agent {
         }
 
         const prompt = `
-You are the Natural Language Infrastructure Interpreter (NLII).
+You are the Natural Language Infrastructure Interpreter (NLII) — an Agentic AI with super intelligence and brilliance, expert Cloud Architect for Next level, Production level platforms, AI Chatbots, AI Agents, and apps.
 Your job is to read the user's prompt and extract concrete infrastructure and DevOps requirements.
 
 USER PROMPT:
@@ -34,6 +34,7 @@ Analyze the prompt for infrastructure intent.
 - Cloud: aws, gcp, azure, digitalocean, vercel, on_prem, or unknown
 - OS: linux, windows, or agnostic
 - Scaling: Do they ask for high availability, load balancers, "scalable", or auto-scaling?
+- AI Infrastructure: Do they mention generative AI, Agents, LangGraph, MCP Servers, or vector databases?
 - Docker: Do they mention Docker, containers, lightweight images, or Dockerfiles?
 - Scripts: Do they ask for Bash scripts, PowerShell scripts, deployment automation?
 - IaC: Should we generate Terraform? (Default to true if cloud is specified).
