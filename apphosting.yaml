@@ -1,3 +1,7 @@
 env:
   - variable: HF_TOKEN
     secret: HF_TOKEN
+  - variable: ANTHROPIC_API_KEY
+    secret: ANTHROPIC_API_KEY
+  - variable: OPENAI_API_KEY
+    secret: OPENAI_API_KEY
