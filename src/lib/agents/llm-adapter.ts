@@ -2,13 +2,8 @@ import { HfInference } from '@huggingface/inference';
 import OpenAI from 'openai';
 import { LLMProvider } from './types';
 
-// Initialize the Hugging Face client
-const hfToken = process.env.NEXT_PUBLIC_HF_TOKEN || process.env.HF_TOKEN || '';
-const hf = new HfInference(hfToken);
-
-// Initialize the OpenAI client
-const openaiKey = process.env.OPENAI_API_KEY || '';
-const openai = new OpenAI({ apiKey: openaiKey });
+// Remove static top-level instance to ensure fresh env variables are read per invocation
+// and to avoid crashing/caching an empty key on server boot if .env is loaded late.
 
 export type AgentWorkloadType = 'standard' | 'reasoning' | 'lightweight';
 
@@ -94,6 +89,14 @@ export async function callLLM<T = any>(
                     completionOptions.response_format = { type: "json_object" };
                 }
 
+                // 1. Dynamic Pre-flight Validation
+                const apiKey = process.env.OPENAI_API_KEY;
+                if (!apiKey) {
+                    throw new Error("Missing OPENAI_API_KEY in environment variables. AI Service temporarily unavailable.");
+                }
+
+                // 2. Initialize dynamically
+                const openai = new OpenAI({ apiKey });
                 const response = await openai.chat.completions.create(completionOptions);
 
                 const content = response.choices[0]?.message?.content || "";
@@ -112,6 +115,12 @@ export async function callLLM<T = any>(
             } catch (error: any) {
                 attempt++;
                 console.error(`[LLM Adapter] Error calling OpenAI ${modelName}:`, error.message);
+
+                // 3. Proper Failure Handling: Do not retry on 401 Auth errors
+                if (error.status === 401 || error.message.includes('401') || error.message.includes('API key')) {
+                    throw new Error("AI service configuration error: Missing or invalid API key. Please check your backend environment variables.");
+                }
+
                 if (attempt >= MAX_RETRIES) throw new Error(`OpenAI call failed after ${MAX_RETRIES} attempts. Last error: ${error.message}`);
                 await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
             }
@@ -138,6 +147,13 @@ export async function callLLM<T = any>(
             try {
                 console.log(`[LLM Adapter] Calling DeepSeek ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
 
+                // Dynamic Initialization
+                const hfToken = process.env.NEXT_PUBLIC_HF_TOKEN || process.env.HF_TOKEN;
+                if (!hfToken) {
+                    throw new Error("Missing HF_TOKEN in environment variables.");
+                }
+                const hf = new HfInference(hfToken);
+
                 const response = await hf.chatCompletion(payload);
                 const content = response.choices[0]?.message?.content || "";
 
@@ -156,6 +172,11 @@ export async function callLLM<T = any>(
             } catch (error: any) {
                 attempt++;
                 console.error(`[LLM Adapter] Error calling DeepSeek ${modelName}:`, error.message);
+
+                if (error.status === 401 || error.message.includes('401')) {
+                    throw new Error("AI service configuration error: Missing or invalid API key.");
+                }
+
                 if (attempt >= MAX_RETRIES) throw new Error(`DeepSeek call failed after ${MAX_RETRIES} attempts. Last error: ${error.message}`);
                 await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
             }
@@ -182,6 +203,13 @@ export async function callLLM<T = any>(
             try {
                 console.log(`[LLM Adapter] Calling HF ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
 
+                // Dynamic Initialization
+                const hfToken = process.env.NEXT_PUBLIC_HF_TOKEN || process.env.HF_TOKEN;
+                if (!hfToken) {
+                    throw new Error("Missing HF_TOKEN in environment variables.");
+                }
+                const hf = new HfInference(hfToken);
+
                 const response = await hf.chatCompletion(payload);
                 const content = response.choices[0]?.message?.content || "";
 
@@ -200,6 +228,11 @@ export async function callLLM<T = any>(
             } catch (error: any) {
                 attempt++;
                 console.error(`[LLM Adapter] Error calling HF ${modelName}:`, error.message);
+
+                if (error.status === 401 || error.message.includes('401')) {
+                    throw new Error("AI service configuration error: Missing or invalid API key.");
+                }
+
                 if (attempt >= MAX_RETRIES) throw new Error(`HF call failed after ${MAX_RETRIES} attempts. Last error: ${error.message}`);
                 await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
             }
