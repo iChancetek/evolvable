@@ -22,7 +22,50 @@ export enum AgentId {
     NLDI = 'nldi',
     INFRA_TERRAFORM = 'infra_terraform',
     INFRA_DOCKER = 'infra_docker',
-    INFRA_SCRIPT = 'infra_script'
+    INFRA_SCRIPT = 'infra_script',
+    // Monetization Builder
+    PAYMENT_INTEGRATION = 'payment_integration',
+    // Vibe-Coding Platform Specialists
+    UX_RESEARCHER = 'ux_researcher',
+    PAIR_PROGRAMMER = 'pair_programmer',
+    DEVOPS_ENGINEER = 'devops_engineer',
+    DEVSECOPS_ENGINEER = 'devsecops_engineer',
+    FINOPS_ARCHITECT = 'finops_architect',
+    CODE_REVIEWER = 'code_reviewer',
+    AUTONOMOUS_DEBUGGER = 'autonomous_debugger',
+    // Domain Experts
+    CRYPTO_EXPERT = 'crypto_expert',
+    STOCK_MARKET_EXPERT = 'stock_market_expert',
+    CYBER_SECURITY_EXPERT = 'cyber_security_expert',
+    MACHINE_LEARNING_EXPERT = 'machine_learning_expert',
+    // Language & Data Experts
+    PYTHON_EXPERT = 'python_expert',
+    GO_EXPERT = 'go_expert',
+    R_EXPERT = 'r_expert',
+    C_EXPERT = 'c_expert',
+    CPP_EXPERT = 'cpp_expert',
+    CSHARP_EXPERT = 'csharp_expert',
+    CS_EXPERT = 'cs_expert',
+    DATA_ANALYST = 'data_analyst',
+    DATABRICKS_EXPERT = 'databricks_expert',
+    SQL_EXPERT = 'sql_expert',
+    PYSPARK_EXPERT = 'pyspark_expert',
+    // Architects & Engineering Experts
+    CLOUD_ARCHITECT = 'cloud_architect',
+    DATA_ARCHITECT = 'data_architect',
+    ENTERPRISE_ARCHITECT = 'enterprise_architect',
+    DATA_ENGINEER = 'data_engineer',
+    HARDWARE_ENGINEER = 'hardware_engineer',
+    NETWORK_ENGINEER = 'network_engineer',
+    PERFORMANCE_ENGINEER = 'performance_engineer',
+    PROMPT_ENGINEER = 'prompt_engineer',
+    // Academic & Math Experts
+    MATHEMATICIAN = 'mathematician',
+    ACADEMIC_RESEARCHER = 'academic_researcher',
+    // Security Gatekeepers
+    SECURITY_REVIEWER = 'security_reviewer',
+    // Coding Assistant
+    EXPERT_CODING_ASSISTANT = 'expert_coding_assistant'
 }
 
 export type AgentStatus = 'pending' | 'running' | 'completed' | 'failed' | 'vetoed';
@@ -361,6 +404,7 @@ export interface ProjectBlueprint {
 
     // Agent outputs — Planning Phase
     prd?: ProductRequirementsDocument;
+    uxResearchReport?: any; // To be typed
     designSystem?: DesignSystemSpec;
     databaseSchema?: DatabaseSchema;
     architecture?: ArchitectureDesignDocument;
@@ -371,12 +415,44 @@ export interface ProjectBlueprint {
     workflows?: WorkflowManifest;
     codebase?: GeneratedCodebase;
     backendRoutes?: GeneratedBackendRoutes;
+    paymentIntegration?: any; // GeneratedCodebase or PaymentPayload
+    cryptoIntegration?: any; // To be typed
+    stockMarketIntegration?: any; // To be typed
+    cyberSecurityFeatures?: any; // To be typed
+    machineLearningFeatures?: any; // To be typed
+    pythonFeatures?: any; // To be typed
+    goFeatures?: any; // To be typed
+    rFeatures?: any; // To be typed
+    cFeatures?: any; // To be typed
+    cppFeatures?: any; // To be typed
+    csharpFeatures?: any; // To be typed
+    csFeatures?: any; // To be typed
+    dataAnalystFeatures?: any; // To be typed
+    databricksFeatures?: any; // To be typed
+    sqlFeatures?: any; // To be typed
+    pysparkFeatures?: any; // To be typed
+    cloudArchitectFeatures?: any; // To be typed
+    dataArchitectFeatures?: any; // To be typed
+    enterpriseArchitectFeatures?: any; // To be typed
+    dataEngineerFeatures?: any; // To be typed
+    hardwareEngineerFeatures?: any; // To be typed
+    networkEngineerFeatures?: any; // To be typed
+    performanceEngineerFeatures?: any; // To be typed
+    promptEngineerFeatures?: any; // To be typed
+    mathematicianFeatures?: any; // To be typed
+    academicResearchFeatures?: any; // To be typed
     infraTerraform?: GeneratedCodebase;
     infraDocker?: GeneratedCodebase;
     infraScript?: GeneratedCodebase;
     qualityReport?: TestSuite;
+    codeReviewAudit?: any; // To be typed
+    securityReviewAudit?: any; // To be typed
     securityReport?: SecurityAuditReport;
+    devSecOpsAudit?: any; // To be typed
+    finOpsReport?: any; // To be typed
+    expertCodingAssistantFeatures?: any; // To be typed
     deploymentManifest?: DeploymentManifest;
+    ciCdPipelines?: GeneratedCodebase;
     monitoringConfig?: MonitoringConfig;
 
     // GitHub version control state (populated after code generation)
