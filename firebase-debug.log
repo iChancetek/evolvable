@@ -85,3 +85,882 @@
 [debug] [2026-02-21T02:48:03.213Z] <<< [apiv2][body] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/HF_TOKEN:setIamPolicy {"version":1,"etag":"BwZLTJENTsI=","bindings":[{"role":"roles/secretmanager.secretAccessor","members":["serviceAccount:firebase-app-hosting-compute@evolvable-ab705.iam.gserviceaccount.com"]},{"role":"roles/secretmanager.secretVersionManager","members":["serviceAccount:service-241386462301@gcp-sa-firebaseapphosting.iam.gserviceaccount.com"]},{"role":"roles/secretmanager.viewer","members":["serviceAccount:firebase-app-hosting-compute@evolvable-ab705.iam.gserviceaccount.com"]}]}
 [info] +  Successfully set IAM bindings on secret HF_TOKEN.
  
+[debug] [2026-02-23T22:15:05.833Z] ----------------------------------------------------------------------
+[debug] [2026-02-23T22:15:05.839Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\firebase-tools\lib\bin\firebase.js apphosting:secrets:set ANTHROPIC_API_KEY --project evolvable-ab705
+[debug] [2026-02-23T22:15:05.840Z] CLI Version:   15.7.0
+[debug] [2026-02-23T22:15:05.840Z] Platform:      win32
+[debug] [2026-02-23T22:15:05.841Z] Node Version:  v24.13.1
+[debug] [2026-02-23T22:15:05.841Z] Time:          Mon Feb 23 2026 17:15:05 GMT-0500 (Eastern Standard Time)
+[debug] [2026-02-23T22:15:05.842Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-02-23T22:15:05.846Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-02-23T22:15:06.079Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-23T22:15:06.080Z] > authorizing via signed-in user (isydneyai@gmail.com)
+[debug] [2026-02-23T22:15:06.081Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-02-23T22:15:06.081Z] > authorizing via signed-in user (isydneyai@gmail.com)
+[debug] [2026-02-23T22:15:06.081Z] [iam] checking project evolvable-ab705 for permissions ["firebase.projects.get","secretmanager.secrets.create","secretmanager.secrets.get","secretmanager.secrets.getIamPolicy","secretmanager.secrets.setIamPolicy","secretmanager.secrets.update","secretmanager.versions.add"]
+[debug] [2026-02-23T22:15:06.083Z] Checked if tokens are valid: false, expires at: 1771645636417
+[debug] [2026-02-23T22:15:06.083Z] Checked if tokens are valid: false, expires at: 1771645636417
+[debug] [2026-02-23T22:15:06.084Z] > refreshing access token with scopes: []
+[debug] [2026-02-23T22:15:06.086Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-02-23T22:15:06.086Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-02-23T22:15:06.229Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-02-23T22:15:06.229Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-02-23T22:15:06.265Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-02-23T22:15:06.266Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-02-23T22:15:06.282Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/evolvable-ab705:testIamPermissions [none]
+[debug] [2026-02-23T22:15:06.282Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/evolvable-ab705:testIamPermissions  x-goog-user-project=evolvable-ab705
+[debug] [2026-02-23T22:15:06.282Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/evolvable-ab705:testIamPermissions {"permissions":["firebase.projects.get","secretmanager.secrets.create","secretmanager.secrets.get","secretmanager.secrets.getIamPolicy","secretmanager.secrets.setIamPolicy","secretmanager.secrets.update","secretmanager.versions.add"]}
+[debug] [2026-02-23T22:15:06.502Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/evolvable-ab705:testIamPermissions 200
+[debug] [2026-02-23T22:15:06.502Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/evolvable-ab705:testIamPermissions {"permissions":["firebase.projects.get","secretmanager.secrets.create","secretmanager.secrets.get","secretmanager.secrets.getIamPolicy","secretmanager.secrets.setIamPolicy","secretmanager.secrets.update","secretmanager.versions.add"]}
+[debug] [2026-02-23T22:15:06.504Z] Checked if tokens are valid: true, expires at: 1771888505266
+[debug] [2026-02-23T22:15:06.504Z] Checked if tokens are valid: true, expires at: 1771888505266
+[debug] [2026-02-23T22:15:06.505Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/evolvable-ab705 [none]
+[debug] [2026-02-23T22:15:06.600Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/evolvable-ab705 200
+[debug] [2026-02-23T22:15:06.601Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/evolvable-ab705 {"projectNumber":"241386462301","projectId":"evolvable-ab705","lifecycleState":"ACTIVE","name":"Evolvable","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2026-02-20T23:28:27.464314Z","parent":{"type":"organization","id":"562901183862"}}
+[debug] [2026-02-23T22:15:06.601Z] Checked if tokens are valid: true, expires at: 1771888505266
+[debug] [2026-02-23T22:15:06.602Z] Checked if tokens are valid: true, expires at: 1771888505266
+[debug] [2026-02-23T22:15:06.602Z] >>> [apiv2][query] GET https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/ANTHROPIC_API_KEY [none]
+[debug] [2026-02-23T22:15:06.809Z] <<< [apiv2][status] GET https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/ANTHROPIC_API_KEY 404
+[debug] [2026-02-23T22:15:06.809Z] <<< [apiv2][body] GET https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/ANTHROPIC_API_KEY {"error":{"code":404,"message":"Secret [projects/241386462301/secrets/ANTHROPIC_API_KEY] not found.","status":"NOT_FOUND"}}
+[debug] [2026-02-23T22:15:06.812Z] Checked if tokens are valid: true, expires at: 1771888505266
+[debug] [2026-02-23T22:15:06.812Z] Checked if tokens are valid: true, expires at: 1771888505266
+[debug] [2026-02-23T22:15:06.813Z] >>> [apiv2][query] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets secretId=ANTHROPIC_API_KEY
+[debug] [2026-02-23T22:15:06.813Z] >>> [apiv2][body] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets {"name":"ANTHROPIC_API_KEY","replication":{"automatic":{}},"labels":{"firebase-managed":"apphosting"}}
+[debug] [2026-02-23T22:15:07.207Z] <<< [apiv2][status] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets 200
+[debug] [2026-02-23T22:15:07.208Z] <<< [apiv2][body] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets {"name":"projects/241386462301/secrets/ANTHROPIC_API_KEY","replication":{"automatic":{}},"createTime":"2026-02-23T22:15:09.487519Z","labels":{"firebase-managed":"apphosting"},"etag":"\"164b851aa175e0\""}
+[info] +  Created new secret projects/evolvable-ab705/secrets/ANTHROPIC_API_KEY 
+[debug] [2026-02-23T22:29:07.488Z] Checked if tokens are valid: true, expires at: 1771888505266
+[debug] [2026-02-23T22:29:07.508Z] Checked if tokens are valid: true, expires at: 1771888505266
+[debug] [2026-02-23T22:29:07.520Z] >>> [apiv2][query] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/ANTHROPIC_API_KEY:addVersion [none]
+[debug] [2026-02-23T22:29:07.520Z] >>> [apiv2][body] POST https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/ANTHROPIC_API_KEY:addVersion {"payload":{"data":"c2stYW50LWFwaTAzLTI1SmdVa0l0ZVE5NDNqeFJTNzROam93aFlsNHZicDJ6OG5KTXAyamV1RDF2dTVMeE9DMG9iRnI0R09Wc29FN2M1UDQteUR3RlFsTExTcVVIdmFTVllBLVhzR0JrQUFBCnNrLWFudC1hcGkwMy0yNUpnVWtJdGVROTQzanhSUzc0Tmpvd2hZbDR2YnAyejhuSk1wMmpldUQxdnU1THhPQzBvYkZyNEdPVnNvRTdjNVA0LXlEd0ZRbExMU3FVSHZhU1ZZQS1Yc0dCa0FBQQpZCg=="}}
+[debug] [2026-02-23T22:29:07.619Z] *** [apiv2] error from fetch(https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/ANTHROPIC_API_KEY:addVersion, {"headers":{},"method":"POST","body":"{\"payload\":{\"data\":\"c2stYW50LWFwaTAzLTI1SmdVa0l0ZVE5NDNqeFJTNzROam93aFlsNHZicDJ6OG5KTXAyamV1RDF2dTVMeE9DMG9iRnI0R09Wc29FN2M1UDQteUR3RlFsTExTcVVIdmFTVllBLVhzR0JrQUFBCnNrLWFudC1hcGkwMy0yNUpnVWtJdGVROTQzanhSUzc0Tmpvd2hZbDR2YnAyejhuSk1wMmpldUQxdnU1THhPQzBvYkZyNEdPVnNvRTdjNVA0LXlEd0ZRbExMU3FVSHZhU1ZZQS1Yc0dCa0FBQQpZCg==\"}}"}): FetchError: request to https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/ANTHROPIC_API_KEY:addVersion failed, reason: write ECONNABORTED
+[debug] [2026-02-23T22:29:07.929Z] FetchError: request to https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/ANTHROPIC_API_KEY:addVersion failed, reason: write ECONNABORTED
+    at ClientRequest.<anonymous> (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\node-fetch\lib\index.js:1501:11)
+    at ClientRequest.emit (node:events:508:28)
+    at emitErrorEvent (node:_http_client:108:11)
+    at TLSSocket.socketErrorListener (node:_http_client:575:5)
+    at TLSSocket.emit (node:events:508:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+[error] 
+[error] Error: Failed to make request to https://secretmanager.googleapis.com/v1/projects/evolvable-ab705/secrets/ANTHROPIC_API_KEY:addVersion
+[debug] [2026-02-23T22:29:07.943Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.944Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.945Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.947Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.948Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.950Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.952Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.953Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.954Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.956Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.957Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.959Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.960Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.961Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.962Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.963Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.964Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.966Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.966Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.967Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.967Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.968Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.969Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.969Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.970Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.970Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.970Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.971Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.973Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.974Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.975Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.975Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.975Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.976Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.976Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.976Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.976Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.977Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.977Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.977Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.977Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:07.978Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.132Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.133Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.134Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.134Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.136Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.137Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.137Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.138Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.139Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.139Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.140Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.140Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.141Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.143Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.144Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.144Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.145Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.146Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.146Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.147Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2026-02-23T22:29:08.148Z] Error: EPIPE: broken pipe, write
+    at Socket._write (node:internal/net:75:18)
+    at writeOrBuffer (node:internal/streams/writable:570:12)
+    at _write (node:internal/streams/writable:499:10)
+    at Writable.write (node:internal/streams/writable:508:10)
+    at Console.log (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\lib\winston\transports\console.js:87:23)
+    at Console._write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\modern.js:103:17)
+    at doWrite (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+    at writeOrBuffer (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+    at Writable.write (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston-transport\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+    at DerivedLogger.ondata (C:\Users\chanc\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\winston\node_modules\readable-stream\lib\_stream_readable.js:629:20)
+[error] 
