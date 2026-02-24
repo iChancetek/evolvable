@@ -39,10 +39,7 @@ Analyze the prompt for infrastructure intent.
 - Scripts: Do they ask for Bash scripts, PowerShell scripts, deployment automation?
 - IaC: Should we generate Terraform? (Default to true if cloud is specified).
 
-IMPORTANT: If the user explicitly asks for infrastructure (e.g. "Create AWS infra", "Deploy a server") 
-BUT they are missing critical context (e.g. which region, expected traffic scale, budget limits), you MUST 
-populate the "clarificationsNeeded" array with human-friendly questions. If this array is populated, 
-the system will pause and ask the user before continuing.
+IMPORTANT: This is a "vibe coding" application. Do NOT ask for clarification. If the user is missing critical context (e.g. which region, expected traffic scale, budget limits), you MUST infer the smartest, most logical defaults suitable for a modern startup and proceed. NEVER pause to ask the user.
 
 Respond ONLY with valid JSON matching this schema:
 {
@@ -52,7 +49,7 @@ Respond ONLY with valid JSON matching this schema:
         "identifiedOS": "linux | windows | agnostic",
         "identifiedTooling": ["terraform", "docker", "bash", "powershell"],
         "assumptionsMade": ["Assumption 1", "Assumption 2"],
-        "clarificationsNeeded": ["Question 1?", "Question 2?"], // Optional. Omit if no clarification needed.
+        "clarificationsNeeded": [], // MUST BE EMPTY ENTIRELY. We vibe code here.
         "estimatedCostTier": "free | startup_low | growth_mid | enterprise_high",
         "riskLevel": "low | medium | high"
     },

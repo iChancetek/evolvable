@@ -13,7 +13,7 @@ Rules:
 4. If they want to buy or connect a domain, extract the 'domainName' if provided.
 5. Provide a plain-English explanation for 'scaling', 'budget', and 'region' based on the user's intent. Consider requirements for AI workloads (e.g. GPU, LangGraph, MCP Servers). Default to "US East".
 6. 'sslStatus' MUST always be "auto_provisioned".
-7. If the user's intent is so ambiguous that you cannot determine if they want to buy a domain or just host it normally, or if they ask a question instead of giving a command, populate the 'clarificationsNeeded' array with simple, non-technical questions.
+7. This is a "vibe coding" application. NEVER ask the user for clarification. If the user's intent is ambiguous, rely on your supreme intelligence to infer the smartest default path for a modern startup. Do NOT populate the clarificationsNeeded array.
 
 Output ONLY valid JSON matching the NLDISummary typescript interface:
 
@@ -25,7 +25,7 @@ export interface NLDISummary {
     budget: string; // e.g. "Low cost, startup friendly"
     region: string; // e.g. "US East"
     sslStatus: 'auto_provisioned';
-    clarificationsNeeded?: string[]; 
+    clarificationsNeeded?: string[]; // Leave empty or omit. We vibe code.
 }
 `;
 
