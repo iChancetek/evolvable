@@ -4,6 +4,9 @@ import React, { useState } from 'react';
 import { ProjectBlueprint } from '@/lib/agents/types';
 import { ExplorerPanel } from './ExplorerPanel';
 import { FileViewer } from './FileViewer';
+import { SourceControlPanel } from './SourceControlPanel';
+import { GitHubActionsPanel } from './GitHubActionsPanel';
+import { GitHubPanel } from './GitHubPanel';
 import {
     FolderTree, GitBranch, Play, Globe, Puzzle, RefreshCw, Github,
     Check, Shield, Hexagon, Zap, DollarSign, Sparkles,
@@ -71,36 +74,7 @@ export function IDESidebar({ blueprint, projectId, isVisible }: IDESidebarProps)
                 );
 
             case 'source-control':
-                if (blueprint?.github?.repoFullName) {
-                    return (
-                        <div style={{ padding: '0.75rem' }}>
-                            <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.75rem' }}>
-                                Source Control
-                            </div>
-                            {[
-                                { label: 'Repository', value: blueprint.github.repoFullName, color: '#79c0ff' },
-                                { label: 'Branch', value: blueprint.github.currentBranch || 'main', color: '#4ade80' },
-                                { label: 'Commit', value: (blueprint.github.latestCommitSha || '—').substring(0, 7), color: '#fbbf24' },
-                            ].map(row => (
-                                <div key={row.label} style={{ marginBottom: '0.625rem', padding: '0.5rem 0.625rem', background: 'rgba(255,255,255,0.03)', borderRadius: '6px' }}>
-                                    <div style={{ fontSize: '0.65rem', color: 'rgba(255,255,255,0.3)', marginBottom: '0.2rem' }}>{row.label}</div>
-                                    <div style={{ fontSize: '0.78rem', color: row.color, fontFamily: 'monospace' }}>{row.value}</div>
-                                </div>
-                            ))}
-                            {blueprint.github.openPrUrl && (
-                                <a
-                                    href={blueprint.github.openPrUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    style={{ display: 'block', padding: '0.5rem', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.25)', borderRadius: '6px', fontSize: '0.75rem', color: '#c084fc', textDecoration: 'none', textAlign: 'center', marginTop: '0.75rem' }}
-                                >
-                                    Open Pull Request →
-                                </a>
-                            )}
-                        </div>
-                    );
-                }
-                return <PlaceholderPanel title="Source Control" icon="⎇" description="Connect your GitHub account in Settings to enable source control." />;
+                return <SourceControlPanel projectId={projectId} />;
 
             case 'run':
                 return <PlaceholderPanel title="Run & Debug" icon="▶" description="Start a local dev server to preview and debug your generated app." />;
@@ -154,10 +128,10 @@ export function IDESidebar({ blueprint, projectId, isVisible }: IDESidebarProps)
                 );
 
             case 'actions':
-                return <PlaceholderPanel title="GitHub Actions" icon="↺" description="View CI/CD workflow runs, build status, and deployment pipelines from your repository." />;
+                return <GitHubActionsPanel projectId={projectId} repoFullName={blueprint?.github?.repoFullName} />;
 
             case 'github':
-                return <PlaceholderPanel title="GitHub Panel" icon="◉" description="Manage your connected GitHub account, repository, webhooks, and organization access." />;
+                return <GitHubPanel projectId={projectId} />;
 
             default:
                 return null;
