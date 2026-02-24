@@ -117,14 +117,14 @@ const features = [
   },
   {
     icon: '🤖',
-    title: '11 AI Agents Work Together',
-    description: 'A coordinated team of specialized AI agents designs, builds, tests, secures, and deploys your app automatically.',
+    title: '50+ AI Agents Collaborate',
+    description: 'A massive team of specialized AI agents designs, builds, tests, secures, and deploys your app — fully autonomously.',
     color: 'var(--color-accent-purple)',
   },
   {
-    icon: '🎨',
-    title: 'Visual Customization',
-    description: 'Drag and drop to customize. Change colors, add forms, move sections. Every change updates your app instantly.',
+    icon: '🧠',
+    title: 'Agent Collaboration',
+    description: 'Watch specialized AI agents collaborate, review each other\'s work, and iterate until production-ready. No manual configuration needed.',
     color: 'var(--color-accent-teal)',
   },
   {
@@ -163,8 +163,8 @@ const steps = [
   },
   {
     number: '03',
-    title: 'Customize',
-    description: 'Use the visual builder to tweak colors, add features, and make it yours.',
+    title: 'Refine',
+    description: 'Chat with your agents to refine features, adjust design, and iterate — no configuration panels needed.',
     visual: '🎯',
   },
   {
@@ -264,14 +264,14 @@ export default function Home() {
             AI-Native No-Code Platform
           </div>
           <h1 className={styles.heroTitle}>
-            Describe your idea.
+            Describe your vision.
             <br />
-            <span className={styles.heroGradient}>We&apos;ll build it.</span>
+            <span className={styles.heroGradient}>Agents build it.</span>
           </h1>
           <p className={styles.heroSubtitle}>
-            Turn plain English into production-ready apps. No code. No configuration.
+            Turn plain English into production-ready apps. 50+ AI agents collaborate autonomously.
             <br />
-            Just your imagination.
+            Zero code. Zero configuration. Pure intelligence.
           </p>
 
           {/* Typewriter Input */}
@@ -282,7 +282,7 @@ export default function Home() {
               <span className={styles.cursor}>|</span>
             </div>
             <a href="/create" className={styles.inputButton}>
-              Build This →
+              Create This →
             </a>
           </div>
 
@@ -300,13 +300,13 @@ export default function Home() {
         <div className={styles.darkContent}>
           <div className={`${styles.darkBadge} reveal`}>THE BRAIN OF EVOLVABLE</div>
           <h2 className={`${styles.darkTitle} reveal reveal-delay-1`}>
-            11 AI Agents.
+            50+ AI Agents.
             <br />
             One mission.
           </h2>
           <p className={`${styles.darkSubtitle} reveal reveal-delay-2`}>
-            A coordinated team of specialized AI agents handles every phase of building your app —
-            from understanding your idea to deploying it live.
+            A massive team of specialized AI agents handles every phase of building your app —
+            from understanding your idea to deploying it live. Fully autonomous.
           </p>
         </div>
 
@@ -456,7 +456,7 @@ export default function Home() {
             Join thousands of creators building apps without writing a single line of code.
           </p>
           <a href="/create" className={styles.ctaButton}>
-            <span>Start Building — Free</span>
+            <span>Start Creating — Free</span>
             <span>🚀</span>
           </a>
         </div>
@@ -479,7 +479,7 @@ export default function Home() {
             </div>
             <div className={styles.footerCol}>
               <h4>Platform</h4>
-              <a href="/builder">Visual Builder</a>
+              <a href="/project">Agent Studio</a>
               <a href="/dashboard">Dashboard</a>
               <a href="/deploy">Deployment</a>
             </div>

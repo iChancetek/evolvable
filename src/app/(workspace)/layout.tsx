@@ -9,7 +9,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import {
     Lightbulb,
     LayoutDashboard,
-    Hammer,
+    Workflow,
     Settings,
     LogOut,
     AlertCircle,
@@ -71,8 +71,8 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
                             <Link href="/dashboard" className={`${styles.actIcon} ${pathname.startsWith('/dashboard') ? styles.actIconActive : ''}`} title="Dashboard">
                                 <LayoutDashboard size={18} />
                             </Link>
-                            <Link href="/builder" className={`${styles.actIcon} ${pathname.startsWith('/builder') ? styles.actIconActive : ''}`} title="Visual Builder">
-                                <Hammer size={18} />
+                            <Link href="/project" className={`${styles.actIcon} ${pathname.startsWith('/project') ? styles.actIconActive : ''}`} title="Agent Studio">
+                                <Workflow size={18} />
                             </Link>
                         </div>
                     </div>

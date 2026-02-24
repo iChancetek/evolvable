@@ -7,7 +7,7 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { ProjectBlueprint } from '@/lib/agents/types';
 import {
-    LayoutDashboard, Grid3x3, PlusCircle, Hammer, Settings,
+    LayoutDashboard, Grid3x3, PlusCircle, Workflow, Settings,
     Zap, ClipboardCheck, AlertTriangle, Rocket, XCircle,
     Building2, ShoppingCart, Users, BarChart3, Cpu, Bot, Lightbulb, Factory,
 } from 'lucide-react';
@@ -75,7 +75,7 @@ export default function DashboardPage() {
                         { href: '/dashboard', Icon: LayoutDashboard, label: 'Dashboard', active: true },
                         { href: '/apps', Icon: Grid3x3, label: 'My Apps' },
                         { href: '/create', Icon: PlusCircle, label: 'New Project' },
-                        { href: '/builder', Icon: Hammer, label: 'Visual Builder' },
+                        { href: '/project', Icon: Workflow, label: 'Agent Studio' },
                         { href: '/settings', Icon: Settings, label: 'Settings' },
                     ].map(({ href, Icon, label, active }) => (
                         <a
@@ -164,7 +164,7 @@ export default function DashboardPage() {
                                     ? `/plan-review?projectId=${project.id}`
                                     : s === 'awaiting_clarification'
                                         ? `/plan-review?projectId=${project.id}`
-                                        : `/builder?projectId=${project.id}`;
+                                        : `/project?projectId=${project.id}`;
 
                                 return (
                                     <a key={project.id} href={href} className={styles.projectCard}>

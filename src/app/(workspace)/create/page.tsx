@@ -370,11 +370,11 @@ export default function CreatePage() {
                                                 </a>
                                             ) : (
                                                 <a
-                                                    href={projectId ? `/builder?projectId=${projectId}` : '#'}
+                                                    href={projectId ? `/project?projectId=${projectId}` : '#'}
                                                     className={`${styles.planButton} ${!blueprint?.prd ? styles.planButtonDisabled : ''}`}
                                                     style={{ pointerEvents: !blueprint?.prd ? 'none' : 'auto', opacity: !blueprint?.prd ? 0.5 : 1, flex: 1 }}
                                                 >
-                                                    Start Building →
+                                                    View Agent Studio →
                                                 </a>
                                             )}
                                             {blueprint?.status === 'building' && (

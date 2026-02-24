@@ -7,7 +7,7 @@ import { db } from '@/lib/firebase/config';
 import { ProjectBlueprint } from '@/lib/agents/types';
 import styles from './apps.module.css';
 import {
-    LayoutDashboard, Grid3x3, PlusCircle, Hammer, Settings, Search, Rocket,
+    LayoutDashboard, Grid3x3, PlusCircle, Workflow, Settings, Search, Rocket,
     Zap, ClipboardCheck, AlertTriangle, XCircle, RefreshCw, Wrench,
     Building2, ShoppingCart, Users, BarChart3, Cpu, Bot, Lightbulb, Factory,
 } from 'lucide-react';
@@ -36,7 +36,7 @@ function getCategory(status: string): TabFilter {
 function getAppHref(project: ProjectBlueprint): string {
     const s = project.status;
     if (s === 'awaiting_approval' || s === 'awaiting_clarification') return `/plan-review?projectId=${project.id}`;
-    if (s === 'deployed') return `/builder?projectId=${project.id}`;
+    if (s === 'deployed') return `/project?projectId=${project.id}`;
     return `/create?projectId=${project.id}`;
 }
 
@@ -105,14 +105,14 @@ export default function AppsPage() {
 
                 <nav className={styles.nav}>
                     {[
-                        { href: '/dashboard', icon: '⬡', label: 'Dashboard' },
-                        { href: '/apps', icon: '▦', label: 'My Apps', active: true },
-                        { href: '/create', icon: '+', label: 'New App' },
-                        { href: '/builder', icon: '◈', label: 'Builder' },
-                        { href: '/settings', icon: '⚙', label: 'Settings' },
-                    ].map(({ href, icon, label, active }) => (
+                        { href: '/dashboard', Icon: LayoutDashboard, label: 'Dashboard' },
+                        { href: '/apps', Icon: Grid3x3, label: 'My Apps', active: true },
+                        { href: '/create', Icon: PlusCircle, label: 'New App' },
+                        { href: '/project', Icon: Workflow, label: 'Agent Studio' },
+                        { href: '/settings', Icon: Settings, label: 'Settings' },
+                    ].map(({ href, Icon, label, active }) => (
                         <a key={href} href={href} className={`${styles.navItem} ${active ? styles.active : ''}`}>
-                            <span className={styles.navIcon}>{icon}</span>
+                            <span className={styles.navIcon}><Icon size={16} /></span>
                             {label}
                         </a>
                     ))}

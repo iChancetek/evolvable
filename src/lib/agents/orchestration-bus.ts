@@ -315,7 +315,7 @@ export class OrchestrationBus {
 
             // SHORT-CIRCUIT: Core app built — redirect user to builder while post-tasks run
             await this.updatePhase('executing', 'deployed');
-            this.emit('System', 'completed', '✅ Core application built! Redirecting to Visual Builder...');
+            this.emit('System', 'completed', '✅ Core application built! Redirecting to Agent Studio...');
 
             // Phase 2c: Post-generation tasks (background)
             this.runPostGenerationTasks(userId).catch(e =>
