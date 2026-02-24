@@ -140,14 +140,8 @@ export async function callLLM<T = any>(
                     completionOptions.response_format = { type: "json_object" };
                 }
 
-                // 1. Dynamic Pre-flight Validation
-                const apiKey = process.env.OPENAI_API_KEY;
-                if (!apiKey) {
-                    throw new Error("Missing OPENAI_API_KEY in environment variables. AI Service temporarily unavailable.");
-                }
-
-                // 2. Initialize dynamically
-                const openai = new OpenAI({ apiKey });
+                // Initialize dynamically relying on default constructor for secret resolution
+                const openai = new OpenAI();
                 const response = await openai.chat.completions.create(completionOptions);
 
                 const content = response.choices[0]?.message?.content || "";
