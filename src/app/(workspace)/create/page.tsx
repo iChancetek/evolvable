@@ -106,39 +106,143 @@ export default function CreatePage() {
         }
     };
 
+    const PIPELINE_PHASES = [
+        { key: 'nlii', label: 'Infrastructure Setup', icon: '⚙️' },
+        { key: 'vision', label: 'PRD & Vision', icon: '📋' },
+        { key: 'ui_designer', label: 'UI Design System', icon: '🎨' },
+        { key: 'db_architect', label: 'Database Schema', icon: '🗄️' },
+        { key: 'system_architect', label: 'Architecture Plan', icon: '🏗️' },
+        { key: 'code_generation', label: 'Code Generation', icon: '💻' },
+        { key: 'qa_testing', label: 'QA & Testing', icon: '🧪' },
+        { key: 'deployment', label: 'Deployment', icon: '🚀' },
+    ];
+
+    const getPhaseStatus = (key: string) => {
+        const logs = blueprint?.pipelineLogs || [];
+        const phaseLog = logs.find(l => l.agentId === key);
+        if (!phaseLog) return 'pending';
+        return phaseLog.status === 'completed' ? 'done' : phaseLog.status === 'failed' ? 'error' : 'active';
+    };
+
     return (
         <div className={styles.page}>
-            {/* Sidebar */}
+            {/* VS Code-style Explorer Sidebar */}
             <aside className={styles.sidebar}>
-                <a href="/" className={styles.backLink}>
-                    <span className={styles.backArrow}>←</span>
-                    <div className={styles.sidebarBrand}>
-                        <img src="/icons/icon-192x192.png" alt="Evolvable" className={styles.logoMark} />
-                        <span>Evolvable</span>
+                {/* Sidebar Header */}
+                <div style={{ padding: '0 0 0.75rem', borderBottom: '1px solid rgba(255,255,255,0.06)', marginBottom: '0.75rem' }}>
+                    <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.1em', padding: '0.5rem 0.75rem' }}>
+                        Explorer
                     </div>
-                </a>
-                <div className={styles.sidebarSection}>
-                    <h3>Your Projects</h3>
-                    <div className={styles.projectItem}>
-                        <span className={styles.projectDot} style={{ background: 'var(--color-accent-green)' }} />
-                        <span>New Project</span>
-                    </div>
+                    <a href="/dashboard" className={styles.backLink}>
+                        ← Dashboard
+                    </a>
                 </div>
+
+                {/* Project Tree */}
+                <div style={{ flex: 1, overflow: 'auto' }}>
+                    {/* Section: Active Project */}
+                    <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.1em', padding: '0.375rem 0.75rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <span style={{ fontSize: '0.5rem' }}>▼</span> New Project
+                    </div>
+
+                    {/* Pipeline Phases as File Tree */}
+                    {PIPELINE_PHASES.map((phase) => {
+                        const status = getPhaseStatus(phase.key);
+                        const statusColor = status === 'done' ? '#4ade80' : status === 'active' ? '#60a5fa' : status === 'error' ? '#f87171' : 'rgba(255,255,255,0.2)';
+                        return (
+                            <div key={phase.key} style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem',
+                                padding: '0.3rem 0.75rem 0.3rem 1.25rem',
+                                fontSize: '0.78rem',
+                                color: status === 'pending' ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.75)',
+                                transition: 'background 0.15s',
+                                cursor: 'default',
+                                borderLeft: status === 'active' ? '2px solid #4285f4' : '2px solid transparent',
+                                background: status === 'active' ? 'rgba(66,133,244,0.07)' : 'transparent',
+                            }}>
+                                <span style={{ fontSize: '0.65rem', color: statusColor, flexShrink: 0 }}>
+                                    {status === 'done' ? '●' : status === 'active' ? '◉' : status === 'error' ? '✗' : '○'}
+                                </span>
+                                <span style={{ fontSize: '0.75rem' }}>{phase.icon}</span>
+                                <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{phase.label}</span>
+                            </div>
+                        );
+                    })}
+
+                    {/* Project ID if running */}
+                    {projectId && (
+                        <div style={{ margin: '0.75rem', padding: '0.625rem', background: 'rgba(66,133,244,0.06)', borderRadius: '6px', border: '1px solid rgba(66,133,244,0.12)' }}>
+                            <div style={{ fontSize: '0.6rem', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.25rem' }}>Project ID</div>
+                            <div style={{ fontSize: '0.68rem', color: '#79c0ff', fontFamily: 'monospace', wordBreak: 'break-all' }}>{projectId.substring(0, 16)}...</div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Footer: AI Status */}
                 <div className={styles.sidebarFooter}>
                     <div className={styles.agentStatus}>
                         <div className={styles.statusDot} />
-                        <span>AI Agents Ready</span>
+                        <span>{blueprint?.status === 'building' ? 'Building...' : blueprint?.status === 'awaiting_clarification' ? 'Needs Input' : blueprint?.status === 'awaiting_approval' ? 'Ready for Review' : blueprint?.status === 'deployed' ? 'Deployed ✓' : 'AI Agents Ready'}</span>
                     </div>
                 </div>
             </aside>
 
+
             {/* Chat Area */}
             <main className={styles.chatArea}>
-                <div className={styles.chatHeader}>
-                    <h1>Create Your App</h1>
-                    <p>Describe your idea and our AI will build it for you</p>
+                {/* VS Code Tab Bar */}
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'stretch',
+                    background: '#080a0e',
+                    borderBottom: '1px solid rgba(255,255,255,0.06)',
+                    height: '38px',
+                    flexShrink: 0,
+                }}>
+                    {/* Active Tab */}
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        padding: '0 1.25rem',
+                        background: '#0d0f14',
+                        borderRight: '1px solid rgba(255,255,255,0.06)',
+                        borderTop: '1px solid #4285f4',
+                        fontSize: '0.78rem',
+                        color: 'rgba(255,255,255,0.85)',
+                        fontWeight: 500,
+                        marginTop: '-1px',
+                    }}>
+                        <span style={{ color: '#79c0ff', fontSize: '0.7rem' }}>💬</span>
+                        new-project.chat
+                    </div>
+                    {/* Tab Bar Right: controls */}
+                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', padding: '0 1rem', gap: '0.75rem' }}>
+                        {blueprint?.status === 'building' && (
+                            <button
+                                onClick={abortPipeline}
+                                style={{ padding: '0.2rem 0.75rem', borderRadius: '4px', border: '1px solid rgba(239,68,68,0.3)', background: 'rgba(239,68,68,0.08)', color: '#f87171', fontSize: '0.7rem', cursor: 'pointer', fontFamily: 'inherit' }}
+                            >
+                                ■ Stop
+                            </button>
+                        )}
+                        {blueprint?.status === 'awaiting_approval' && projectId && (
+                            <a
+                                href={`/plan-review?projectId=${projectId}`}
+                                style={{ padding: '0.2rem 0.875rem', borderRadius: '4px', border: '1px solid rgba(168,85,247,0.4)', background: 'rgba(168,85,247,0.1)', color: '#c084fc', fontSize: '0.7rem', cursor: 'pointer', textDecoration: 'none', fontWeight: 600 }}
+                            >
+                                Review Plan →
+                            </a>
+                        )}
+                        <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)' }}>
+                            Next.js 15 · React 19
+                        </div>
+                    </div>
                 </div>
 
+                {/* Messages */}
                 <div className={styles.messagesContainer}>
                     {messages.map((msg) => (
                         <div key={msg.id} className={`${styles.message} ${msg.role === 'user' ? styles.userMessage : styles.aiMessage} `}>
