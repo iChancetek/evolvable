@@ -321,7 +321,7 @@ export default function ProjectPage() {
                                     </div>
                                     <div className={styles.archCard}>
                                         <span className={styles.archCardLabel}>Database</span>
-                                        <span className={styles.archCardValue}>{(blueprint.prd as any)?.techStack?.database || 'Firestore'}</span>
+                                        <span className={styles.archCardValue}>{(blueprint.prd as any)?.techStack?.database || blueprint.databaseSchema?.engine || 'Neon PostgreSQL'}</span>
                                     </div>
                                     <div className={styles.archCard}>
                                         <span className={styles.archCardLabel}>Auth</span>

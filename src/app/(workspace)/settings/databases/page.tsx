@@ -78,7 +78,7 @@ export default function DatabasesPage() {
                     const bp = docSnap.data() as ProjectBlueprint;
                     const parsed = parseSchema(bp.databaseSchema);
                     setTables(parsed);
-                    setEngine(bp.databaseSchema?.engine ?? 'firestore');
+                    setEngine(bp.databaseSchema?.engine ?? 'postgresql');
                     if (parsed.length > 0) setActiveTable(parsed[0].name);
                 }
             } catch (e) { console.error('Failed to load schema:', e); }

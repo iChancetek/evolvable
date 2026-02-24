@@ -57,18 +57,18 @@ export interface LLMOptions {
 
 const HF_MODEL_ROUTING: Record<AgentWorkloadType, string> = {
     // Primary model for code generation, JSON structured output, and general agentic tasks
-    standard: 'Qwen/Qwen3-32B-Instruct', // downgrade to 32B for free tier testing
+    standard: 'Qwen/Qwen2.5-72B-Instruct', // downgrade to 32B for free tier testing
     // Deep reasoning tasks (Architect, Security)
-    reasoning: 'deepseek-ai/DeepSeek-V3',
+    reasoning: 'deepseek-ai/DeepSeek-R1-Distill-Qwen-32B',
     // Fast, lightweight tasks (Documentation, simple parsing)
-    lightweight: 'Qwen/Qwen3-7B-Instruct'
+    lightweight: 'Qwen/Qwen2.5-7B-Instruct'
 };
 
 // DeepSeek V3.2 — latest model via HuggingFace Inference
 const DEEPSEEK_MODEL_ROUTING: Record<AgentWorkloadType, string> = {
-    standard: 'deepseek-ai/DeepSeek-V3.2',
-    reasoning: 'deepseek-ai/DeepSeek-V3.2',
-    lightweight: 'deepseek-ai/DeepSeek-V3.2'
+    standard: 'deepseek-ai/DeepSeek-R1-Distill-Qwen-32B',
+    reasoning: 'deepseek-ai/DeepSeek-R1-Distill-Qwen-32B',
+    lightweight: 'deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B'
 };
 
 const OPENAI_MODEL_ROUTING: Record<AgentWorkloadType, string> = {
