@@ -1,6 +1,7 @@
 import { HfInference } from '@huggingface/inference';
 import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenAI } from '@google/genai';
 import { LLMProvider } from './types';
 
 // Remove static top-level instance to ensure fresh env variables are read per invocation
@@ -53,6 +54,7 @@ export interface LLMOptions {
     workloadType?: AgentWorkloadType;
     jsonSchema?: boolean | Record<string, any>; // Optional JSON schema for structured output
     provider?: LLMProvider;
+    model?: string; // Explicit model string to override provider defaults
 }
 
 const HF_MODEL_ROUTING: Record<AgentWorkloadType, string> = {
@@ -114,7 +116,7 @@ export async function callLLM<T = any>(
     }
 
     // Provider Fallback Chain (Order of preference if primary fails)
-    const PROVIDER_CHAIN: LLMProvider[] = [provider, 'openai', 'anthropic', 'deepseek'].filter((v, i, a) => a.indexOf(v) === i) as LLMProvider[];
+    const PROVIDER_CHAIN: LLMProvider[] = [provider, 'openai', 'anthropic', 'deepseek', 'gemini'].filter((v, i, a) => a.indexOf(v) === i) as LLMProvider[];
 
     let lastError: any = null;
 
@@ -125,7 +127,7 @@ export async function callLLM<T = any>(
         while (attempt < MAX_RETRIES) {
             try {
                 if (currentProvider === 'openai') {
-                    const modelName = OPENAI_MODEL_ROUTING[workloadType] || 'gpt-5.2';
+                    const modelName = options.model || OPENAI_MODEL_ROUTING[workloadType] || 'gpt-5.2';
                     console.log(`[LLM Adapter] Calling OpenAI ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
 
                     const completionOptions: any = {
@@ -147,7 +149,7 @@ export async function callLLM<T = any>(
                     return parseResponse(response.choices[0]?.message?.content || "", jsonSchema);
 
                 } else if (currentProvider === 'deepseek') {
-                    const modelName = DEEPSEEK_MODEL_ROUTING[workloadType];
+                    const modelName = options.model || DEEPSEEK_MODEL_ROUTING[workloadType];
                     console.log(`[LLM Adapter] Calling DeepSeek ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
 
                     let payload: any = {
@@ -168,7 +170,7 @@ export async function callLLM<T = any>(
                     return parseResponse(response.choices[0]?.message?.content || "", jsonSchema);
 
                 } else if (currentProvider === 'anthropic') {
-                    const modelName = ANTHROPIC_MODEL_ROUTING[workloadType];
+                    const modelName = options.model || ANTHROPIC_MODEL_ROUTING[workloadType];
                     console.log(`[LLM Adapter] Calling Anthropic ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
 
                     const anthropic = new Anthropic();
@@ -192,7 +194,7 @@ export async function callLLM<T = any>(
                     return parseResponse(content, jsonSchema);
 
                 } else if (currentProvider === 'huggingface') {
-                    const modelName = HF_MODEL_ROUTING[workloadType];
+                    const modelName = options.model || HF_MODEL_ROUTING[workloadType];
                     console.log(`[LLM Adapter] Calling HuggingFace ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
 
                     const hfToken = process.env.NEXT_PUBLIC_HF_TOKEN || process.env.HF_TOKEN;
@@ -212,6 +214,26 @@ export async function callLLM<T = any>(
 
                     const response = await hf.chatCompletion(payload);
                     return parseResponse(response.choices[0]?.message?.content || "", jsonSchema);
+                } else if (currentProvider === 'gemini') {
+                    const modelName = options.model || 'gemini-1.5-pro';
+                    console.log(`[LLM Adapter] Calling Gemini ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
+
+                    const apiKey = process.env.GEMINI_API_KEY;
+                    if (!apiKey) throw new Error("Missing GEMINI_API_KEY");
+                    const ai = new GoogleGenAI({ apiKey });
+
+                    const response = await ai.models.generateContent({
+                        model: modelName,
+                        contents: [
+                            { role: "user", parts: [{ text: systemStr + "\n\n" + userPrompt }] }
+                        ],
+                        config: {
+                            temperature: temperature,
+                            responseMimeType: jsonSchema ? "application/json" : "text/plain",
+                        }
+                    });
+
+                    return parseResponse(response.text || "", jsonSchema);
                 }
             } catch (error: any) {
                 attempt++;

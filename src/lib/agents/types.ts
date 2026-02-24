@@ -72,7 +72,56 @@ export type AgentStatus = 'pending' | 'running' | 'completed' | 'failed' | 'veto
 
 export type AgentWorkloadType = 'standard' | 'reasoning' | 'lightweight';
 
-export type LLMProvider = 'huggingface' | 'openai' | 'deepseek' | 'anthropic';
+export type LLMProvider = 'huggingface' | 'openai' | 'deepseek' | 'anthropic' | 'gemini';
+
+export type AIModel =
+    // OpenAI Models
+    | 'gpt-5.2' | 'gpt-5.2-pro' | 'gpt-5.2-codex' | 'gpt-5.1' | 'gpt-5'
+    | 'gpt-4o' | 'gpt-4o-mini' | 'gpt-4-turbo'
+    // Anthropic Models
+    | 'claude-3-5-sonnet-latest' | 'claude-3-5-haiku-latest' | 'claude-3-opus-latest' | 'claude-4.6-sonnet-latest'
+    // Google Models
+    | 'gemini-2.5-pro' | 'gemini-2.0-pro' | 'gemini-1.5-pro' | 'gemini-1.5-flash'
+    // Open Source / Hugging Face
+    | 'llama-3.1-405b' | 'llama-4-scout' | 'qwen-2.5-72b' | 'qwen-3' | 'gemma-2-27b' | 'mistral-large'
+    | 'stable-diffusion-3' | 'idefics-2'
+    // DeepSeek
+    | 'deepseek-v3' | 'deepseek-r1';
+
+export interface ModelDefinition {
+    id: AIModel;
+    provider: LLMProvider;
+    name: string;
+    description: string;
+}
+
+export const AVAILABLE_MODELS: ModelDefinition[] = [
+    // OpenAI
+    { id: 'gpt-5.2', provider: 'openai', name: 'GPT-5.2', description: 'Latest reasoning model' },
+    { id: 'gpt-5.2-pro', provider: 'openai', name: 'GPT-5.2 Pro', description: 'Advanced reasoning and complex tasks' },
+    { id: 'gpt-5.1', provider: 'openai', name: 'GPT-5.1', description: 'Balanced performance and speed' },
+    { id: 'gpt-4o', provider: 'openai', name: 'GPT-4o', description: 'Fast omni-model' },
+    { id: 'gpt-4-turbo', provider: 'openai', name: 'GPT-4 Turbo', description: 'Legacy GPT-4 architecture' },
+    // Anthropic
+    { id: 'claude-4.6-sonnet-latest', provider: 'anthropic', name: 'Claude 4.6 Sonnet', description: 'Latest capable Claude model' },
+    { id: 'claude-3-5-sonnet-latest', provider: 'anthropic', name: 'Claude 3.5 Sonnet', description: 'Balanced coding model' },
+    { id: 'claude-3-opus-latest', provider: 'anthropic', name: 'Claude 3 Opus', description: 'Deep analysis' },
+    // Google
+    { id: 'gemini-2.0-pro', provider: 'gemini', name: 'Gemini 2.0 Pro', description: 'Google native next-gen model' },
+    { id: 'gemini-1.5-pro', provider: 'gemini', name: 'Gemini 1.5 Pro', description: 'Long context window support' },
+    // Hugging Face / Open Source
+    { id: 'llama-4-scout', provider: 'huggingface', name: 'Llama 4 (Scout)', description: 'Meta lightweight edge model' },
+    { id: 'llama-3.1-405b', provider: 'huggingface', name: 'Llama 3.1 405B', description: 'Meta flagship open weights' },
+    { id: 'qwen-3', provider: 'huggingface', name: 'Qwen 3', description: 'Alibaba next-gen reasoning' },
+    { id: 'qwen-2.5-72b', provider: 'huggingface', name: 'Qwen 2.5 72B', description: 'Open source math/coding champion' },
+    { id: 'gemma-2-27b', provider: 'huggingface', name: 'Gemma 2 27B', description: 'Google open weights' },
+    { id: 'mistral-large', provider: 'huggingface', name: 'Mistral Large', description: 'Mistral flagship' },
+    // Hugging Face Multimodal
+    { id: 'idefics-2', provider: 'huggingface', name: 'Idefics 2', description: 'Multimodal vision-language model' },
+    // DeepSeek
+    { id: 'deepseek-v3', provider: 'deepseek', name: 'DeepSeek V3', description: 'High efficiency coding model' },
+    { id: 'deepseek-r1', provider: 'deepseek', name: 'DeepSeek R1', description: 'Distilled reasoning model' }
+];
 
 // ---------------------------------------------------------
 // Platform Intelligence
@@ -475,6 +524,7 @@ export interface ProjectBlueprint {
     adrLog: ADREntry[];
     pipelineLogs?: PipelineLog[];
     llmProvider: LLMProvider;
+    llmModel?: AIModel;
     currentPhase: AgentId | 'completed';
     visualLayout?: VisualLayout;
 }

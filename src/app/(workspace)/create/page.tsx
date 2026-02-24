@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import styles from './create.module.css';
 import { useOrchestration } from '@/lib/hooks/useOrchestration';
 import { useAuth } from '@/lib/auth/auth-context';
-import { LLMProvider } from '@/lib/agents/types';
+import { LLMProvider, AIModel, AVAILABLE_MODELS } from '@/lib/agents/types';
 
 type Message = {
     id: string;
@@ -31,7 +31,7 @@ export default function CreatePage() {
     const [isTyping, setIsTyping] = useState(false);
     const [showPlan, setShowPlan] = useState(false);
     const [userIdea, setUserIdea] = useState('');
-    const [provider, setProvider] = useState<LLMProvider>('openai');
+    const [model, setModel] = useState<AIModel>('gpt-5.2');
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -69,7 +69,10 @@ export default function CreatePage() {
         setIsTyping(true);
 
         // Start the pipeline in the background using the real backend
-        startPipeline(text, user?.uid || 'anonymous', provider).then((newProjectId) => {
+        const selectedModelDef = AVAILABLE_MODELS.find(m => m.id === model);
+        const providerToPass = selectedModelDef ? selectedModelDef.provider : 'openai';
+
+        startPipeline(text, user?.uid || 'anonymous', providerToPass, model).then((newProjectId) => {
             if (!newProjectId) {
                 addMessage({
                     id: Date.now().toString(),
@@ -425,30 +428,47 @@ export default function CreatePage() {
                     {!showPlan && (
                         <div className={styles.modelSelector}>
                             <span style={{ fontSize: '11px', color: 'var(--color-text-secondary)', marginRight: '4px', alignSelf: 'center', fontWeight: 600 }}>AI Brain:</span>
-                            <button
-                                className={`${styles.modelButton} ${provider === 'openai' ? styles.modelButtonActive : ''}`}
-                                onClick={() => setProvider('openai')}
+                            <select
+                                value={model}
+                                onChange={(e) => setModel(e.target.value as AIModel)}
+                                style={{
+                                    background: '#1e1e1e',
+                                    border: '1px solid #333',
+                                    color: '#e8eaed',
+                                    borderRadius: '6px',
+                                    padding: '6px 12px',
+                                    fontSize: '13px',
+                                    fontFamily: 'inherit',
+                                    outline: 'none',
+                                    cursor: 'pointer'
+                                }}
                             >
-                                ✨ OpenAI (GPT-5.2)
-                            </button>
-                            <button
-                                className={`${styles.modelButton} ${provider === 'deepseek' ? styles.modelButtonActive : ''}`}
-                                onClick={() => setProvider('deepseek')}
-                            >
-                                🐋 DeepSeek (V3.2)
-                            </button>
-                            <button
-                                className={`${styles.modelButton} ${provider === 'huggingface' ? styles.modelButtonActive : ''}`}
-                                onClick={() => setProvider('huggingface')}
-                            >
-                                🤗 Hugging Face (Qwen)
-                            </button>
-                            <button
-                                className={`${styles.modelButton} ${provider === 'anthropic' ? styles.modelButtonActive : ''}`}
-                                onClick={() => setProvider('anthropic')}
-                            >
-                                🧠 Claude (4.6)
-                            </button>
+                                <optgroup label="OpenAI">
+                                    {AVAILABLE_MODELS.filter(m => m.provider === 'openai').map(m => (
+                                        <option key={m.id} value={m.id}>✨ {m.name} - {m.description}</option>
+                                    ))}
+                                </optgroup>
+                                <optgroup label="Anthropic Claude">
+                                    {AVAILABLE_MODELS.filter(m => m.provider === 'anthropic').map(m => (
+                                        <option key={m.id} value={m.id}>🧠 {m.name} - {m.description}</option>
+                                    ))}
+                                </optgroup>
+                                <optgroup label="Google">
+                                    {AVAILABLE_MODELS.filter(m => m.provider === 'gemini').map(m => (
+                                        <option key={m.id} value={m.id}>🌌 {m.name} - {m.description}</option>
+                                    ))}
+                                </optgroup>
+                                <optgroup label="Hugging Face / Open Source">
+                                    {AVAILABLE_MODELS.filter(m => m.provider === 'huggingface').map(m => (
+                                        <option key={m.id} value={m.id}>🤗 {m.name} - {m.description}</option>
+                                    ))}
+                                </optgroup>
+                                <optgroup label="DeepSeek">
+                                    {AVAILABLE_MODELS.filter(m => m.provider === 'deepseek').map(m => (
+                                        <option key={m.id} value={m.id}>🐋 {m.name} - {m.description}</option>
+                                    ))}
+                                </optgroup>
+                            </select>
                         </div>
                     )}
                     <div className={styles.inputWrapper}>

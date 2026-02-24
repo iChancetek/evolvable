@@ -5,7 +5,7 @@ interface UseOrchestrationReturn {
     blueprint: ProjectBlueprint | null;
     isLoading: boolean;
     error: string | null;
-    startPipeline: (idea: string, userId?: string, llmProvider?: string) => Promise<string | null>;
+    startPipeline: (idea: string, userId?: string, llmProvider?: string, llmModel?: string) => Promise<string | null>;
     abortPipeline: () => Promise<void>;
     projectId: string | null;
 }
@@ -57,7 +57,7 @@ export function useOrchestration(): UseOrchestrationReturn {
         };
     }, [projectId, blueprint?.status]);
 
-    const startPipeline = useCallback(async (idea: string, userId?: string, llmProvider: string = 'openai') => {
+    const startPipeline = useCallback(async (idea: string, userId?: string, llmProvider: string = 'openai', llmModel?: string) => {
         setIsLoading(true);
         setError(null);
         setBlueprint(null);
@@ -66,7 +66,7 @@ export function useOrchestration(): UseOrchestrationReturn {
             const res = await fetch('/api/orchestrate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ idea, userId, llmProvider })
+                body: JSON.stringify({ idea, userId, llmProvider, llmModel })
             });
 
             if (!res.ok) {

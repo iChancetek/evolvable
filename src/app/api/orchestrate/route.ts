@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
  */
 export async function POST(req: NextRequest) {
     try {
-        const { idea, userId, llmProvider = 'openai' } = await req.json();
+        const { idea, userId, llmProvider = 'openai', llmModel } = await req.json();
 
         if (!idea) {
             return NextResponse.json({ error: 'Idea prompt is required' }, { status: 400 });
@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
         // at the top-level API route context during cold boot. We bypass the strict check here 
         // and let the LLM Adapter initialize with the keys natively.
         const requiresDeepSeekOrHF = llmProvider === 'deepseek' || llmProvider === 'huggingface';
+        const requiresGemini = llmProvider === 'gemini';
 
         if (requiresDeepSeekOrHF && !(process.env.NEXT_PUBLIC_HF_TOKEN || process.env.HF_TOKEN)) {
             console.warn('[AI Guard] Blocked execution due to missing HF_TOKEN');
@@ -60,7 +61,8 @@ export async function POST(req: NextRequest) {
             currentPhase: AgentId.VISION,
             phase: 'planning',
             status: 'building',
-            llmProvider
+            llmProvider,
+            llmModel
         };
 
         // Persist initial state
