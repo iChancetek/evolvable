@@ -78,7 +78,7 @@ Respond ONLY with valid JSON matching this schema:
 `;
 
         try {
-            const rawResponse = await callLLM(prompt, input.provider || 'openai');
+            const rawResponse = await callLLM(prompt, '', { provider: input.provider });
             const jsonText = rawResponse.replace(/```json\n?|\n?```/g, '').trim();
             const payload: InfrastructureBlueprint = JSON.parse(jsonText);
 

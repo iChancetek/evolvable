@@ -181,6 +181,7 @@ export class OrchestrationBus {
             );
 
             // Persist the fallback blueprint to Firestore so the user can see it on the Plan Review screen
+            await this.updatePhase('awaiting_approval', 'awaiting_approval');
             await this.saveBlueprintProgress(AgentId.PLAN_COORDINATOR);
 
             this.emit('System', 'completed', `✅ Fallback Template ready for your review. Platform running in degraded mode.`);
@@ -198,8 +199,8 @@ export class OrchestrationBus {
             const projectDoc = await adminDb.collection('projects').doc(this.blueprint.id).get();
             const data = projectDoc.data();
 
-            if (data?.status !== 'awaiting_approval') {
-                throw new Error(`Cannot execute: project status is '${data?.status}', expected 'awaiting_approval'.`);
+            if (data?.status !== 'awaiting_approval' && data?.status !== 'building') {
+                throw new Error(`Cannot execute: project status is '${data?.status}', expected 'awaiting_approval' or 'building'.`);
             }
 
             const approvedPlanVersion = data?.activePlanVersion;

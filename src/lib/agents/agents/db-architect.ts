@@ -50,7 +50,10 @@ Data Entities from PRD: ${JSON.stringify(input.blueprint.prd.dataEntities)}
 User Roles: ${JSON.stringify(input.blueprint.prd.userRoles)}
 All Features: ${JSON.stringify(input.blueprint.prd.features?.slice(0, 10))}
 
-Design a complete, production-ready database schema favoring Neon Postgres and Drizzle ORM.
+Original User Prompt (for context on DB preference): """${input.blueprint.originalPrompt}"""
+
+Design a complete, production-ready database schema.
+CRITICAL INSTRUCTION: You MUST use Neon Postgres and Drizzle ORM as the default engine, UNLESS the user explicitly requested a different database (e.g., MongoDB, Firebase/Firestore, MySQL) in their prompt above. If they did, you MUST design the schema using their requested database engine instead.
 ${needsIsolation ? 'CRITICAL: Apply tenant isolation (e.g. orgId) on ALL tenant-scoped collections. Define Row Level Security (RLS) policies.' : ''}
 `;
 

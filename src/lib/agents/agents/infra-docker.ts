@@ -40,7 +40,7 @@ Example output format:
 `;
 
         try {
-            const rawResponse = await callLLM(prompt, input.provider || 'openai');
+            const rawResponse = await callLLM(prompt, '', { provider: input.provider });
             const jsonText = rawResponse.replace(/```json\n?|\n?```/g, '').trim();
             const payload: GeneratedCodebase = JSON.parse(jsonText);
 

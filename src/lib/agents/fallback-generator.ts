@@ -54,7 +54,7 @@ export class FallbackGeneratorService {
                         topology: template.architecture?.topology || 'monolith',
                         frontend: 'Next.js 15 (App Router) + React 19',
                         backend: 'Next.js API Routes',
-                        database: template.databaseSchema?.engine || 'postgresql',
+                        database: 'Neon PostgreSQL (Drizzle ORM)',
                         auth: 'NextAuth.js v5',
                         hosting: 'Vercel',
                     },
