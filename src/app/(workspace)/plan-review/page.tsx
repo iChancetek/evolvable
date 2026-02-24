@@ -564,7 +564,7 @@ export default function PlanReviewPage() {
                         ) : project.phase === 'awaiting_clarification' ? (
                             <div className={styles.revisionBox}>
                                 <div style={{ marginBottom: '16px' }}>
-                                    <strong style={{ color: 'var(--color-error)' }}>⚠️ The AI needs more details:</strong>
+                                    <strong style={{ color: 'var(--color-accent-red)' }}>⚠️ The AI needs more details:</strong>
                                     <ul style={{ marginTop: '8px', paddingLeft: '20px', color: 'var(--color-text-secondary)' }}>
                                         {project.infrastructure?.nliiSummary?.clarificationsNeeded?.map((q, i) => (
                                             <li key={`nlii-${i}`}>{q}</li>

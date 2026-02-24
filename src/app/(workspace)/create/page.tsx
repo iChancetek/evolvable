@@ -260,7 +260,7 @@ export default function CreatePage() {
                                                 <a
                                                     href={`/plan-review?projectId=${projectId}`}
                                                     className={styles.planButton}
-                                                    style={{ background: 'var(--color-error)', flex: 1 }}
+                                                    style={{ background: 'var(--color-accent-red)', flex: 1 }}
                                                 >
                                                     Review & Clarify →
                                                 </a>
@@ -277,7 +277,7 @@ export default function CreatePage() {
                                                 <button
                                                     onClick={() => abortPipeline()}
                                                     className={styles.planButton}
-                                                    style={{ background: 'var(--color-error)', flex: 0.5 }}
+                                                    style={{ background: 'var(--color-accent-red)', flex: 0.5 }}
                                                 >
                                                     Cancel Build
                                                 </button>
