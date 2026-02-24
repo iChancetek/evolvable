@@ -215,15 +215,25 @@ export default function ProjectPage() {
                                     <Zap size={14} />
                                     <span>Agent Activity</span>
                                 </div>
-                                {(blueprint as any).agentOutputs ? (
-                                    Object.entries((blueprint as any).agentOutputs).map(([agentId, output], i) => (
-                                        <div key={agentId} className={styles.feedItem}>
-                                            <div className={styles.feedDot} style={{ background: PIPELINE_PHASES[getPhaseIndex(agentId)]?.color || '#4285f4' }} />
+                                {blueprint.pipelineLogs && blueprint.pipelineLogs.length > 0 ? (
+                                    [...blueprint.pipelineLogs].reverse().map((log, i) => (
+                                        <div key={i} className={styles.feedItem}>
+                                            <div className={styles.feedDot} style={{ background: PIPELINE_PHASES[getPhaseIndex(log.agentId)]?.color || '#4285f4' }} />
                                             <div className={styles.feedContent}>
-                                                <span className={styles.feedAgent}>{agentId.replace(/_/g, ' ')}</span>
-                                                <span className={styles.feedStatus}>Completed</span>
+                                                <span className={styles.feedAgent}>
+                                                    {log.agentId ? log.agentId.replace(/_/g, ' ') : 'System'}
+                                                    <span style={{ fontSize: '10px', color: '#666', marginLeft: '6px' }}>{new Date(log.timestamp).toLocaleTimeString()}</span>
+                                                </span>
+                                                <span className={styles.feedStatus}>{log.message}</span>
+                                                {log.payload?.toolCall && (
+                                                    <div style={{ marginTop: '4px', fontSize: '11px', fontFamily: 'monospace', color: '#a855f7', background: 'rgba(168, 85, 247, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>
+                                                        {log.payload.toolCall.name}({JSON.stringify(log.payload.toolCall.arguments)})
+                                                    </div>
+                                                )}
                                             </div>
-                                            <CheckCircle2 size={12} style={{ color: '#4ade80' }} />
+                                            {log.status === 'completed' && <CheckCircle2 size={12} style={{ color: '#4ade80', minWidth: '12px' }} />}
+                                            {(log.status === 'failed' || log.status === 'vetoed') && <XCircle size={12} style={{ color: '#f87171', minWidth: '12px' }} />}
+                                            {log.status === 'running' && <Loader2 size={12} className={styles.spin} style={{ color: '#4285f4', minWidth: '12px' }} />}
                                         </div>
                                     ))
                                 ) : (

@@ -70,6 +70,8 @@ export enum AgentId {
 
 export type AgentStatus = 'pending' | 'running' | 'completed' | 'failed' | 'vetoed';
 
+export type AgentWorkloadType = 'standard' | 'reasoning' | 'lightweight';
+
 export type LLMProvider = 'huggingface' | 'openai' | 'deepseek' | 'anthropic';
 
 // ---------------------------------------------------------
@@ -236,6 +238,8 @@ export interface PlanVersion {
 // ---------------------------------------------------------
 
 export interface TestSuite {
+    name?: string;
+    description?: string;
     passed: boolean;
     coverage: number;
     unit: { name: string; passed: boolean; description: string }[];
@@ -254,7 +258,7 @@ export interface MonitoringConfig {
 }
 
 // ---------------------------------------------------------
-// Visual Builder JSON AST Types
+// Visual Builder JSON AST Types (DEPRECATED - Slated for removal)
 // ---------------------------------------------------------
 
 export type ComponentType =
@@ -312,6 +316,7 @@ export interface AgentInput {
     blueprint: ProjectBlueprint;
     provider?: LLMProvider;
     planningMode?: boolean; // When true, agents must not generate code/infra/deploy calls
+    onEvent?: (status: 'running' | 'completed' | 'failed' | 'vetoed', message: string, payload?: any) => void;
 }
 
 export interface AgentOutput {
@@ -479,6 +484,7 @@ export interface PipelineLog {
     agentId?: string;
     status: string;
     message: string;
+    payload?: any;
 }
 
 // ---------------------------------------------------------

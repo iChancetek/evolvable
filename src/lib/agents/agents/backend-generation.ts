@@ -1,5 +1,5 @@
-import { Agent, AgentId, AgentInput, AgentOutput, GeneratedBackendRoutes } from '../types';
-import { callLLM } from '../llm-adapter';
+import { Agent, AgentId, AgentInput, AgentOutput, GeneratedBackendRoutes, LLMProvider } from '../types';
+import { AgentRuntime } from '../agent-runtime';
 import { AuditLogger } from '../../audit/audit-logger';
 
 const SYSTEM_PROMPT = `
@@ -44,39 +44,44 @@ export class BackendGenerationAgent implements Agent {
         const approvedRoutes = approvedPlan.featureBreakdown.apis;
 
         try {
-            const userPrompt = `
+            const userObjective = `
+Build the Next.js API Routes for this application based on the approved architecture.
+
+Approved API Routes:
+${JSON.stringify(approvedRoutes, null, 2)}
+
+Architecture Context:
 Platform Mode: ${input.blueprint.prd?.platformMode}
-Approved API Routes (from plan v${approvedPlan.version}): ${JSON.stringify(approvedRoutes)}
 DB Schema: ${JSON.stringify(input.blueprint.databaseSchema)}
 RBAC Policy: ${JSON.stringify(input.blueprint.architecture.rbacPolicy)}
-Tenant Isolation: ${input.blueprint.architecture.tenantIsolation}
 
-Generate complete, production-ready Next.js API route handlers for ALL listed routes.
-Remember: ONLY routes in the approved list. Flag any route omissions.
-`;
+Instructions:
+1. You have access to the file system.
+2. Formulate a plan for which files you need to create (e.g. \`src/app/api/auth/route.ts\`).
+3. Use the 'writeFile' tool to create each file iteratively.
+4. Implement input validation, RBAC enforcement, and standard error handling.
+5. Return status='complete' when all approved API routes are built.
+            `;
 
-            const result = await callLLM<GeneratedBackendRoutes>(SYSTEM_PROMPT, userPrompt, {
+            const runtime = new AgentRuntime({
+                projectId: input.projectId,
+                projectDir: '/tmp/evolvable_' + input.projectId,
+                provider: input.provider as LLMProvider,
                 workloadType: 'standard',
-                provider: input.provider,
-                jsonSchema: true,
-                maxTokens: 8000
+                onEvent: input.onEvent as any
             });
 
-            // Drift check: ensure generated routes match approved plan
-            const generatedPaths = new Set(result.routes?.map(r => r.path) || []);
-            const approvedPaths = new Set(approvedRoutes.map(r => r.path));
-            const driftedRoutes = [...generatedPaths].filter(p => !approvedPaths.has(p));
+            console.log("[BackendGenerationAgent] Kickstarting AgentRuntime loop...");
 
-            if (driftedRoutes.length > 0) {
-                await auditLogger.planDrift(AgentId.BACKEND_GENERATION, `Unauthorized routes generated: ${driftedRoutes.join(', ')}`);
-                console.warn(`[BackendGenerationAgent] Plan drift detected. Filtering unauthorized routes.`);
-                // Filter out drifted routes rather than failing entirely
-                result.routes = result.routes.filter(r => approvedPaths.has(r.path));
-            }
+            const finalResult = await runtime.run(
+                SYSTEM_PROMPT,
+                userObjective,
+                10
+            );
 
-            console.log(`[BackendGenerationAgent] Generated ${result.routes?.length || 0} backend routes.`);
+            console.log("[BackendGenerationAgent] Runtime finished. Result: " + finalResult);
 
-            return { agentId: this.id, status: 'completed', payload: result };
+            return { agentId: this.id, status: 'completed', payload: { agentRuntimeOutput: finalResult } as any };
         } catch (error: any) {
             console.error('[BackendGenerationAgent] Failed:', error);
             return { agentId: this.id, status: 'failed', payload: null, error: error.message };

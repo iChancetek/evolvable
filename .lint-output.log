@@ -1,0 +1,547 @@
+
+> evolvable@0.1.0 lint
+> eslint
+
+
+D:\chancellor\evolvable\src\app\(workspace)\apps\page.tsx
+  102:21  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\chancellor\evolvable\src\app\(workspace)\create\page.tsx
+   21:65   warning  'isOrchestrating' is assigned a value but never used                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+   49:11   warning  'simulateAIResponse' is assigned a value but never used                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+  251:37   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  279:86   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  311:127  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  311:146  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  311:177  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  408:33   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  473:49   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  473:83   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+
+D:\chancellor\evolvable\src\app\(workspace)\dashboard\page.tsx
+  68:17  error    Do not use an `<a>` element to navigate to `/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages                                                                                                                                    @next/next/no-html-link-for-pages
+  69:21  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\chancellor\evolvable\src\app\(workspace)\deploy\page.tsx
+   30:12  warning  'buildDir' is assigned a value but never used                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+   72:23  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  112:21  error    Do not use an `<a>` element to navigate to `/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages                                                                                                                                    @next/next/no-html-link-for-pages
+  113:25  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  282:55  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+
+D:\chancellor\evolvable\src\app\(workspace)\layout.tsx
+  21:22  warning  'user' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  41:22  warning  'err' is defined but never used            @typescript-eslint/no-unused-vars
+
+D:\chancellor\evolvable\src\app\(workspace)\plan-review\page.tsx
+   76:13   warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+   94:23   error    Unexpected any. Specify a different type                               @typescript-eslint/no-explicit-any
+  115:23   error    Unexpected any. Specify a different type                               @typescript-eslint/no-explicit-any
+  135:23   error    Unexpected any. Specify a different type                               @typescript-eslint/no-explicit-any
+  298:82   error    Unexpected any. Specify a different type                               @typescript-eslint/no-explicit-any
+  301:149  error    Unexpected any. Specify a different type                               @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\(workspace)\project\page.tsx
+   12:23   warning  'TestTube2' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+   13:19   warning  'ExternalLink' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+   58:13   warning  'user' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+   69:27   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\chancellor\evolvable\src\app\(workspace)\project\page.tsx:69:27
+  67 |     // Real-time Firestore subscription
+  68 |     useEffect(() => {
+> 69 |         if (!projectId) { setLoading(false); return; }
+     |                           ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  70 |         const unsub = onSnapshot(doc(db, 'projects', projectId), (snap) => {
+  71 |             if (snap.exists()) {
+  72 |                 setBlueprint(snap.data() as ProjectBlueprint);  react-hooks/set-state-in-effect
+   82:31   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\chancellor\evolvable\src\app\(workspace)\project\page.tsx:82:31
+  80 |     useEffect(() => {
+  81 |         const saved = localStorage.getItem('ev_dev_mode');
+> 82 |         if (saved === 'true') setDevMode(true);
+     |                               ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  83 |     }, []);
+  84 |
+  85 |     const toggleDevMode = () => {                                                                                                                 react-hooks/set-state-in-effect
+  105:38   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   react/no-unescaped-entities
+  105:57   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   react/no-unescaped-entities
+  218:48   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-explicit-any
+  219:66   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-explicit-any
+  219:100  warning  'output' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+  219:109  warning  'i' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+  270:93   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   react/no-unescaped-entities
+  310:99   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-explicit-any
+  314:99   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-explicit-any
+  318:99   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-explicit-any
+  328:82   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-explicit-any
+  343:77   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-explicit-any
+  358:73   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\(workspace)\settings\databases\page.tsx
+  24:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  26:56  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\(workspace)\settings\github\page.tsx
+  121:23   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  139:23   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  158:23   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  219:103  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  227:141  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  227:151  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  234:74   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  289:33   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  317:63   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  332:115  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  392:86   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+
+D:\chancellor\evolvable\src\app\api\deploy\route.ts
+  73:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\api\github\actions\route.ts
+   54:61  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   67:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  120:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\api\github\callback\route.ts
+  71:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\api\github\disconnect\route.ts
+  29:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\api\github\pr\merge\route.ts
+  59:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\api\github\repo\route.ts
+  62:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\api\github\rollback\route.ts
+  63:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\api\github\webhook\route.ts
+   31:18  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  124:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\api\health\ai\route.ts
+  76:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\api\orchestrate\abort\route.ts
+  32:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\api\orchestrate\approve\route.ts
+  78:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\api\orchestrate\clarify\route.ts
+  77:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\api\orchestrate\revise\route.ts
+  84:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\api\orchestrate\route.ts
+  70:18  warning  'adminErr' is defined but never used      @typescript-eslint/no-unused-vars
+  86:21  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\api\orchestrate\status\route.ts
+  22:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  51:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\app\login\page.tsx
+  59:17  error    Do not use an `<a>` element to navigate to `/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages                                                                                                                                    @next/next/no-html-link-for-pages
+  60:21  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\chancellor\evolvable\src\app\page.tsx
+  181:10  warning  'isTyping' is assigned a value but never used                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+  181:20  warning  'setIsTyping' is assigned a value but never used                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+  215:6   warning  React Hook useEffect has a missing dependency: 'phrases'. Either include it or remove the dependency array                                                                                                                                                                               react-hooks/exhaustive-deps
+  240:13  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  469:13  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\chancellor\evolvable\src\app\signup\page.tsx
+  72:17  error    Do not use an `<a>` element to navigate to `/`. Use `<Link />` from `next/link` instead. See: https://nextjs.org/docs/messages/no-html-link-for-pages                                                                                                                                    @next/next/no-html-link-for-pages
+  73:21  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  84:30  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+
+D:\chancellor\evolvable\src\components\InstallPrompt.tsx
+  18:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\chancellor\evolvable\src\components\InstallPrompt.tsx:18:13
+  16 |         const wasDismissed = sessionStorage.getItem('pwa-install-dismissed');
+  17 |         if (wasDismissed) {
+> 18 |             setDismissed(true);
+     |             ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  19 |             return;
+  20 |         }
+  21 |  react-hooks/set-state-in-effect
+
+D:\chancellor\evolvable\src\components\ide-sidebar\FileViewer.tsx
+  42:33  warning  'lang' is defined but never used                      @typescript-eslint/no-unused-vars
+  48:9   error    'remaining' is never reassigned. Use 'const' instead  prefer-const
+  49:9   error    'key' is never reassigned. Use 'const' instead        prefer-const
+  49:9   warning  'key' is assigned a value but never used              @typescript-eslint/no-unused-vars
+
+D:\chancellor\evolvable\src\components\ide-sidebar\GitHubActionsPanel.tsx
+  35:49  warning  'repoFullName' is defined but never used                                                                      @typescript-eslint/no-unused-vars
+  51:23  error    Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+  76:39  warning  React Hook useEffect has a missing dependency: 'fetchRuns'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\chancellor\evolvable\src\components\ide-sidebar\GitHubPanel.tsx
+   69:39  warning  React Hook useEffect has a missing dependency: 'fetchInfo'. Either include it or remove the dependency array                                                                                                                                                                             react-hooks/exhaustive-deps
+  133:21  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\chancellor\evolvable\src\components\ide-sidebar\IDESidebar.tsx
+  12:5   warning  'Check' is defined but never used       @typescript-eslint/no-unused-vars
+  12:12  warning  'Shield' is defined but never used      @typescript-eslint/no-unused-vars
+  12:20  warning  'Hexagon' is defined but never used     @typescript-eslint/no-unused-vars
+  12:29  warning  'Zap' is defined but never used         @typescript-eslint/no-unused-vars
+  12:34  warning  'DollarSign' is defined but never used  @typescript-eslint/no-unused-vars
+  12:46  warning  'Sparkles' is defined but never used    @typescript-eslint/no-unused-vars
+
+D:\chancellor\evolvable\src\components\ide-sidebar\SourceControlPanel.tsx
+    7:16  warning  'History' is defined but never used                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+   72:23  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   79:39  warning  React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array                                                                                                                                                                             react-hooks/exhaustive-deps
+  130:21  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+D:\chancellor\evolvable\src\lib\agents\agent-runtime.ts
+    2:42  warning  'AgentId' is defined but never used       @typescript-eslint/no-unused-vars
+   13:17  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   14:19  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   51:29  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   74:29  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   98:29  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  150:56  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\academic-researcher.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\autonomous-debugger.ts
+  48:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  59:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\backend-generation.ts
+  47:34  error  Parsing error: Invalid character
+
+D:\chancellor\evolvable\src\lib\agents\agents\c-expert.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\cloud-architect.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\code-generation.ts
+  83:28  error  Parsing error: Invalid character
+
+D:\chancellor\evolvable\src\lib\agents\agents\code-reviewer.ts
+  57:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  71:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\cpp-expert.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\crypto-expert.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\cs-expert.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\csharp-expert.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\cyber-security-expert.ts
+  47:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  58:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\data-analyst.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\data-architect.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\data-engineer.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\databricks-expert.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\db-architect.ts
+   1:67  warning  'TenantIsolationStrategy' is defined but never used  @typescript-eslint/no-unused-vars
+  67:25  error    Unexpected any. Specify a different type             @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\debug-optimize.ts
+   3:10  warning  'AuditLogger' is defined but never used   @typescript-eslint/no-unused-vars
+  44:53  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  54:25  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\deployment.ts
+  72:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\devops-engineer.ts
+  51:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  62:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\devsecops-engineer.ts
+  45:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  56:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\documentation.ts
+  35:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\enterprise-architect.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\expert-coding-assistant.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\finops-architect.ts
+  53:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  64:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\go-expert.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\hardware-engineer.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\infra-docker.ts
+  52:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\infra-script.ts
+  63:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\infra-terraform.ts
+  56:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\logic-builder.ts
+  32:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\machine-learning-expert.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\mathematician.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\network-engineer.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\nldi-agent.ts
+  54:17  error  'payload' is never reassigned. Use 'const' instead  prefer-const
+  88:25  error  Unexpected any. Specify a different type            @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\nlii-agent.ts
+  100:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\pair-programmer.ts
+  55:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  66:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\payment-integration.ts
+  65:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  76:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\performance-engineer.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\plan-coordinator.ts
+  24:15  warning  'systemArchOutput' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  25:75  error    Unexpected any. Specify a different type               @typescript-eslint/no-explicit-any
+  71:25  error    Unexpected any. Specify a different type               @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\prompt-engineer.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\pyspark-expert.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\python-expert.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\qa-testing.ts
+  47:34  error  Parsing error: Invalid character
+
+D:\chancellor\evolvable\src\lib\agents\agents\r-expert.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\security-reviewer.ts
+  64:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  75:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\security.ts
+  95:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\sql-expert.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\stock-market-expert.ts
+  46:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  57:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\system-architect.ts
+    3:53  warning  'RBACPolicy' is defined but never used               @typescript-eslint/no-unused-vars
+    3:65  warning  'TenantIsolationStrategy' is defined but never used  @typescript-eslint/no-unused-vars
+  108:25  error    Unexpected any. Specify a different type             @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\ui-designer.ts
+  34:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\ux-researcher.ts
+  48:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  59:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\agents\vision.ts
+   1:80  warning  'PlatformMode' is defined but never used       @typescript-eslint/no-unused-vars
+   1:94  warning  'MonetizationModel' is defined but never used  @typescript-eslint/no-unused-vars
+  79:25  error    Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\fallback-generator.ts
+   50:78  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   63:83  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   69:81  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  108:53  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  155:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  193:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  225:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\agents\llm-adapter.ts
+  258:0  error  Parsing error: Declaration or statement expected
+
+D:\chancellor\evolvable\src\lib\agents\orchestration-bus.ts
+   21:15  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  167:25  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  204:56  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  327:25  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  528:23  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  591:32  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  602:19  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  608:22  warning  'adminErr' is defined but never used      @typescript-eslint/no-unused-vars
+  628:18  warning  'adminErr' is defined but never used      @typescript-eslint/no-unused-vars
+  638:18  warning  'adminErr' is defined but never used      @typescript-eslint/no-unused-vars
+
+D:\chancellor\evolvable\src\lib\agents\types.ts
+  282:20  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  311:14  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  320:14  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  384:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  407:24  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  418:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  419:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  420:30  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  421:29  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  422:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  423:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  424:18  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  425:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  426:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  427:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  428:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  429:18  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  430:27  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  431:26  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  432:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  433:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  434:30  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  435:29  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  436:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  437:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  438:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  439:31  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  440:35  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  441:30  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  442:29  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  443:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  448:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  449:27  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  451:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  452:20  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  453:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  584:16  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\audit\audit-logger.ts
+  22:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\github\github-service.ts
+   21:16  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   72:41  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   87:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   88:29  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  107:41  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  108:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  121:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  138:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  140:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  146:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  155:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  161:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  181:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  199:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  209:43  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  218:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\hooks\useOrchestration.ts
+   42:27  error    Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+   58:8   warning  React Hook useEffect has a missing dependency: 'blueprint'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   84:23  error    Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+  101:23  error    Unexpected any. Specify a different type                                                                      @typescript-eslint/no-explicit-any
+
+D:\chancellor\evolvable\src\lib\theme\theme-context.tsx
+  22:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\chancellor\evolvable\src\lib\theme\theme-context.tsx:22:13
+  20 |         const saved = localStorage.getItem('evolvable-theme') as Theme | null;
+  21 |         if (saved === 'dark' || saved === 'light') {
+> 22 |             setTheme(saved);
+     |             ^^^^^^^^ Avoid calling setState() directly within an effect
+  23 |         } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  24 |             setTheme('dark');
+  25 |         }  react-hooks/set-state-in-effect
+
+✖ 289 problems (237 errors, 52 warnings)
+  3 errors and 0 warnings potentially fixable with the `--fix` option.
+

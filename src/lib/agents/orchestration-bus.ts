@@ -133,7 +133,10 @@ export class OrchestrationBus {
                 payload: archOutput?.payload || { implementationPlan: null },
                 blueprint: this.blueprint,
                 provider: this.blueprint.llmProvider,
-                planningMode: true
+                planningMode: true,
+                onEvent: (status, message, payload) => {
+                    this.emit(AgentId.PLAN_COORDINATOR, status, message, payload);
+                }
             };
 
             const planAgent = getAgent(AgentId.PLAN_COORDINATOR);
@@ -578,7 +581,10 @@ export class OrchestrationBus {
             payload: this.blueprint.originalPrompt,
             blueprint: this.blueprint,
             provider: this.blueprint.llmProvider,
-            planningMode
+            planningMode,
+            onEvent: (status, message, payload) => {
+                this.emit(agentId, status, message, payload);
+            }
         };
 
         const output = await agent.execute(input);

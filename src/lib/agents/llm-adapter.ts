@@ -113,250 +113,145 @@ export async function callLLM<T = any>(
         throw new Error("AI Circuit Breaker is OPEN. Skipping LLM call to save latency and preserve fallback UX.");
     }
 
-    if (provider === 'openai') {
-        const modelName = OPENAI_MODEL_ROUTING[workloadType] || 'gpt-5.2';
+    // Provider Fallback Chain (Order of preference if primary fails)
+    const PROVIDER_CHAIN: LLMProvider[] = [provider, 'openai', 'anthropic', 'deepseek'].filter((v, i, a) => a.indexOf(v) === i) as LLMProvider[];
+
+    let lastError: any = null;
+
+    for (const currentProvider of PROVIDER_CHAIN) {
+        let attempt = 0;
+        const MAX_RETRIES = 3;
 
         while (attempt < MAX_RETRIES) {
             try {
-                console.log(`[LLM Adapter] Calling OpenAI ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
+                if (currentProvider === 'openai') {
+                    const modelName = OPENAI_MODEL_ROUTING[workloadType] || 'gpt-5.2';
+                    console.log(`[LLM Adapter] Calling OpenAI ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
 
-                const completionOptions: any = {
-                    model: modelName,
-                    messages: [
-                        { role: "system", content: systemStr },
-                        { role: "user", content: userPrompt }
-                    ],
-                    temperature,
-                };
+                    const completionOptions: any = {
+                        model: modelName,
+                        messages: [
+                            { role: "system", content: systemStr },
+                            { role: "user", content: userPrompt }
+                        ],
+                        temperature,
+                    };
 
-                // OpenAI GPT-5.2 specific logic mapping maxTokens to max_completion_tokens
-                if (modelName === 'gpt-5.2') {
-                    completionOptions.max_completion_tokens = maxTokens;
-                } else {
-                    completionOptions.max_tokens = maxTokens;
-                }
+                    if (modelName === 'gpt-5.2') completionOptions.max_completion_tokens = maxTokens;
+                    else completionOptions.max_tokens = maxTokens;
 
-                if (jsonSchema) {
-                    completionOptions.response_format = { type: "json_object" };
-                }
+                    if (jsonSchema) completionOptions.response_format = { type: "json_object" };
 
-                // Initialize dynamically relying on default constructor for secret resolution
-                const openai = new OpenAI();
-                const response = await openai.chat.completions.create(completionOptions);
+                    const openai = new OpenAI();
+                    const response = await openai.chat.completions.create(completionOptions);
+                    return parseResponse(response.choices[0]?.message?.content || "", jsonSchema);
 
-                const content = response.choices[0]?.message?.content || "";
+                } else if (currentProvider === 'deepseek') {
+                    const modelName = DEEPSEEK_MODEL_ROUTING[workloadType];
+                    console.log(`[LLM Adapter] Calling DeepSeek ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
 
-                if (jsonSchema) {
-                    try {
-                        const cleanContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-                        circuitBreaker.recordSuccess();
-                        return JSON.parse(cleanContent) as T;
-                    } catch (parseError) {
-                        console.error('[LLM Adapter] Failed to parse OpenAI JSON response:', content);
-                        circuitBreaker.recordFailure();
-                        throw new Error(`Invalid JSON format retrieved from OpenAI: ${parseError}`);
+                    let payload: any = {
+                        model: modelName,
+                        messages: [
+                            { role: "system", content: systemStr },
+                            { role: "user", content: userPrompt }
+                        ],
+                        temperature,
+                        max_tokens: maxTokens,
+                    };
+                    if (jsonSchema) payload.response_format = { type: "json_object" };
+
+                    const hfToken = process.env.NEXT_PUBLIC_HF_TOKEN || process.env.HF_TOKEN;
+                    if (!hfToken) throw new Error("Missing HF_TOKEN");
+                    const hf = new HfInference(hfToken);
+                    const response = await hf.chatCompletion(payload);
+                    return parseResponse(response.choices[0]?.message?.content || "", jsonSchema);
+
+                } else if (currentProvider === 'anthropic') {
+                    const modelName = ANTHROPIC_MODEL_ROUTING[workloadType];
+                    console.log(`[LLM Adapter] Calling Anthropic ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
+
+                    const anthropic = new Anthropic();
+                    let sys = systemStr;
+                    let u = userPrompt;
+                    if (jsonSchema) {
+                        sys += '\n\nOutput raw JSON only. Ensure the root is a JSON object `{...}`.';
+                        u += '\n\n{';
                     }
-                }
 
-                circuitBreaker.recordSuccess();
-                return content as any;
+                    const response = await anthropic.messages.create({
+                        model: modelName,
+                        max_tokens: maxTokens,
+                        temperature,
+                        system: sys,
+                        messages: [{ role: 'user', content: u }]
+                    });
+
+                    let content = (response.content[0] as any).text;
+                    if (jsonSchema && !content.trim().startsWith('{')) content = '{' + content;
+                    return parseResponse(content, jsonSchema);
+
+                } else if (currentProvider === 'huggingface') {
+                    const modelName = HF_MODEL_ROUTING[workloadType];
+                    console.log(`[LLM Adapter] Calling HuggingFace ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
+
+                    const hfToken = process.env.NEXT_PUBLIC_HF_TOKEN || process.env.HF_TOKEN;
+                    if (!hfToken) throw new Error("Missing HF_TOKEN");
+                    const hf = new HfInference(hfToken);
+
+                    const payload: any = {
+                        model: modelName,
+                        messages: [
+                            { role: "system", content: systemStr },
+                            { role: "user", content: userPrompt }
+                        ],
+                        temperature,
+                        max_tokens: maxTokens,
+                    };
+                    if (jsonSchema) payload.response_format = { type: "json_object" };
+
+                    const response = await hf.chatCompletion(payload);
+                    return parseResponse(response.choices[0]?.message?.content || "", jsonSchema);
+                }
             } catch (error: any) {
                 attempt++;
-                console.error(`[LLM Adapter] Error calling OpenAI ${modelName}:`, error.message);
+                lastError = error;
+                console.error(`[LLM Adapter] Error calling ${currentProvider}:`, error.message);
 
-                // 3. Proper Failure Handling: Do not retry on 401 Auth errors
-                if (error.status === 401 || error.message.includes('401') || error.message.includes('API key')) {
-                    throw new Error("AI service configuration error: Missing or invalid API key. Please check your backend environment variables.");
+                const isAuthError = error.status === 401 || error.message.includes('401') || error.message.includes('API key') || error.message.includes('Missing HF_TOKEN');
+
+                // If it's an auth error or we've exhausted retries, break inner loop to failover to next provider
+                if (isAuthError || attempt >= MAX_RETRIES) {
+                    console.warn(`[LLM Adapter] Provider ${currentProvider} exhausted/failed with auth error. Failing over...`);
+                    break;
                 }
 
-                if (attempt >= MAX_RETRIES) {
-                    circuitBreaker.recordFailure();
-                    throw new Error(`OpenAI call failed after ${MAX_RETRIES} attempts. Last error: ${error.message}`);
-                }
-
-                await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
-            }
-        }
-    } else if (provider === 'deepseek') {
-        // DeepSeek V3.2 via HuggingFace Inference
-        const modelName = DEEPSEEK_MODEL_ROUTING[workloadType];
-
-        let payload: any = {
-            model: modelName,
-            messages: [
-                { role: "system", content: systemStr },
-                { role: "user", content: userPrompt }
-            ],
-            temperature,
-            max_tokens: maxTokens,
-        };
-
-        if (jsonSchema) {
-            payload.response_format = { type: "json_object" };
-        }
-
-        while (attempt < MAX_RETRIES) {
-            try {
-                console.log(`[LLM Adapter] Calling DeepSeek ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
-
-                // Dynamic Initialization
-                const hfToken = process.env.NEXT_PUBLIC_HF_TOKEN || process.env.HF_TOKEN;
-                if (!hfToken) {
-                    throw new Error("Missing HF_TOKEN in environment variables.");
-                }
-                const hf = new HfInference(hfToken);
-
-                const response = await hf.chatCompletion(payload);
-                const content = response.choices[0]?.message?.content || "";
-
-                if (jsonSchema) {
-                    try {
-                        const cleanContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-                        circuitBreaker.recordSuccess();
-                        return JSON.parse(cleanContent) as T;
-                    } catch (parseError) {
-                        console.error('[LLM Adapter] Failed to parse DeepSeek JSON response:', content);
-                        circuitBreaker.recordFailure();
-                        throw new Error(`Invalid JSON format retrieved from DeepSeek: ${parseError}`);
-                    }
-                }
-
-                circuitBreaker.recordSuccess();
-                return content as any;
-
-            } catch (error: any) {
-                attempt++;
-                console.error(`[LLM Adapter] Error calling DeepSeek ${modelName}:`, error.message);
-
-                if (error.status === 401 || error.message.includes('401')) {
-                    throw new Error("AI service configuration error: Missing or invalid API key.");
-                }
-
-                if (attempt >= MAX_RETRIES) {
-                    circuitBreaker.recordFailure();
-                    throw new Error(`DeepSeek call failed after ${MAX_RETRIES} attempts. Last error: ${error.message}`);
-                }
-
-                await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
-            }
-        }
-    } else if (provider === 'anthropic') {
-        const modelName = ANTHROPIC_MODEL_ROUTING[workloadType];
-
-        while (attempt < MAX_RETRIES) {
-            try {
-                console.log(`[LLM Adapter] Calling Anthropic ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
-
-                const anthropic = new Anthropic();
-
-                const response = await anthropic.messages.create({
-                    model: modelName,
-                    max_tokens: maxTokens > 8192 ? 8192 : maxTokens,
-                    temperature: temperature,
-                    system: systemStr,
-                    messages: [
-                        { role: 'user', content: userPrompt }
-                    ]
-                });
-
-                const contentBlock = response.content.find(c => c.type === 'text');
-                const content = (contentBlock && 'text' in contentBlock) ? contentBlock.text : "";
-
-                if (jsonSchema) {
-                    try {
-                        const cleanContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-                        circuitBreaker.recordSuccess();
-                        return JSON.parse(cleanContent) as T;
-                    } catch (parseError) {
-                        console.error('[LLM Adapter] Failed to parse Anthropic JSON response:', content);
-                        circuitBreaker.recordFailure();
-                        throw new Error(`Invalid JSON format retrieved from Anthropic: ${parseError}`);
-                    }
-                }
-
-                circuitBreaker.recordSuccess();
-                return content as any;
-
-            } catch (error: any) {
-                attempt++;
-                console.error(`[LLM Adapter] Error calling Anthropic ${modelName}:`, error.message);
-
-                if (error.status === 401 || error.message.includes('401')) {
-                    throw new Error("AI service configuration error: Missing or invalid API key.");
-                }
-
-                if (attempt >= MAX_RETRIES) {
-                    circuitBreaker.recordFailure();
-                    throw new Error(`Anthropic call failed after ${MAX_RETRIES} attempts. Last error: ${error.message}`);
-                }
-
-                await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
-            }
-        }
-    } else {
-        // HuggingFace Routing (Qwen)
-        const modelName = HF_MODEL_ROUTING[workloadType];
-
-        let payload: any = {
-            model: modelName,
-            messages: [
-                { role: "system", content: systemStr },
-                { role: "user", content: userPrompt }
-            ],
-            temperature,
-            max_tokens: maxTokens,
-        };
-
-        if (jsonSchema) {
-            payload.response_format = { type: "json_object" };
-        }
-
-        while (attempt < MAX_RETRIES) {
-            try {
-                console.log(`[LLM Adapter] Calling HF ${modelName} (Attempt ${attempt + 1}/${MAX_RETRIES})`);
-
-                // Dynamic Initialization
-                const hfToken = process.env.NEXT_PUBLIC_HF_TOKEN || process.env.HF_TOKEN;
-                if (!hfToken) {
-                    throw new Error("Missing HF_TOKEN in environment variables.");
-                }
-                const hf = new HfInference(hfToken);
-
-                const response = await hf.chatCompletion(payload);
-                const content = response.choices[0]?.message?.content || "";
-
-                if (jsonSchema) {
-                    try {
-                        const cleanContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-                        circuitBreaker.recordSuccess();
-                        return JSON.parse(cleanContent) as T;
-                    } catch (parseError) {
-                        console.error('[LLM Adapter] Failed to parse HF JSON response:', content);
-                        circuitBreaker.recordFailure();
-                        throw new Error(`Invalid JSON format retrieved from HF: ${parseError}`);
-                    }
-                }
-
-                circuitBreaker.recordSuccess();
-                return content as any;
-
-            } catch (error: any) {
-                attempt++;
-                console.error(`[LLM Adapter] Error calling HF ${modelName}:`, error.message);
-
-                if (error.status === 401 || error.message.includes('401')) {
-                    throw new Error("AI service configuration error: Missing or invalid API key.");
-                }
-
-                if (attempt >= MAX_RETRIES) {
-                    circuitBreaker.recordFailure();
-                    throw new Error(`HF call failed after ${MAX_RETRIES} attempts. Last error: ${error.message}`);
-                }
-
+                // Exponential backoff before intra-provider retry
                 await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt)));
             }
         }
     }
 
-    throw new Error('Unexpected adapter failure');
+    // If we escape the provider loop, all fallbacks failed
+    circuitBreaker.recordFailure();
+    throw new Error(`All LLM providers failed. Last error: ${lastError?.message || 'Unknown error'}`);
+}
+
+// ----------------------------------------------------
+// Helper Function 
+// ----------------------------------------------------
+function parseResponse<T>(content: string, jsonSchema: any): T {
+    if (jsonSchema) {
+        try {
+            const cleanContent = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+            circuitBreaker.recordSuccess();
+            return JSON.parse(cleanContent) as T;
+        } catch (parseError) {
+            console.error('[LLM Adapter] Failed to parse JSON response:', content);
+            throw new Error(`Invalid JSON format retrieved: ${parseError}`);
+        }
+    }
+
+    circuitBreaker.recordSuccess();
+    return content as any;
 }

@@ -1,5 +1,6 @@
-import { Agent, AgentId, AgentInput, AgentOutput, GeneratedCodebase } from '../types';
+import { Agent, AgentId, AgentInput, AgentOutput, GeneratedCodebase, LLMProvider } from '../types';
 import { callLLM } from '../llm-adapter';
+import { AgentRuntime } from '../agent-runtime';
 import { adminDb } from '../../firebase/admin';
 import { AuditLogger } from '../../audit/audit-logger';
 
@@ -51,70 +52,53 @@ export class CodeGenerationAgent implements Agent {
                 design: input.blueprint.designSystem,
                 db: input.blueprint.databaseSchema,
                 arch: input.blueprint.architecture,
-                logic: input.blueprint.workflows,
-                platformMode: input.blueprint.prd?.platformMode,
                 approvedPages: approvedPlan.featureBreakdown.pages,
                 apiContracts: input.blueprint.architecture.apiContracts,
                 rbacPolicy: input.blueprint.architecture.rbacPolicy
             };
 
-            // Step 1: Generate file manifest derived from approved plan (not LLM hallucination)
-            console.log(`[CodeGenerationAgent] Generating plan-derived file manifest...`);
-            const planPrompt = `
-Approved pages from plan: ${JSON.stringify(approvedPlan.featureBreakdown.pages)}
-Platform mode: ${context.platformMode}
-Architecture: ${JSON.stringify(context.arch)}
-Generate the complete list of files to build (pages + components + utilities). Stay within the approved scope.
-`;
-            const plan = await callLLM<{ files: string[] }>(SYSTEM_PROMPT_PLAN, planPrompt, {
+            const userObjective = `
+Build the Next.js frontend for this application based on the approved architecture.
+
+Approved Pages to Build:
+${JSON.stringify(context.approvedPages, null, 2)}
+
+Architecture Context:
+Platform Mode: ${context.prd?.platformMode}
+DB Schema: ${JSON.stringify(context.db)}
+API Contracts: ${JSON.stringify(context.apiContracts)}
+RBAC Policy: ${JSON.stringify(context.rbacPolicy)}
+
+Instructions:
+1. You have access to the file system.
+2. Formulate a plan for which files you need to create (\`page.tsx\`, \`layout.tsx\`, components).
+3. Use the 'writeFile' tool to create each file iteratively.
+4. Ensure you use Tailwind CSS and shadcn/ui.
+5. If creating a dashboard or SAAS, implement proper layout sidebars and navigation.
+6. Return status='complete' when all approved pages are built.
+            `;
+
+            const runtime = new AgentRuntime({
+                projectId: input.projectId,
+                projectDir: '/tmp/evolvable_' + input.projectId, // Workspace directory
+                provider: input.provider as LLMProvider,
                 workloadType: 'standard',
-                provider: input.provider,
-                jsonSchema: true
+                onEvent: input.onEvent as any
             });
 
-            if (!plan.files || plan.files.length === 0) throw new Error('Failed to generate file manifest.');
-            console.log(`[CodeGenerationAgent] Planning ${plan.files.length} files.`);
+            console.log("[CodeGenerationAgent] Kickstarting AgentRuntime loop...");
 
-            const generatedFiles: Record<string, string> = {};
-            const projectRef = adminDb.collection('projects').doc(input.blueprint.id);
-
-            // Step 2: Generate files in parallel batches of 4
-            const BATCH_SIZE = 4;
-            for (let i = 0; i < plan.files.length; i += BATCH_SIZE) {
-                const batch = plan.files.slice(i, i + BATCH_SIZE);
-                await Promise.all(batch.map(async (filePath) => {
-                    console.log(`[CodeGenerationAgent] Generating: ${filePath}`);
-                    const filePrompt = `
-File to generate: ${filePath}
-Platform Mode: ${context.platformMode}
-API Contracts (approved): ${JSON.stringify(context.apiContracts?.slice(0, 5))}
-RBAC Policy: ${JSON.stringify(context.rbacPolicy)}
-DB Schema: ${JSON.stringify(context.db)}
-Architecture: ${JSON.stringify(context.arch)}
-PRD: ${JSON.stringify(context.prd)}
-`;
-                    try {
-                        const result = await callLLM<{ code: string }>(SYSTEM_PROMPT_CODE, filePrompt, {
-                            workloadType: 'standard',
-                            provider: input.provider,
-                            maxTokens: 4000,
-                            jsonSchema: true
-                        });
-                        generatedFiles[filePath] = result.code;
-                        // Stream progress to Firestore
-                        await projectRef.update({ 'codebase.files': generatedFiles }).catch(() => { });
-                    } catch (fileErr) {
-                        console.error(`[CodeGenerationAgent] Failed generating ${filePath}:`, fileErr);
-                    }
-                }));
-            }
-
-            console.log(`[CodeGenerationAgent] Frontend generation complete. ${Object.keys(generatedFiles).length} files written.`);
+            const finalResult = await runtime.run(
+                SYSTEM_PROMPT_CODE,
+                userObjective,
+                15 // Max iterations limit for safety
+            );
+            console.log("[CodeGenerationAgent] Runtime finished. Result: " + finalResult);
 
             return {
                 agentId: this.id,
                 status: 'completed',
-                payload: { files: generatedFiles, dependencies: {} } as GeneratedCodebase
+                payload: { agentRuntimeOutput: finalResult }
             };
         } catch (error: any) {
             console.error('[CodeGenerationAgent] Failed:', error);
