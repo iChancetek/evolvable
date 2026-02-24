@@ -6,6 +6,15 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth/auth-context';
 import styles from './workspace.module.css';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import {
+    Lightbulb,
+    LayoutDashboard,
+    Hammer,
+    Settings,
+    LogOut,
+    AlertCircle,
+    Loader2,
+} from 'lucide-react';
 
 export default function WorkspaceLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -37,10 +46,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
             }
         };
 
-        // Initial check
         checkHealth();
-
-        // Poll every 30 seconds
         const interval = setInterval(checkHealth, 30000);
         return () => {
             mounted = false;
@@ -60,19 +66,18 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
 
                         <div className={styles.activityIcons}>
                             <Link href="/create" className={`${styles.actIcon} ${pathname.startsWith('/create') ? styles.actIconActive : ''}`} title="Create App">
-                                💡
+                                <Lightbulb size={18} />
                             </Link>
                             <Link href="/dashboard" className={`${styles.actIcon} ${pathname.startsWith('/dashboard') ? styles.actIconActive : ''}`} title="Dashboard">
-                                📊
+                                <LayoutDashboard size={18} />
                             </Link>
                             <Link href="/builder" className={`${styles.actIcon} ${pathname.startsWith('/builder') ? styles.actIconActive : ''}`} title="Visual Builder">
-                                🛠️
+                                <Hammer size={18} />
                             </Link>
                         </div>
                     </div>
 
                     <div className={styles.bottomIcons}>
-                        {/* AI Health Indicator (Invisible when healthy to reduce clutter) */}
                         {aiHealth !== 'healthy' && (
                             <div
                                 className={styles.actIcon}
@@ -83,20 +88,20 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
                                     filter: aiHealth === 'degraded' ? 'drop-shadow(0 0 4px rgba(255, 165, 0, 0.8))' : 'none'
                                 }}
                             >
-                                {aiHealth === 'degraded' ? '🟡' : '🔄'}
+                                {aiHealth === 'degraded' ? <AlertCircle size={18} /> : <Loader2 size={18} className={styles.spinning} />}
                             </div>
                         )}
 
                         <Link href="/settings" className={`${styles.actIcon} ${pathname.startsWith('/settings') ? styles.actIconActive : ''}`} title="Settings">
-                            ⚙️
+                            <Settings size={18} />
                         </Link>
                         <div onClick={signOut} className={styles.actIcon} title="Sign Out" style={{ cursor: 'pointer' }}>
-                            🚪
+                            <LogOut size={18} />
                         </div>
                     </div>
                 </aside>
 
-                {/* Main Content Area (Contextual Sidebar + Editor Pane) */}
+                {/* Main Content Area */}
                 <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
                     {children}
                 </div>

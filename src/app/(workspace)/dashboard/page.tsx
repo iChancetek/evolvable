@@ -6,24 +6,29 @@ import { useAuth } from '@/lib/auth/auth-context';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { ProjectBlueprint } from '@/lib/agents/types';
+import {
+    LayoutDashboard, Grid3x3, PlusCircle, Hammer, Settings,
+    Zap, ClipboardCheck, AlertTriangle, Rocket, XCircle,
+    Building2, ShoppingCart, Users, BarChart3, Cpu, Bot, Lightbulb, Factory,
+} from 'lucide-react';
 
-const STATUS_LABELS: Record<string, { label: string; icon: string }> = {
-    building: { label: 'Building', icon: '⚡' },
-    awaiting_approval: { label: 'Review Ready', icon: '📋' },
-    awaiting_clarification: { label: 'Needs Input', icon: '⚠️' },
-    deployed: { label: 'Live', icon: '🚀' },
-    error: { label: 'Failed', icon: '✗' },
+const STATUS_LABELS: Record<string, { label: string; Icon: React.ComponentType<{ size?: number }> }> = {
+    building: { label: 'Building', Icon: Zap },
+    awaiting_approval: { label: 'Review Ready', Icon: ClipboardCheck },
+    awaiting_clarification: { label: 'Needs Input', Icon: AlertTriangle },
+    deployed: { label: 'Live', Icon: Rocket },
+    error: { label: 'Failed', Icon: XCircle },
 };
 
-const PLATFORM_ICONS: Record<string, string> = {
-    saas: '🏢',
-    marketplace: '🛒',
-    social: '👥',
-    enterprise_dashboard: '📊',
-    api_platform: '⚡',
-    ai_agent: '🤖',
-    single_app: '💡',
-    multi_tenant: '🏗️',
+const PLATFORM_ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
+    saas: Building2,
+    marketplace: ShoppingCart,
+    social: Users,
+    enterprise_dashboard: BarChart3,
+    api_platform: Cpu,
+    ai_agent: Bot,
+    single_app: Lightbulb,
+    multi_tenant: Factory,
 };
 
 export default function DashboardPage() {
@@ -67,18 +72,18 @@ export default function DashboardPage() {
 
                 <nav className={styles.nav}>
                     {[
-                        { href: '/dashboard', icon: '⬡', label: 'Dashboard', active: true },
-                        { href: '/apps', icon: '▦', label: 'My Apps' },
-                        { href: '/create', icon: '+', label: 'New Project' },
-                        { href: '/builder', icon: '◈', label: 'Visual Builder' },
-                        { href: '/settings', icon: '⚙', label: 'Settings' },
-                    ].map(({ href, icon, label, active }) => (
+                        { href: '/dashboard', Icon: LayoutDashboard, label: 'Dashboard', active: true },
+                        { href: '/apps', Icon: Grid3x3, label: 'My Apps' },
+                        { href: '/create', Icon: PlusCircle, label: 'New Project' },
+                        { href: '/builder', Icon: Hammer, label: 'Visual Builder' },
+                        { href: '/settings', Icon: Settings, label: 'Settings' },
+                    ].map(({ href, Icon, label, active }) => (
                         <a
                             key={href}
                             href={href}
                             className={`${styles.navItem} ${active ? styles.active : ''}`}
                         >
-                            <span className={styles.navIcon}>{icon}</span>
+                            <span className={styles.navIcon}><Icon size={16} /></span>
                             {label}
                         </a>
                     ))}
@@ -141,7 +146,7 @@ export default function DashboardPage() {
                     <div className={styles.projectsGrid}>
                         {projects.length === 0 ? (
                             <div className={styles.emptyState}>
-                                <div className={styles.emptyIcon}>🚀</div>
+                                <div className={styles.emptyIcon}><Rocket size={40} /></div>
                                 <h3 className={styles.emptyTitle}>Nothing built yet</h3>
                                 <p className={styles.emptySubtext}>
                                     Describe any app idea in plain English and watch Evolvable build it for you.
@@ -153,8 +158,8 @@ export default function DashboardPage() {
                         ) : (
                             projects.map(project => {
                                 const s = project.status || 'building';
-                                const statusInfo = STATUS_LABELS[s] || { label: s, icon: '◌' };
-                                const icon = PLATFORM_ICONS[project.prd?.platformMode || ''] || '💡';
+                                const statusInfo = STATUS_LABELS[s] || { label: s, Icon: Lightbulb };
+                                const PlatIcon = PLATFORM_ICONS[project.prd?.platformMode || ''] || Lightbulb;
                                 const href = s === 'awaiting_approval'
                                     ? `/plan-review?projectId=${project.id}`
                                     : s === 'awaiting_clarification'
@@ -164,10 +169,10 @@ export default function DashboardPage() {
                                 return (
                                     <a key={project.id} href={href} className={styles.projectCard}>
                                         <div className={styles.projectCardTop}>
-                                            <div className={styles.projectCardIcon}>{icon}</div>
+                                            <div className={styles.projectCardIcon}><PlatIcon size={20} /></div>
                                             <div className={`${styles.projectStatusPill} ${styles[s]}`}>
                                                 <span className={styles.statusPing} />
-                                                {statusInfo.icon} {statusInfo.label}
+                                                <statusInfo.Icon size={12} /> {statusInfo.label}
                                             </div>
                                         </div>
                                         <div className={styles.projectName}>

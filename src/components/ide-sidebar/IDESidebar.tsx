@@ -4,6 +4,10 @@ import React, { useState } from 'react';
 import { ProjectBlueprint } from '@/lib/agents/types';
 import { ExplorerPanel } from './ExplorerPanel';
 import { FileViewer } from './FileViewer';
+import {
+    FolderTree, GitBranch, Play, Globe, Puzzle, RefreshCw, Github,
+    Check, Shield, Hexagon, Zap, DollarSign, Sparkles,
+} from 'lucide-react';
 
 export type SidebarTab = 'explorer' | 'source-control' | 'run' | 'remote' | 'extensions' | 'actions' | 'github';
 
@@ -13,14 +17,14 @@ interface IDESidebarProps {
     isVisible: boolean;
 }
 
-const ACTIVITY_ICONS: { id: SidebarTab; icon: string; label: string; color?: string }[] = [
-    { id: 'explorer', icon: '⬡', label: 'Explorer' },
-    { id: 'source-control', icon: '⎇', label: 'Source Control' },
-    { id: 'run', icon: '▶', label: 'Run & Debug' },
-    { id: 'remote', icon: '⊕', label: 'Remote Explorer' },
-    { id: 'extensions', icon: '⊞', label: 'Extensions' },
-    { id: 'actions', icon: '↺', label: 'GitHub Actions' },
-    { id: 'github', icon: '◉', label: 'GitHub' },
+const ACTIVITY_ICONS: { id: SidebarTab; Icon: React.ComponentType<{ size?: number }>; label: string }[] = [
+    { id: 'explorer', Icon: FolderTree, label: 'Explorer' },
+    { id: 'source-control', Icon: GitBranch, label: 'Source Control' },
+    { id: 'run', Icon: Play, label: 'Run & Debug' },
+    { id: 'remote', Icon: Globe, label: 'Remote Explorer' },
+    { id: 'extensions', Icon: Puzzle, label: 'Extensions' },
+    { id: 'actions', Icon: RefreshCw, label: 'GitHub Actions' },
+    { id: 'github', Icon: Github, label: 'GitHub' },
 ];
 
 function PlaceholderPanel({ title, icon, description }: { title: string; icon: string; description: string }) {
@@ -174,7 +178,7 @@ export function IDESidebar({ blueprint, projectId, isVisible }: IDESidebarProps)
                 paddingTop: '0.5rem',
                 gap: '2px',
             }}>
-                {ACTIVITY_ICONS.map(({ id, icon, label }) => (
+                {ACTIVITY_ICONS.map(({ id, Icon, label }) => (
                     <button
                         key={id}
                         title={label}
@@ -192,10 +196,9 @@ export function IDESidebar({ blueprint, projectId, isVisible }: IDESidebarProps)
                             alignItems: 'center',
                             justifyContent: 'center',
                             transition: 'all 0.15s ease',
-                            fontFamily: 'monospace',
                         }}
                     >
-                        {icon}
+                        <Icon size={18} />
                     </button>
                 ))}
             </div>
@@ -224,7 +227,7 @@ export function IDESidebar({ blueprint, projectId, isVisible }: IDESidebarProps)
                     gap: '0.5rem',
                     flexShrink: 0,
                 }}>
-                    <span>{ACTIVITY_ICONS.find(a => a.id === activeTab)?.icon}</span>
+                    <span>{(() => { const item = ACTIVITY_ICONS.find(a => a.id === activeTab); return item ? <item.Icon size={14} /> : null; })()}</span>
                     {ACTIVITY_ICONS.find(a => a.id === activeTab)?.label}
                 </div>
 

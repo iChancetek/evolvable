@@ -6,18 +6,23 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase/config';
 import { ProjectBlueprint } from '@/lib/agents/types';
 import styles from './apps.module.css';
+import {
+    LayoutDashboard, Grid3x3, PlusCircle, Hammer, Settings, Search, Rocket,
+    Zap, ClipboardCheck, AlertTriangle, XCircle, RefreshCw, Wrench,
+    Building2, ShoppingCart, Users, BarChart3, Cpu, Bot, Lightbulb, Factory,
+} from 'lucide-react';
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; glow: string; icon: string; badge: string }> = {
-    building: { label: 'Building', color: '#60a5fa', glow: 'rgba(96,165,250,0.25)', icon: '⚡', badge: 'building' },
-    awaiting_approval: { label: 'Review Ready', color: '#c084fc', glow: 'rgba(192,132,252,0.25)', icon: '📋', badge: 'awaiting_approval' },
-    awaiting_clarification: { label: 'Needs Input', color: '#fbbf24', glow: 'rgba(251,191,36,0.25)', icon: '⚠️', badge: 'awaiting_clarification' },
-    deployed: { label: 'Live', color: '#4ade80', glow: 'rgba(74,222,128,0.25)', icon: '🚀', badge: 'deployed' },
-    error: { label: 'Failed', color: '#f87171', glow: 'rgba(248,113,113,0.25)', icon: '✗', badge: 'error' },
+const STATUS_CONFIG: Record<string, { label: string; color: string; glow: string; Icon: React.ComponentType<{ size?: number }>; badge: string }> = {
+    building: { label: 'Building', color: '#60a5fa', glow: 'rgba(96,165,250,0.25)', Icon: Zap, badge: 'building' },
+    awaiting_approval: { label: 'Review Ready', color: '#c084fc', glow: 'rgba(192,132,252,0.25)', Icon: ClipboardCheck, badge: 'awaiting_approval' },
+    awaiting_clarification: { label: 'Needs Input', color: '#fbbf24', glow: 'rgba(251,191,36,0.25)', Icon: AlertTriangle, badge: 'awaiting_clarification' },
+    deployed: { label: 'Live', color: '#4ade80', glow: 'rgba(74,222,128,0.25)', Icon: Rocket, badge: 'deployed' },
+    error: { label: 'Failed', color: '#f87171', glow: 'rgba(248,113,113,0.25)', Icon: XCircle, badge: 'error' },
 };
 
-const PLATFORM_ICONS: Record<string, string> = {
-    saas: '🏢', marketplace: '🛒', social: '👥', enterprise_dashboard: '📊',
-    api_platform: '⚡', ai_agent: '🤖', single_app: '💡', multi_tenant: '🏗️',
+const PLATFORM_ICONS: Record<string, React.ComponentType<{ size?: number }>> = {
+    saas: Building2, marketplace: ShoppingCart, social: Users, enterprise_dashboard: BarChart3,
+    api_platform: Cpu, ai_agent: Bot, single_app: Lightbulb, multi_tenant: Factory,
 };
 
 type TabFilter = 'all' | 'in_progress' | 'deployed' | 'needs_action';
@@ -139,7 +144,7 @@ export default function AppsPage() {
                 {/* Search + Filter */}
                 <div className={styles.toolbar}>
                     <div className={styles.searchBar}>
-                        <span className={styles.searchIcon}>🔍</span>
+                        <span className={styles.searchIcon}><Search size={14} /></span>
                         <input
                             className={styles.searchInput}
                             placeholder="Search apps..."
@@ -175,7 +180,7 @@ export default function AppsPage() {
                     </div>
                 ) : filtered.length === 0 ? (
                     <div className={styles.empty}>
-                        <div className={styles.emptyIcon}>{search ? '🔍' : '🚀'}</div>
+                        <div className={styles.emptyIcon}>{search ? <Search size={36} /> : <Rocket size={36} />}</div>
                         <h3 className={styles.emptyTitle}>
                             {search ? 'No apps match your search' : filter === 'all' ? 'No apps yet' : `No ${filter.replace('_', ' ')} apps`}
                         </h3>
@@ -193,7 +198,7 @@ export default function AppsPage() {
                         {filtered.map(project => {
                             const s = project.status || 'building';
                             const cfg = STATUS_CONFIG[s] || STATUS_CONFIG.building;
-                            const icon = PLATFORM_ICONS[project.prd?.platformMode || ''] || '💡';
+                            const PlatIcon = PLATFORM_ICONS[project.prd?.platformMode || ''] || Lightbulb;
                             const href = getAppHref(project);
                             const age = project.createdAt ? timeAgo(project.createdAt) : '';
 
@@ -201,10 +206,10 @@ export default function AppsPage() {
                                 <a key={project.id} href={href} className={styles.card} style={{ '--glow': cfg.glow } as React.CSSProperties}>
                                     {/* Card top */}
                                     <div className={styles.cardTop}>
-                                        <div className={styles.cardIcon}>{icon}</div>
+                                        <div className={styles.cardIcon}><PlatIcon size={20} /></div>
                                         <div className={`${styles.statusBadge} ${styles[cfg.badge]}`}>
                                             <span className={styles.statusPing} />
-                                            {cfg.icon} {cfg.label}
+                                            <cfg.Icon size={11} /> {cfg.label}
                                         </div>
                                     </div>
 
@@ -245,11 +250,11 @@ export default function AppsPage() {
 
                                     {/* CTA Hint */}
                                     <div className={styles.cardCta}>
-                                        {s === 'awaiting_approval' && '📋 Review & Approve Plan →'}
-                                        {s === 'awaiting_clarification' && '⚠️ Answer Questions →'}
-                                        {s === 'building' && '⚡ View Build Progress →'}
-                                        {s === 'deployed' && '🛠️ Open in Builder →'}
-                                        {s === 'error' && '🔁 Retry Pipeline →'}
+                                        {s === 'awaiting_approval' && <><ClipboardCheck size={12} /> Review & Approve Plan →</>}
+                                        {s === 'awaiting_clarification' && <><AlertTriangle size={12} /> Answer Questions →</>}
+                                        {s === 'building' && <><Zap size={12} /> View Build Progress →</>}
+                                        {s === 'deployed' && <><Wrench size={12} /> Open in Builder →</>}
+                                        {s === 'error' && <><RefreshCw size={12} /> Retry Pipeline →</>}
                                     </div>
                                 </a>
                             );
