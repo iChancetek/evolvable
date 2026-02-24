@@ -269,11 +269,11 @@ export default function PlanReviewPage() {
                                     <div className={styles.grid2}>
                                         <div className={styles.card}>
                                             <div className={styles.cardLabel}>Target Users</div>
-                                            <ul className={styles.list}>{activePlan.executiveSummary.targetUsers?.map((u, i) => <li key={i}>{u}</li>)}</ul>
+                                            <ul className={styles.list}>{Array.isArray(activePlan.executiveSummary.targetUsers) ? activePlan.executiveSummary.targetUsers.map((u, i) => <li key={i}>{u}</li>) : <li>{String(activePlan.executiveSummary.targetUsers || 'None specified')}</li>}</ul>
                                         </div>
                                         <div className={styles.card}>
                                             <div className={styles.cardLabel}>Core Features</div>
-                                            <ul className={styles.list}>{activePlan.executiveSummary.coreFeatures?.map((f, i) => <li key={i}>{f}</li>)}</ul>
+                                            <ul className={styles.list}>{Array.isArray(activePlan.executiveSummary.coreFeatures) ? activePlan.executiveSummary.coreFeatures.map((f, i) => <li key={i}>{f}</li>) : <li>{String(activePlan.executiveSummary.coreFeatures || 'None specified')}</li>}</ul>
                                         </div>
                                     </div>
                                 </section>
@@ -283,20 +283,26 @@ export default function PlanReviewPage() {
                             {expandedSections.has('architecture') && (
                                 <section className={styles.section}>
                                     <h2 className={styles.sectionTitle}>🏗️ Architecture Overview</h2>
-                                    <div className={styles.grid2}>
-                                        {Object.entries(activePlan.architectureOverview || {}).filter(([k]) => k !== 'multiTenantStrategy').map(([key, val]) => (
-                                            <div key={key} className={styles.card}>
-                                                <div className={styles.cardLabel}>{key.replace(/([A-Z])/g, ' $1').trim()}</div>
-                                                <div className={styles.cardValue}>{String(val)}</div>
-                                            </div>
-                                        ))}
-                                        {activePlan.architectureOverview?.multiTenantStrategy && (
-                                            <div className={styles.card}>
-                                                <div className={styles.cardLabel}>Multi-tenant Strategy</div>
-                                                <div className={`${styles.cardValue} ${styles.highlight}`}>{activePlan.architectureOverview.multiTenantStrategy}</div>
-                                            </div>
-                                        )}
-                                    </div>
+                                    {typeof activePlan.architectureOverview === 'string' ? (
+                                        <div className={styles.card}>
+                                            <div className={styles.cardValue}>{activePlan.architectureOverview}</div>
+                                        </div>
+                                    ) : (
+                                        <div className={styles.grid2}>
+                                            {Object.entries(activePlan.architectureOverview || {}).filter(([k]) => k !== 'multiTenantStrategy').map(([key, val]) => (
+                                                <div key={key} className={styles.card}>
+                                                    <div className={styles.cardLabel}>{key.replace(/([A-Z])/g, ' $1').trim()}</div>
+                                                    <div className={styles.cardValue}>{typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val)}</div>
+                                                </div>
+                                            ))}
+                                            {(activePlan.architectureOverview as any)?.multiTenantStrategy && (
+                                                <div className={styles.card}>
+                                                    <div className={styles.cardLabel}>Multi-tenant Strategy</div>
+                                                    <div className={`${styles.cardValue} ${styles.highlight}`}>{(activePlan.architectureOverview as any).multiTenantStrategy}</div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
                                 </section>
                             )}
 
@@ -306,16 +312,16 @@ export default function PlanReviewPage() {
                                     <h2 className={styles.sectionTitle}>⚙️ Feature Breakdown</h2>
                                     <div className={styles.grid3}>
                                         <div className={styles.card}>
-                                            <div className={styles.cardLabel}>Pages ({activePlan.featureBreakdown?.pages?.length || 0})</div>
-                                            <ul className={styles.list}>{activePlan.featureBreakdown?.pages?.map((p, i) => <li key={i}><code>{p.path}</code> — {p.purpose} <span className={styles.roles}>{p.roles?.join(', ')}</span></li>)}</ul>
+                                            <div className={styles.cardLabel}>Pages ({Array.isArray(activePlan.featureBreakdown?.pages) ? activePlan.featureBreakdown.pages.length : 0})</div>
+                                            <ul className={styles.list}>{Array.isArray(activePlan.featureBreakdown?.pages) ? activePlan.featureBreakdown.pages.map((p, i) => <li key={i}><code>{typeof p === 'string' ? p : p.path}</code>{typeof p !== 'string' && <> — {p.purpose} <span className={styles.roles}>{p.roles?.join(', ')}</span></>}</li>) : <li>{String(activePlan.featureBreakdown?.pages || 'Not generated yet')}</li>}</ul>
                                         </div>
                                         <div className={styles.card}>
-                                            <div className={styles.cardLabel}>API Endpoints ({activePlan.featureBreakdown?.apis?.length || 0})</div>
-                                            <ul className={styles.list}>{activePlan.featureBreakdown?.apis?.map((a, i) => <li key={i}><code>{a.method} {a.path}</code> {a.auth && '🔒'}</li>)}</ul>
+                                            <div className={styles.cardLabel}>API Endpoints ({Array.isArray(activePlan.featureBreakdown?.apis) ? activePlan.featureBreakdown.apis.length : 0})</div>
+                                            <ul className={styles.list}>{Array.isArray(activePlan.featureBreakdown?.apis) ? activePlan.featureBreakdown.apis.map((a, i) => <li key={i}><code>{typeof a === 'string' ? a : `${a.method} ${a.path}`}</code> {typeof a !== 'string' && a.auth && '🔒'}</li>) : <li>{String(activePlan.featureBreakdown?.apis || 'Not generated yet')}</li>}</ul>
                                         </div>
                                         <div className={styles.card}>
                                             <div className={styles.cardLabel}>User Roles</div>
-                                            <ul className={styles.list}>{activePlan.featureBreakdown?.userRoles?.map((r, i) => <li key={i}>👤 {r}</li>)}</ul>
+                                            <ul className={styles.list}>{Array.isArray(activePlan.featureBreakdown?.userRoles) ? activePlan.featureBreakdown.userRoles.map((r, i) => <li key={i}>👤 {typeof r === 'string' ? r : JSON.stringify(r)}</li>) : <li>{String(activePlan.featureBreakdown?.userRoles || 'Not specified')}</li>}</ul>
                                         </div>
                                     </div>
                                 </section>

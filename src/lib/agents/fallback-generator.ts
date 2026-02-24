@@ -42,14 +42,64 @@ export class FallbackGeneratorService {
                     status: 'pending',
                     version: 1,
                     generatedAt: Date.now(),
-                    executiveSummary: 'AI Service degraded. Fallback template loaded.',
-                    architectureOverview: 'Standard Monolithic Next.js Setup',
-                    phases: [],
-                    riskAnalysis: 'Low - Pre-approved template',
-                    timeline: 'Immediate',
-                    requiredDependencies: [],
-                    securityConsiderations: [],
-                    deploymentStrategy: 'Standard Vercel deployment'
+                    executiveSummary: {
+                        appType: template.prd?.platformMode || 'single_app',
+                        estimatedComplexity: 'low',
+                        estimatedBuildTime: '~5 minutes (fallback template)',
+                        targetUsers: ['General Users'],
+                        coreFeatures: (template.prd?.features || []).map((f: any) => f.title),
+                        monetizationModel: 'none',
+                    },
+                    architectureOverview: {
+                        topology: template.architecture?.topology || 'monolith',
+                        frontend: 'Next.js 15 (App Router) + React 19',
+                        backend: 'Next.js API Routes',
+                        database: template.databaseSchema?.engine || 'postgresql',
+                        auth: 'NextAuth.js v5',
+                        hosting: 'Vercel',
+                    },
+                    featureBreakdown: {
+                        pages: [{ path: '/', purpose: 'Landing page', roles: ['public'] }],
+                        apis: (template.architecture?.apiContracts || []).map((c: any) => ({
+                            method: c.method, path: c.path, auth: c.auth
+                        })),
+                        userRoles: ['user', 'admin'],
+                    },
+                    databaseDesign: {
+                        models: (template.databaseSchema?.tables || []).map((t: any) => ({
+                            name: t.name, tenantScoped: t.tenantScoped || false
+                        })),
+                        indexStrategy: ['Primary key indexes on all tables'],
+                    },
+                    securityPlan: {
+                        authFlow: 'NextAuth.js email + OAuth',
+                        routeProtection: ['/api/* — authenticated'],
+                    },
+                    deploymentStrategy: {
+                        hosting: 'Vercel',
+                        scalingModel: 'Serverless auto-scale',
+                        envVars: ['DATABASE_URL', 'NEXTAUTH_SECRET'],
+                    },
+                    testingPlan: {
+                        rbacMatrix: [],
+                        authFlowTests: ['Login success', 'Login failure', 'Token refresh'],
+                    },
+                    monitoringPlan: {
+                        metrics: ['Response time', 'Error rate'],
+                        errorLogging: 'Vercel built-in logging',
+                        performanceTracking: 'Web Vitals via Next.js Analytics',
+                    },
+                    riskAnalysis: {
+                        technicalRisks: [{ risk: 'Fallback template — limited customization', severity: 'low', mitigation: 'Re-run with AI when service recovers' }],
+                        securityRisks: [],
+                        scalabilityRisks: [],
+                    },
+                    selfValidation: {
+                        hasAuth: true,
+                        hasDatabase: true,
+                        hasRoutes: true,
+                        hasRoles: true,
+                    },
                 }
             }]
         } as ProjectBlueprint;
