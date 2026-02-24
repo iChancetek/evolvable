@@ -140,7 +140,7 @@ export async function callLLM<T = any>(
                     if (modelName === 'gpt-5.2') completionOptions.max_completion_tokens = maxTokens;
                     else completionOptions.max_tokens = maxTokens;
 
-                    if (jsonSchema) completionOptions.response_format = { type: "json_object" };
+                    if (jsonSchema && modelName !== 'gpt-5.2') completionOptions.response_format = { type: "json_object" };
 
                     const openai = new OpenAI();
                     const response = await openai.chat.completions.create(completionOptions);
