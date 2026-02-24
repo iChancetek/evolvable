@@ -53,9 +53,10 @@ Ensure you:
 `;
 
             const prd = await callLLM<ProductRequirementsDocument>(SYSTEM_PROMPT, userPrompt, {
-                workloadType: 'reasoning',
+                workloadType: 'standard',
                 provider: input.provider,
-                jsonSchema: true
+                jsonSchema: true,
+                maxTokens: 4096
             });
 
             console.log(`[VisionAgent] PRD generated. Platform mode: ${prd.platformMode}. Features: ${prd.features?.length || 0}`);

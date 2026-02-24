@@ -72,9 +72,9 @@ const DEEPSEEK_MODEL_ROUTING: Record<AgentWorkloadType, string> = {
 };
 
 const OPENAI_MODEL_ROUTING: Record<AgentWorkloadType, string> = {
-    standard: 'gpt-5.2', // Migrated to gpt-5.2 per knowledge base
-    reasoning: 'gpt-5.2',
-    lightweight: 'gpt-4o-mini' // Fast fallback
+    standard: 'gpt-4o',       // Fast, capable — used for most planning agents
+    reasoning: 'gpt-5.2',     // Slow, deep — reserved for Architect/Security agents
+    lightweight: 'gpt-4o-mini' // Fastest — documentation, simple parsing
 };
 
 const ANTHROPIC_MODEL_ROUTING: Record<AgentWorkloadType, string> = {
