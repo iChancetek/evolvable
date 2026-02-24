@@ -76,7 +76,7 @@ export type LLMProvider = 'huggingface' | 'openai' | 'deepseek' | 'anthropic' | 
 
 export type AIModel =
     // OpenAI Models
-    | 'gpt-5.2' | 'gpt-5.2-pro' | 'gpt-5.2-codex' | 'gpt-5.1' | 'gpt-5'
+    | 'gpt-5.2' | 'gpt-5.2-pro' | 'gpt-5.2-codex' | 'gpt-5.3-codex' | 'gpt-5.1' | 'gpt-5'
     | 'gpt-4o' | 'gpt-4o-mini' | 'gpt-4-turbo'
     // Anthropic Models
     | 'claude-3-5-sonnet-latest' | 'claude-3-5-haiku-latest' | 'claude-3-opus-latest' | 'claude-4.6-sonnet-latest'
@@ -99,6 +99,8 @@ export const AVAILABLE_MODELS: ModelDefinition[] = [
     // OpenAI
     { id: 'gpt-5.2', provider: 'openai', name: 'GPT-5.2', description: 'Latest reasoning model' },
     { id: 'gpt-5.2-pro', provider: 'openai', name: 'GPT-5.2 Pro', description: 'Advanced reasoning and complex tasks' },
+    { id: 'gpt-5.2-codex', provider: 'openai', name: 'GPT-5.2 Codex', description: 'Standard codex model' },
+    { id: 'gpt-5.3-codex', provider: 'openai', name: 'GPT-5.3 Codex', description: 'Next-gen codex model' },
     { id: 'gpt-5.1', provider: 'openai', name: 'GPT-5.1', description: 'Balanced performance and speed' },
     { id: 'gpt-4o', provider: 'openai', name: 'GPT-4o', description: 'Fast omni-model' },
     { id: 'gpt-4-turbo', provider: 'openai', name: 'GPT-4 Turbo', description: 'Legacy GPT-4 architecture' },

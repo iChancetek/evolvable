@@ -41,9 +41,19 @@ class AICircuitBreaker {
             this.failureCount = 0;
         }
     }
+
+    reset() {
+        this.failureCount = 0;
+        this.lastFailureTime = 0;
+        console.log(`[Circuit Breaker] MANUALLY RESET.`);
+    }
 }
 
 const circuitBreaker = new AICircuitBreaker();
+
+export function resetCircuitBreaker() {
+    circuitBreaker.reset();
+}
 // ---------------------------------
 
 export type AgentWorkloadType = 'standard' | 'reasoning' | 'lightweight';
@@ -139,10 +149,10 @@ export async function callLLM<T = any>(
                         temperature,
                     };
 
-                    if (modelName === 'gpt-5.2') completionOptions.max_completion_tokens = maxTokens;
+                    if (modelName.startsWith('gpt-5.2') || modelName.startsWith('gpt-5.3')) completionOptions.max_completion_tokens = maxTokens;
                     else completionOptions.max_tokens = maxTokens;
 
-                    if (jsonSchema && modelName !== 'gpt-5.2') completionOptions.response_format = { type: "json_object" };
+                    if (jsonSchema && !modelName.startsWith('gpt-5.2') && !modelName.startsWith('gpt-5.3')) completionOptions.response_format = { type: "json_object" };
 
                     const openai = new OpenAI();
                     const response = await openai.chat.completions.create(completionOptions);

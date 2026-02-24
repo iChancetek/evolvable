@@ -3,6 +3,7 @@ import { adminDb } from '@/lib/firebase/admin';
 import { AuditLogger } from '@/lib/audit/audit-logger';
 import { OrchestrationBus } from '@/lib/agents/orchestration-bus';
 import { ProjectBlueprint } from '@/lib/agents/types';
+import { resetCircuitBreaker } from '@/lib/agents/llm-adapter';
 
 /**
  * POST /api/orchestrate/approve
@@ -62,6 +63,10 @@ export async function POST(req: NextRequest) {
         // Resume execution pipeline (async — do not await in request)
         const updatedProject = { ...project, planVersions: updatedPlanVersions, status: 'building', phase: 'executing' } as ProjectBlueprint;
         const bus = new OrchestrationBus(updatedProject);
+
+        // Reset the global AI circuit breaker before starting execution
+        // in case it tripped and forced a fallback during the planning phase.
+        resetCircuitBreaker();
 
         // Fire and forget — pipeline runs in background
         bus.executeAfterApproval(userId).catch(err =>
