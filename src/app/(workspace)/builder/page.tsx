@@ -14,6 +14,7 @@ import {
     ComponentType,
     CanvasProp,
 } from '@/lib/agents/types';
+import { IDESidebar } from '@/components/ide-sidebar/IDESidebar';
 
 // --- Component Palette ---
 const COMPONENT_PALETTE: { icon: string; label: string; type: ComponentType; category: string }[] = [
@@ -87,6 +88,19 @@ function BuilderContent() {
     const [isDragOver, setIsDragOver] = useState(false);
     const [aiPrompt, setAiPrompt] = useState('');
     const [isAiLoading, setIsAiLoading] = useState(false);
+    // IDE Mode: persisted per user
+    const [advancedMode, setAdvancedMode] = useState<boolean>(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('evolvable_ide_mode') === 'advanced';
+        }
+        return false;
+    });
+
+    const toggleMode = () => {
+        const next = !advancedMode;
+        setAdvancedMode(next);
+        localStorage.setItem('evolvable_ide_mode', next ? 'advanced' : 'simple');
+    };
 
     const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -259,6 +273,28 @@ function BuilderContent() {
                     </div>
 
                     <div className={styles.toolbarRight}>
+                        {/* Simple / Advanced Mode Toggle */}
+                        <button
+                            onClick={toggleMode}
+                            title={advancedMode ? 'Switch to Simple Mode' : 'Switch to Advanced Mode'}
+                            style={{
+                                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                                padding: '0.3rem 0.875rem',
+                                border: `1px solid ${advancedMode ? 'rgba(66,133,244,0.5)' : 'rgba(255,255,255,0.1)'}`,
+                                background: advancedMode ? 'rgba(66,133,244,0.12)' : 'rgba(255,255,255,0.04)',
+                                borderRadius: '7px',
+                                color: advancedMode ? '#79c0ff' : 'rgba(255,255,255,0.45)',
+                                fontSize: '0.75rem',
+                                fontWeight: 600,
+                                cursor: 'pointer',
+                                fontFamily: 'inherit',
+                                transition: 'all 0.2s ease',
+                            }}
+                        >
+                            <span style={{ fontSize: '0.75rem' }}>{advancedMode ? '⬡' : '○'}</span>
+                            {advancedMode ? 'Advanced' : 'Simple'}
+                        </button>
+
                         <button className={styles.previewBtn} onClick={handleExport}>
                             ⬇️ Export
                         </button>
@@ -275,6 +311,17 @@ function BuilderContent() {
                     </div>
                 ) : (
                     <div className={styles.workspace}>
+                        {/* IDE Sidebar (Advanced Mode only) */}
+                        {advancedMode && (
+                            <div style={{ display: 'flex', height: '100%', flexShrink: 0, overflow: 'hidden' }}>
+                                <IDESidebar
+                                    blueprint={blueprint}
+                                    projectId={projectId}
+                                    isVisible={advancedMode}
+                                />
+                            </div>
+                        )}
+
                         {/* Left Sidebar — Component Palette */}
                         <aside className={styles.sidebar}>
                             <div className={styles.sidebarTabs}>

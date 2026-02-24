@@ -68,6 +68,7 @@ export default function DashboardPage() {
                 <nav className={styles.nav}>
                     {[
                         { href: '/dashboard', icon: '⬡', label: 'Dashboard', active: true },
+                        { href: '/apps', icon: '▦', label: 'My Apps' },
                         { href: '/create', icon: '+', label: 'New Project' },
                         { href: '/builder', icon: '◈', label: 'Visual Builder' },
                         { href: '/settings', icon: '⚙', label: 'Settings' },
