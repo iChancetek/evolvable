@@ -366,6 +366,7 @@ export interface AgentInput {
     payload: any;
     blueprint: ProjectBlueprint;
     provider?: LLMProvider;
+    model?: string;
     planningMode?: boolean; // When true, agents must not generate code/infra/deploy calls
     onEvent?: (status: 'running' | 'completed' | 'failed' | 'vetoed', message: string, payload?: any) => void;
 }

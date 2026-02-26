@@ -250,11 +250,16 @@ export async function callLLM<T = any>(
                 lastError = error;
                 console.error(`[LLM Adapter] Error calling ${currentProvider}:`, error.message);
 
-                const isAuthError = error.status === 401 || error.message.includes('401') || error.message.includes('API key') || error.message.includes('Missing HF_TOKEN');
+                const isAuthError = error.status === 401 || error.message.includes('401') || error.message.includes('API key') || error.message.includes('Missing HF_TOKEN') || error.message.includes('Missing GEMINI_API_KEY');
 
                 // If it's an auth error or we've exhausted retries, break inner loop to failover to next provider
-                if (isAuthError || attempt >= MAX_RETRIES) {
-                    console.warn(`[LLM Adapter] Provider ${currentProvider} exhausted/failed with auth error. Failing over...`);
+                if (isAuthError) {
+                    console.warn(`[LLM Adapter] Provider ${currentProvider} skipped due to missing/invalid API key.`);
+                    break;
+                }
+
+                if (attempt >= MAX_RETRIES) {
+                    console.warn(`[LLM Adapter] Provider ${currentProvider} exhausted retries. Failing over...`);
                     break;
                 }
 

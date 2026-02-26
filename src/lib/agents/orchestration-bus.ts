@@ -582,6 +582,7 @@ export class OrchestrationBus {
             payload: this.blueprint.originalPrompt,
             blueprint: this.blueprint,
             provider: this.blueprint.llmProvider,
+            model: this.blueprint.llmModel,
             planningMode,
             onEvent: (status, message, payload) => {
                 this.emit(agentId, status, message, payload);
